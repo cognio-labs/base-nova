@@ -26,15 +26,15 @@ export async function POST(req: Request) {
             "path": "String (relative path from root, e.g., components/Button.tsx)",
             "content": "String (full code content)"
           }
-        ]
+        ],
+        "previewHtml": "String (A self-contained HTML/CSS/JS file for the live preview iframe. Use Tailwind via CDN and Lucide via CDN if needed.)"
       }
 
       Use:
-      - Next.js (App Router)
+      - Next.js (App Router) for files list
       - Tailwind CSS
       - TypeScript
       - Lucide React for icons
-      - Shadcn UI patterns
       
       Do not include any text outside the JSON block.
     `;

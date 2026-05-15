@@ -8,16 +8,21 @@ interface GeneratedFile {
 interface GenerationState {
   isGenerating: boolean;
   generatedFiles: GeneratedFile[];
+  previewHtml: string | null;
   projectTitle: string;
+  view: 'code' | 'preview';
   error: string | null;
   generateProject: (prompt: string) => Promise<void>;
+  setView: (view: 'code' | 'preview') => void;
   reset: () => void;
 }
 
 export const useGeneratorStore = create<GenerationState>((set) => ({
   isGenerating: false,
   generatedFiles: [],
+  previewHtml: null,
   projectTitle: '',
+  view: 'code',
   error: null,
   
   generateProject: async (prompt: string) => {
@@ -37,13 +42,16 @@ export const useGeneratorStore = create<GenerationState>((set) => ({
 
       set({ 
         generatedFiles: data.files, 
+        previewHtml: data.previewHtml,
         projectTitle: data.projectTitle,
-        isGenerating: false 
+        isGenerating: false,
+        view: 'preview'
       });
     } catch (err: any) {
       set({ error: err.message, isGenerating: false });
     }
   },
 
-  reset: () => set({ generatedFiles: [], projectTitle: '', error: null, isGenerating: false }),
+  setView: (view) => set({ view }),
+  reset: () => set({ generatedFiles: [], previewHtml: null, projectTitle: '', error: null, isGenerating: false, view: 'code' }),
 }));

@@ -1,13 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2 } from "lucide-react";
+import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code2 } from "lucide-react";
 import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
+import PreviewFrame from "@/components/PreviewFrame";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const { generateProject, isGenerating, generatedFiles, projectTitle, error } = useGeneratorStore();
+  const { generateProject, isGenerating, generatedFiles, projectTitle, error, view, setView } = useGeneratorStore();
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
@@ -20,9 +21,9 @@ export default function Home() {
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-4xl w-full text-center z-10">
+      <div className="max-w-7xl w-full text-center z-10">
         {!generatedFiles.length ? (
-          <>
+          <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -84,15 +85,15 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
-          </>
+          </div>
         ) : (
           /* Result Section */
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className="w-full text-left"
           >
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
               <div>
                 <h2 className="text-3xl font-bold text-white mb-2">{projectTitle || "Generated Project"}</h2>
                 <div className="flex items-center gap-2 text-sm text-green-500 font-medium">
@@ -100,37 +101,66 @@ export default function Home() {
                   Successfully generated {generatedFiles.length} files
                 </div>
               </div>
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-6 py-2 rounded-xl glass hover:bg-white/5 text-sm font-bold transition-colors"
-              >
-                Create New
-              </button>
+              
+              <div className="flex items-center gap-3">
+                <div className="bg-white/5 border border-white/10 p-1 rounded-xl flex">
+                  <button 
+                    onClick={() => setView('preview')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      view === 'preview' ? "bg-white/10 text-white shadow-lg" : "text-gray-500 hover:text-gray-300"
+                    }`}
+                  >
+                    <Eye className="w-4 h-4" />
+                    Preview
+                  </button>
+                  <button 
+                    onClick={() => setView('code')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      view === 'code' ? "bg-white/10 text-white shadow-lg" : "text-gray-500 hover:text-gray-300"
+                    }`}
+                  >
+                    <Code2 className="w-4 h-4" />
+                    Code
+                  </button>
+                </div>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 rounded-xl brand-btn text-sm font-bold transition-all shadow-lg shadow-orange-500/20"
+                >
+                  Create New
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {/* File List */}
-              <div className="lg:col-span-1 glass rounded-2xl p-6 border-white/5">
+              <div className="lg:col-span-1 glass rounded-2xl p-6 border-white/5 h-fit">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Generated Files</h3>
                 <div className="flex flex-col gap-2">
                   {generatedFiles.map((file) => (
                     <div key={file.path} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors cursor-pointer">
                       <FileCode className="w-4 h-4 text-orange-500" />
-                      <span className="text-sm text-gray-300 truncate">{file.path}</span>
+                      <span className="text-xs text-gray-300 truncate">{file.path}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Code Preview Placeholder */}
-              <div className="lg:col-span-2 glass rounded-2xl p-6 border-white/5 bg-[#0d0d0d]">
-                 <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-4">
-                    <span className="text-xs font-mono text-gray-500">{generatedFiles[0].path}</span>
-                    <button className="text-[10px] uppercase font-bold text-orange-500 hover:text-orange-400">Copy Code</button>
-                 </div>
-                 <pre className="text-sm font-mono text-gray-400 overflow-x-auto">
-                    <code>{generatedFiles[0].content}</code>
-                 </pre>
+              {/* Dynamic Panel */}
+              <div className="lg:col-span-3 min-h-[600px] flex flex-col">
+                {view === 'preview' ? (
+                  <PreviewFrame />
+                ) : (
+                  <div className="glass rounded-2xl p-6 border-white/5 bg-[#0d0d0d] flex-1 overflow-auto">
+                    <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-4">
+                        <span className="text-xs font-mono text-gray-500">{generatedFiles[0].path}</span>
+                        <button className="text-[10px] uppercase font-bold text-orange-500 hover:text-orange-400">Copy Code</button>
+                    </div>
+                    <pre className="text-sm font-mono text-gray-400">
+                        <code>{generatedFiles[0].content}</code>
+                    </pre>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
