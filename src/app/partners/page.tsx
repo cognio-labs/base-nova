@@ -2,7 +2,7 @@
 
 import { partners } from "@/data/partners";
 import { motion } from "framer-motion";
-import { Linkedin, Globe, MapPin, Languages, ArrowUpRight } from "lucide-react";
+import { ExternalLink, Globe, MapPin, Languages, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
 export default function PartnersPage() {
@@ -50,7 +50,7 @@ export default function PartnersPage() {
               <div className="flex gap-2">
                 {partner.linkedin && (
                   <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
-                    <Linkedin className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 )}
                 {partner.website && (
