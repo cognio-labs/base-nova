@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const navItems = [
   { name: "Home", href: "/", icon: Sparkles },
@@ -24,9 +25,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg brand-btn flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20">
-                L
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10 overflow-hidden">
+                <Image 
+                  src="/logo.png" 
+                  alt="LokoAI Logo" 
+                  fill
+                  className="object-contain"
+                />
               </div>
               <span className="text-xl font-bold tracking-tight text-white group-hover:brand-text-gradient transition-all duration-300">
                 LokoAI

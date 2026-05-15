@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -6,9 +7,14 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-lg brand-btn flex items-center justify-center font-bold text-white shadow-lg">
-                L
+            <Link href="/" className="flex items-center gap-3 mb-6">
+              <div className="relative w-8 h-8">
+                <Image 
+                  src="/logo.png" 
+                  alt="LokoAI Logo" 
+                  fill
+                  className="object-contain"
+                />
               </div>
               <span className="text-xl font-bold text-white">LokoAI</span>
             </Link>
