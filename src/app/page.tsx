@@ -1,13 +1,16 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code2, Save, Download } from "lucide-react";
+import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code2, Save, Wrench, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [isErrorVisible, setIsErrorVisible] = useState(false);
+  const [errorInput, setErrorInput] = useState("");
+
   const { 
     generateProject, 
     isGenerating, 
@@ -18,12 +21,22 @@ export default function Home() {
     setView,
     saveToWorkspace,
     isSaving,
-    saveMessage
+    saveMessage,
+    debugProject,
+    isDebugging,
+    debugMessage
   } = useGeneratorStore();
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
     await generateProject(prompt);
+  };
+
+  const handleDebug = async () => {
+    if (!errorInput.trim() || isDebugging) return;
+    await debugProject(errorInput);
+    setIsErrorVisible(false);
+    setErrorInput("");
   };
 
   return (
@@ -110,7 +123,7 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2 text-sm text-green-500 font-medium">
                     <CheckCircle2 className="w-4 h-4" />
-                    Successfully generated {generatedFiles.length} files
+                    {debugMessage ? debugMessage : `Successfully generated ${generatedFiles.length} files`}
                   </div>
                   {saveMessage && (
                     <div className="text-xs text-orange-500 font-bold bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20">
@@ -121,6 +134,16 @@ export default function Home() {
               </div>
               
               <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsErrorVisible(!isErrorVisible)}
+                  disabled={isDebugging}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-xl glass hover:bg-white/5 text-sm font-bold transition-all border ${
+                    isErrorVisible ? "border-orange-500 text-orange-500" : "border-white/10 text-gray-400"
+                  }`}
+                >
+                  <Wrench className="w-4 h-4" />
+                  Fix with AI
+                </button>
                 <button 
                   onClick={saveToWorkspace}
                   disabled={isSaving}
@@ -157,6 +180,47 @@ export default function Home() {
                 </button>
               </div>
             </div>
+
+            {/* Debugging Console */}
+            <AnimatePresence>
+              {isErrorVisible && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden mb-6"
+                >
+                  <div className="glass p-6 rounded-2xl border-orange-500/30 flex flex-col gap-4">
+                    <div className="flex items-center gap-2 text-orange-500 mb-2">
+                      <AlertCircle className="w-5 h-5" />
+                      <h4 className="font-bold">What's wrong?</h4>
+                    </div>
+                    <textarea 
+                      value={errorInput}
+                      onChange={(e) => setErrorInput(e.target.value)}
+                      placeholder="Describe the error or paste the console log here..."
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white placeholder-gray-500 min-h-[100px] focus:ring-1 focus:ring-orange-500/50 transition-all"
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button 
+                        onClick={() => setIsErrorVisible(false)}
+                        className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-white transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        onClick={handleDebug}
+                        disabled={isDebugging || !errorInput.trim()}
+                        className="px-6 py-2 brand-btn rounded-xl text-xs font-bold flex items-center gap-2 disabled:opacity-50"
+                      >
+                        {isDebugging ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wrench className="w-4 h-4" />}
+                        Apply Self-Healing Fix
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {/* File List */}
