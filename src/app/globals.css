@@ -1,89 +1,108 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-inter);
+}
+
 :root {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 24 9.8% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
-  --radius: 0.75rem;
-  
-  /* LokoAI Custom Gradients */
-  --brand-gradient: linear-gradient(135deg, #ff6b3d 0%, #ff8e3c 100%);
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --background: #020617; /* Deep Midnight Navy */
+  --foreground: #f8fafc;
+  --accent-blue: #00d2ff;
+  --accent-magenta: #ff00ff;
+  --accent-teal: #00ffcc;
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
   overflow-x: hidden;
 }
 
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+/* Cinematic Background Gradients */
+.cinematic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: radial-gradient(circle at 20% 30%, rgba(0, 210, 255, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 60%);
+  background-color: #020617;
 }
 
-.glass-hover:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
-  transition: all 0.3s ease;
+.pulsating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: pulsate 10s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes pulsate {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+  100% { transform: scale(1.5) translate(20px, 30px); opacity: 0.6; }
+}
+
+/* Advanced Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-frosted {
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Neon Glow Utilities */
+.neon-glow-blue {
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+.neon-glow-magenta {
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
 }
 
 .brand-text-gradient {
-  background: var(--brand-gradient);
+  background: linear-gradient(135deg, #00d2ff 0%, #ff00ff 50%, #00ffcc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .brand-btn {
-  background: var(--brand-gradient);
+  background: linear-gradient(135deg, #00d2ff 0%, #ff00ff 100%);
   color: white;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .brand-btn:hover {
   transform: translateY(-2px);
-  opacity: 0.9;
-}
-
-.card-animation {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.card-animation:hover {
-  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: rgba(2, 6, 23, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-  background: #222;
+  background: linear-gradient(to bottom, #00d2ff, #ff00ff);
   border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #333;
 }
