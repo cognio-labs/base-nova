@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X, Sun, Moon } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { name: "Home", href: "/", icon: Sparkles },
@@ -19,9 +20,16 @@ const navItems = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 dark:border-white/5 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
@@ -49,7 +57,7 @@ export default function Navbar() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                   pathname === item.href
                     ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    : "text-gray-400 hover:text-white dark:hover:text-white hover:bg-white/5"
                 }`}
               >
                 <item.icon className="w-4 h-4" />
@@ -59,6 +67,24 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            {/* Theme Toggle Button */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className={`p-2.5 rounded-xl border-2 transition-all duration-300 flex items-center justify-center group ${
+                  theme === "dark"
+                    ? "bg-black border-[#00BFFF] text-white shadow-[0_0_15px_rgba(0,191,255,0.3)]"
+                    : "bg-white border-[#00BFFF] text-black shadow-lg"
+                }`}
+              >
+                {theme === "dark" ? (
+                  <Moon className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-500" />
+                ) : (
+                  <Sun className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                )}
+              </button>
+            )}
+
             <button className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
               Log in
             </button>
@@ -68,7 +94,17 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-3">
+             {mounted && (
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className={`p-2 rounded-lg border transition-all duration-300 ${
+                    theme === "dark" ? "bg-black border-[#00BFFF] text-white" : "bg-white border-[#00BFFF] text-black"
+                  }`}
+                >
+                  {theme === "dark" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                </button>
+              )}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-400 hover:text-white p-2"
