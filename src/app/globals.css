@@ -7,6 +7,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --asmani: #87CEEB;
 }
 
 .dark {
@@ -27,17 +28,19 @@ body {
 }
 
 .brand-text-gradient {
-  background: linear-gradient(to right, #f97316, #d946ef);
+  background: linear-gradient(to right, #ffffff, #87CEEB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .brand-btn {
-  background: linear-gradient(to right, #f97316, #d946ef);
-  color: white;
-  transition: opacity 0.2s;
+  background: linear-gradient(to right, #ffffff, #87CEEB);
+  color: #0a0a0a;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 .brand-btn:hover {
   opacity: 0.9;
+  box-shadow: 0 0 20px rgba(135, 206, 235, 0.4);
 }
