@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
 import SuperagentDashboard from "@/components/SuperagentDashboard";
+import Image from "next/image";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -55,8 +56,10 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-400 mb-8">
-                <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-400 mb-8">
+                <div className="relative w-4 h-4">
+                  <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                </div>
                 LokoAI Superagents Online
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
