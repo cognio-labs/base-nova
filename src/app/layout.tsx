@@ -27,7 +27,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="pt-16 min-h-screen transition-colors duration-300">
+          <main className="pt-20 min-h-screen transition-colors duration-300">
             {children}
           </main>
           <Footer />

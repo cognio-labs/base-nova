@@ -31,20 +31,19 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 dark:border-white/5 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="flex justify-between h-20 items-center">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-14 h-14 overflow-hidden">
+            <Link href="/" className="flex items-center group">
+              <div className="relative h-16 w-48 sm:w-56">
                 <Image 
                   src="/logo.png" 
                   alt="LokoAI Logo" 
                   fill
                   className="object-contain"
+                  sizes="(max-width: 640px) 192px, 224px"
+                  priority
                 />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white group-hover:brand-text-gradient transition-all duration-300">
-                LokoAI
-              </span>
             </Link>
           </div>
 
@@ -122,7 +121,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-16 left-0 right-0 glass border-b border-white/10 p-4"
+            className="md:hidden absolute top-20 left-0 right-0 glass border-b border-white/10 p-4"
           >
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
