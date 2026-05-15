@@ -1,14 +1,25 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code2 } from "lucide-react";
+import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code2, Save, Download } from "lucide-react";
 import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const { generateProject, isGenerating, generatedFiles, projectTitle, error, view, setView } = useGeneratorStore();
+  const { 
+    generateProject, 
+    isGenerating, 
+    generatedFiles, 
+    projectTitle, 
+    error, 
+    view, 
+    setView,
+    saveToWorkspace,
+    isSaving,
+    saveMessage
+  } = useGeneratorStore();
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
@@ -94,15 +105,30 @@ export default function Home() {
             className="w-full text-left"
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-              <div>
+              <div className="flex-1">
                 <h2 className="text-3xl font-bold text-white mb-2">{projectTitle || "Generated Project"}</h2>
-                <div className="flex items-center gap-2 text-sm text-green-500 font-medium">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Successfully generated {generatedFiles.length} files
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-sm text-green-500 font-medium">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Successfully generated {generatedFiles.length} files
+                  </div>
+                  {saveMessage && (
+                    <div className="text-xs text-orange-500 font-bold bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20">
+                      {saveMessage}
+                    </div>
+                  )}
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
+                <button 
+                  onClick={saveToWorkspace}
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-white/5 text-sm font-bold text-white transition-all border border-white/10"
+                >
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 text-orange-500" />}
+                  Save to Workspace
+                </button>
                 <div className="bg-white/5 border border-white/10 p-1 rounded-xl flex">
                   <button 
                     onClick={() => setView('preview')}
