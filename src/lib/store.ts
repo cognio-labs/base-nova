@@ -5,6 +5,11 @@ interface GeneratedFile {
   content: string;
 }
 
+interface AgentLog {
+  agent: string;
+  action: string;
+}
+
 interface GenerationState {
   isGenerating: boolean;
   isSaving: boolean;
@@ -13,10 +18,13 @@ interface GenerationState {
   previewHtml: string | null;
   projectTitle: string;
   currentPrompt: string;
+  workflowLogs: AgentLog[];
+  activeAgentIndex: number;
   view: 'code' | 'preview';
   error: string | null;
   saveMessage: string | null;
   debugMessage: string | null;
+  
   generateProject: (prompt: string) => Promise<void>;
   saveToWorkspace: () => Promise<void>;
   debugProject: (errorMessage: string) => Promise<void>;
@@ -32,22 +40,45 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
   previewHtml: null,
   projectTitle: '',
   currentPrompt: '',
+  workflowLogs: [],
+  activeAgentIndex: -1,
   view: 'code',
   error: null,
   saveMessage: null,
   debugMessage: null,
   
   generateProject: async (prompt: string) => {
-    set({ isGenerating: true, error: null, saveMessage: null, currentPrompt: prompt });
+    set({ 
+      isGenerating: true, 
+      error: null, 
+      saveMessage: null, 
+      currentPrompt: prompt,
+      workflowLogs: [
+        { agent: "Product Manager", action: "Analyzing requirements..." },
+        { agent: "UI/UX Designer", action: "Waiting..." },
+        { agent: "Lead Developer", action: "Waiting..." },
+        { agent: "QA Tester", action: "Waiting..." }
+      ],
+      activeAgentIndex: 0
+    });
+
+    // Simulate agent progression for better UX
+    const simulateAgents = () => {
+      setTimeout(() => set({ activeAgentIndex: 1, workflowLogs: get().workflowLogs.map((l, i) => i === 1 ? { ...l, action: "Designing visual theme..." } : l) }), 2000);
+      setTimeout(() => set({ activeAgentIndex: 2, workflowLogs: get().workflowLogs.map((l, i) => i === 2 ? { ...l, action: "Coding the components..." } : l) }), 5000);
+      setTimeout(() => set({ activeAgentIndex: 3, workflowLogs: get().workflowLogs.map((l, i) => i === 3 ? { ...l, action: "Auditing code quality..." } : l) }), 9000);
+    };
+    
+    simulateAgents();
+
     try {
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/api/superagents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
-      
       if (data.error) throw new Error(data.error);
 
       set({ 
@@ -55,10 +86,11 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
         previewHtml: data.previewHtml,
         projectTitle: data.projectTitle,
         isGenerating: false,
+        activeAgentIndex: -1,
         view: 'preview'
       });
     } catch (err: any) {
-      set({ error: err.message, isGenerating: false });
+      set({ error: err.message, isGenerating: false, activeAgentIndex: -1 });
     }
   },
 
@@ -105,9 +137,7 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
         debugMessage: `Fixed: ${data.fixDescription}`
       });
 
-      // Automatically re-save the fixed files
       await get().saveToWorkspace();
-      
       setTimeout(() => set({ debugMessage: null }), 5000);
     } catch (err: any) {
       set({ error: err.message, isDebugging: false, debugMessage: null });
@@ -115,5 +145,17 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
   },
 
   setView: (view) => set({ view }),
-  reset: () => set({ generatedFiles: [], previewHtml: null, projectTitle: '', currentPrompt: '', error: null, isGenerating: false, view: 'code', saveMessage: null, debugMessage: null }),
+  reset: () => set({ 
+    generatedFiles: [], 
+    previewHtml: null, 
+    projectTitle: '', 
+    currentPrompt: '', 
+    workflowLogs: [],
+    activeAgentIndex: -1,
+    error: null, 
+    isGenerating: false, 
+    view: 'code', 
+    saveMessage: null, 
+    debugMessage: null 
+  }),
 }));

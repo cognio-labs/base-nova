@@ -5,6 +5,7 @@ import { Plus, Settings2, ArrowRight, Loader2, FileCode, CheckCircle2, Eye, Code
 import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
+import SuperagentDashboard from "@/components/SuperagentDashboard";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -24,7 +25,8 @@ export default function Home() {
     saveMessage,
     debugProject,
     isDebugging,
-    debugMessage
+    debugMessage,
+    activeAgentIndex
   } = useGeneratorStore();
 
   const handleGenerate = async () => {
@@ -55,7 +57,7 @@ export default function Home() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-400 mb-8">
                 <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
-                LokoAI Engine is Online
+                LokoAI Superagents Online
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
                 What will you <span className="brand-text-gradient">build</span> next?
@@ -99,7 +101,7 @@ export default function Home() {
                       {isGenerating ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          <span className="text-sm font-bold">Building...</span>
+                          <span className="text-sm font-bold">Scaling Agents...</span>
                         </>
                       ) : (
                         <ArrowRight className="w-5 h-5" />
@@ -109,6 +111,8 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+            
+            <SuperagentDashboard />
           </div>
         ) : (
           /* Result Section */
