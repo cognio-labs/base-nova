@@ -28,6 +28,12 @@ body {
 }
 
 .brand-text-gradient {
+  background: linear-gradient(to right, #0f172a, #0284c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .brand-text-gradient {
   background: linear-gradient(to right, #ffffff, #87CEEB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

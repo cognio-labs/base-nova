@@ -34,7 +34,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10 overflow-hidden">
+              <div className="relative w-14 h-14 overflow-hidden">
                 <Image 
                   src="/logo.png" 
                   alt="LokoAI Logo" 
@@ -42,7 +42,7 @@ export default function Navbar() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white group-hover:brand-text-gradient transition-all duration-300">
+              <span className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white group-hover:brand-text-gradient transition-all duration-300">
                 LokoAI
               </span>
             </Link>
@@ -56,8 +56,8 @@ export default function Navbar() {
                 href={item.href}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                   pathname === item.href
-                    ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:text-white dark:hover:text-white hover:bg-white/5"
+                    ? "bg-sky-500/10 text-slate-950 dark:bg-white/10 dark:text-white"
+                    : "text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white hover:bg-sky-500/10 dark:hover:bg-white/5"
                 }`}
               >
                 <item.icon className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function Navbar() {
               </button>
             )}
 
-            <button className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+            <button className="text-sm font-medium text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white transition-colors">
               Log in
             </button>
             <button className="px-5 py-2 rounded-full brand-btn text-sm font-semibold shadow-lg shadow-orange-500/20">
@@ -107,7 +107,7 @@ export default function Navbar() {
               )}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-400 hover:text-white p-2"
+              className="text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white p-2"
             >
               {isOpen ? <X /> : <Menu />}
             </button>
@@ -132,8 +132,8 @@ export default function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-3 rounded-xl text-base font-medium flex items-center gap-3 ${
                     pathname === item.href
-                      ? "bg-white/10 text-white"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                      ? "bg-sky-500/10 text-slate-950 dark:bg-white/10 dark:text-white"
+                      : "text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white hover:bg-sky-500/10 dark:hover:bg-white/5"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -141,7 +141,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-4 mt-2 border-t border-white/5 flex flex-col gap-3">
-                <button className="w-full py-3 text-center font-medium text-gray-400">
+                <button className="w-full py-3 text-center font-medium text-slate-500 dark:text-gray-400">
                   Log in
                 </button>
                 <button className="w-full py-3 brand-btn rounded-xl font-bold">

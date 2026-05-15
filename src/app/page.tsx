@@ -55,13 +55,13 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-400 mb-8">
-                <div className="relative w-4 h-4">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/80 dark:bg-white/5 border border-sky-200/70 dark:border-white/10 text-xs font-medium text-slate-600 dark:text-gray-400 mb-8 shadow-sm">
+                <div className="relative w-8 h-8">
                   <Image src="/logo.png" alt="Logo" fill className="object-contain" />
                 </div>
-                <span className="text-sky-300">LokoAI Superagents Online</span>
+                <span className="text-sky-600 dark:text-sky-300">LokoAI Superagents Online</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-950 dark:text-white mb-6">
                 What will you <span className="brand-text-gradient">build</span> next?
               </h1>
             </motion.div>
@@ -75,22 +75,22 @@ export default function Home() {
               {/* Outer Glow in Asmani/White */}
               <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-sky-400/30 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
               
-              <div className="relative glass p-4 md:p-6 rounded-2xl flex flex-col gap-4 shadow-2xl border-white/10">
+              <div className="relative glass p-4 md:p-6 rounded-2xl flex flex-col gap-4 shadow-2xl border-sky-100/80 dark:border-white/10 bg-white/75 dark:bg-white/[0.02]">
                 <div className="flex items-start gap-4">
                   <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Describe the app you want to create (e.g., 'A modern CRM dashboard with dark mode and analytics cards')"
-                    className="w-full bg-transparent border-none focus:ring-0 text-lg md:text-xl text-white placeholder-gray-500 resize-none min-h-[120px]"
+                    className="w-full bg-transparent border-none focus:ring-0 text-lg md:text-xl text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 resize-none min-h-[120px]"
                   />
                 </div>
                 
-                <div className="flex items-center justify-between border-t border-white/10 pt-4">
+                <div className="flex items-center justify-between border-t border-sky-100 dark:border-white/10 pt-4">
                   <div className="flex gap-2">
-                    <button className="p-2 rounded-lg hover:bg-white/5 text-gray-400 transition-colors">
+                    <button className="p-2 rounded-lg hover:bg-sky-500/10 dark:hover:bg-white/5 text-slate-500 dark:text-gray-400 transition-colors">
                       <Plus className="w-5 h-5" />
                     </button>
-                    <button className="p-2 rounded-lg hover:bg-white/5 text-gray-400 transition-colors">
+                    <button className="p-2 rounded-lg hover:bg-sky-500/10 dark:hover:bg-white/5 text-slate-500 dark:text-gray-400 transition-colors">
                       <Settings2 className="w-5 h-5" />
                     </button>
                   </div>
