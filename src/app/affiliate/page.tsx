@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, DollarSign, Zap, BarChart3, HelpCircle, CheckCircle2 } from "lucide-react";
+import { Trophy, DollarSign, Zap, BarChart3, HelpCircle } from "lucide-react";
 
 export default function AffiliatePage() {
   return (
@@ -65,7 +65,7 @@ export default function AffiliatePage() {
 
       <div className="glass p-12 rounded-[2.5rem] border-orange-500/20 text-center">
         <h2 className="text-3xl font-bold mb-4">Ready to start earning?</h2>
-        <p className="text-gray-400 mb-8 max-w-lg mx-auto">Join hundreds of affiliates helping to grow the world's most powerful AI app builder.</p>
+        <p className="text-gray-400 mb-8 max-w-lg mx-auto">Join hundreds of affiliates helping to grow the world&apos;s most powerful AI app builder.</p>
         <button className="px-10 py-5 brand-btn rounded-2xl font-bold shadow-xl shadow-orange-500/20">
           Sign Up Now
         </button>

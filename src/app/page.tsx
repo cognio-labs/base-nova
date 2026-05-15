@@ -26,8 +26,7 @@ export default function Home() {
     saveMessage,
     debugProject,
     isDebugging,
-    debugMessage,
-    activeAgentIndex
+    debugMessage
   } = useGeneratorStore();
 
   const handleGenerate = async () => {
@@ -200,7 +199,7 @@ export default function Home() {
                   <div className="glass p-6 rounded-2xl border-orange-500/30 flex flex-col gap-4">
                     <div className="flex items-center gap-2 text-orange-500 mb-2">
                       <AlertCircle className="w-5 h-5" />
-                      <h4 className="font-bold">What's wrong?</h4>
+                      <h4 className="font-bold">What&apos;s wrong?</h4>
                     </div>
                     <textarea 
                       value={errorInput}

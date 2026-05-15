@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Trophy, Vote, Calendar, ArrowRight, Star } from "lucide-react";
+import { Rocket, Trophy, Vote, Calendar, Star } from "lucide-react";
 
 export default function LaunchpadPage() {
   return (
@@ -16,7 +16,7 @@ export default function LaunchpadPage() {
             <span className="brand-text-gradient">launch moment</span>
           </h1>
           <p className="text-lg text-gray-400 mb-8 max-w-xl">
-            Submit your published app to LokoAI's weekly showcase, where the community can discover it, vote for it, and help it reach new users.
+            Submit your published app to LokoAI&apos;s weekly showcase, where the community can discover it, vote for it, and help it reach new users.
           </p>
           <div className="flex gap-4">
             <button className="px-8 py-4 brand-btn rounded-2xl font-bold shadow-xl shadow-orange-500/20">
@@ -82,7 +82,7 @@ export default function LaunchpadPage() {
               <Calendar className="w-6 h-6 text-orange-500" />
            </div>
            <h3 className="text-xl font-bold mb-3">50 Credits</h3>
-           <p className="text-sm text-gray-500">Third place rewards for our community's favorite builders.</p>
+           <p className="text-sm text-gray-500">Third place rewards for our community&apos;s favorite builders.</p>
         </div>
       </div>
 

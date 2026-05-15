@@ -46,7 +46,7 @@ export default function PricingPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
       <div className="text-center mb-20">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">Choose the plan that's <span className="brand-text-gradient">right for you</span></h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-6">Choose the plan that&apos;s <span className="brand-text-gradient">right for you</span></h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Simple, transparent pricing for teams of all sizes. Built on trust and scaled for performance.
         </p>

@@ -89,8 +89,9 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
         activeAgentIndex: -1,
         view: 'preview'
       });
-    } catch (err: any) {
-      set({ error: err.message, isGenerating: false, activeAgentIndex: -1 });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      set({ error: message, isGenerating: false, activeAgentIndex: -1 });
     }
   },
 
@@ -111,8 +112,9 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
 
       set({ isSaving: false, saveMessage: data.message });
       setTimeout(() => set({ saveMessage: null }), 3000);
-    } catch (err: any) {
-      set({ error: err.message, isSaving: false });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      set({ error: message, isSaving: false });
     }
   },
 
@@ -139,8 +141,9 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
 
       await get().saveToWorkspace();
       setTimeout(() => set({ debugMessage: null }), 5000);
-    } catch (err: any) {
-      set({ error: err.message, isDebugging: false, debugMessage: null });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      set({ error: message, isDebugging: false, debugMessage: null });
     }
   },
 
