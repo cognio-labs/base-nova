@@ -165,6 +165,16 @@ export default function PartnersPage() {
 }
 
 function PartnerAvatar({ partner }: { partner: Partner }) {
+  const imageUrl = getPartnerImage(partner.name);
+
+  if (imageUrl) {
+    return (
+      <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 shadow-[0_12px_30px_rgba(56,189,248,0.12)]">
+        <img src={imageUrl} alt={partner.name} className="h-full w-full object-cover" />
+      </div>
+    );
+  }
+
   const initials = partner.name
     .split(" ")
     .slice(0, 2)
@@ -185,6 +195,43 @@ function PartnerAvatar({ partner }: { partner: Partner }) {
       </div>
     </div>
   );
+}
+
+function getPartnerImage(name: string) {
+  const lowerName = name.toLowerCase();
+
+  // Girls
+  const girlNames = ["megan", "mayan", "ariam"]; // Ariam can be feminine too
+  if (girlNames.some((n) => lowerName.includes(n))) {
+    const images = ["/partners/female-1.png", "/partners/female-2.png"];
+    const seed = name.split("").reduce((total, char) => total + char.charCodeAt(0), 0);
+    return images[seed % 2];
+  }
+
+  // Boys
+  const boyNames = [
+    "mohammad",
+    "elian",
+    "stanley",
+    "vasilis",
+    "ran",
+    "daniel",
+    "sushanth",
+    "lucas",
+    "paul",
+    "steven",
+    "john",
+    "david",
+    "alex",
+    "chris",
+  ];
+  if (boyNames.some((n) => lowerName.includes(n))) {
+    const images = ["/partners/male-1.png", "/partners/male-2.png"];
+    const seed = name.split("").reduce((total, char) => total + char.charCodeAt(0), 0);
+    return images[seed % 2];
+  }
+
+  return null;
 }
 
 function getAvatarPalette(value: string) {
