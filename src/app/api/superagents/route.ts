@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGeminiResponse } from '@/lib/gemini';
+import { getAIResponse } from '@/lib/ai';
 import { getCurrentUser } from '@/lib/supabase';
 import { getErrorMessage, unauthorizedResponse } from '@/lib/api';
 
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       Ensure the code is high-quality, production-ready, and uses Next.js patterns.
     `;
 
-    const content = await getGeminiResponse('You are an elite multi-agent orchestration engine. Respond only with JSON.', orchestrationPrompt, true);
+    const content = await getAIResponse('You are an elite multi-agent orchestration engine. Respond only with JSON.', orchestrationPrompt, true);
     if (!content) throw new Error('No content returned');
 
     return NextResponse.json(JSON.parse(content));

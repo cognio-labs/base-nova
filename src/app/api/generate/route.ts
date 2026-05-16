@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGeminiResponse } from '@/lib/gemini';
+import { getAIResponse } from '@/lib/ai';
 import { getCurrentUser } from '@/lib/supabase';
 import { getErrorMessage, unauthorizedResponse } from '@/lib/api';
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       Do not include any text outside the JSON block.
     `;
 
-    const content = await getGeminiResponse(systemPrompt, prompt, true);
+    const content = await getAIResponse(systemPrompt, prompt, true);
     
     if (!content) {
       throw new Error('No content returned from AI');
