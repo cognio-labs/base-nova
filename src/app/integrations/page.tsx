@@ -12,7 +12,8 @@ import {
   ChevronRight, 
   MoreHorizontal,
   Bot,
-  Layers
+  Layers,
+  Plug
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
