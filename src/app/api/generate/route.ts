@@ -31,10 +31,27 @@ export async function POST(req: Request) {
         "previewHtml": "String (A self-contained HTML/CSS/JS file for the live preview iframe. Use Tailwind via CDN and Lucide via CDN if needed.)"
       }
 
-      Use:
-      - Next.js (App Router) for files list
-      - Tailwind CSS
+      Always create websites using these technologies only:
       - TypeScript
+      - React
+      - Next.js
+      - Tailwind CSS
+      - HTML5
+      - CSS3
+      - TSX
+      - JSX
+
+      Rules:
+      - Use TypeScript for all components
+      - Use React functional components
+      - Use Next.js App Router structure
+      - Use Tailwind CSS for all styling
+      - Create responsive modern SaaS UI
+      - Use clean folder structure
+      - Use reusable components
+      - Use modern animations and gradients
+      - Generate production-ready code only
+      - Avoid plain HTML websites unless requested
       - Lucide React for icons
       
       Do not include any text outside the JSON block.
