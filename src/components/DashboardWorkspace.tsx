@@ -81,10 +81,14 @@ const creationPrompts = {
 const sidebarItems = [
   { label: "Home", icon: Home, active: true },
   { label: "Integrations", icon: Plug },
-  { label: "Partners", icon: Users },
-  { label: "Launchpad", icon: Rocket },
-  { label: "Affiliate", icon: Briefcase },
   { label: "Pricing", icon: Sparkles },
+];
+
+const communityItems = [
+  { label: "Launchpad", icon: Rocket },
+  { label: "Hire a Partner", icon: Users },
+  { label: "Affiliate Program", icon: Briefcase },
+  { label: "Templates", icon: LayoutGrid },
 ];
 
 export default function DashboardWorkspace() {
@@ -132,6 +136,20 @@ export default function DashboardWorkspace() {
                 }`}
               >
                 <item.icon className={`h-4 w-4 ${item.active ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-8 space-y-1">
+            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Community</h3>
+            {communityItems.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className="group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-50 hover:text-slate-900"
+              >
+                <item.icon className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
                 {item.label}
               </button>
             ))}
