@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
 import SuperagentDashboard from "@/components/SuperagentDashboard";
-import Image from "next/image";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 

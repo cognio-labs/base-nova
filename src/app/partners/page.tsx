@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -170,7 +171,7 @@ function PartnerAvatar({ partner }: { partner: Partner }) {
   if (imageUrl) {
     return (
       <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 shadow-[0_12px_30px_rgba(56,189,248,0.12)]">
-        <img src={imageUrl} alt={partner.name} className="h-full w-full object-cover" />
+        <Image src={imageUrl} alt={partner.name} fill sizes="64px" className="object-cover" />
       </div>
     );
   }

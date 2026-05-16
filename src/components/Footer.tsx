@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Briefcase, Share2, Globe, ShieldCheck } from "lucide-react";
+import { MessageCircle, Briefcase, Share2, Globe } from "lucide-react";
 
 export default function Footer() {
   const footerSections = [
