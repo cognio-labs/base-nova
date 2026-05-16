@@ -1,12 +1,12 @@
 "use client";
 
 import { integrations } from "@/data/integrations";
+import type { Integration } from "@/data/integrations";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
-  ExternalLink,
   Plug,
-  ArrowRight
+  Sparkles
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -15,7 +15,18 @@ export default function IntegrationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
-  const categories = ["All", "Productivity", "Communication", "Storage", "CRM", "Social", "Development", "AI"];
+  const categories = [
+    "All",
+    "Productivity",
+    "Communication",
+    "Storage",
+    "CRM",
+    "Social",
+    "Development",
+    "Analytics",
+    "Finance",
+    "AI",
+  ];
 
   const filteredIntegrations = integrations.filter(i => {
     const matchesSearch = i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,8 +36,8 @@ export default function IntegrationsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#050505] text-slate-900 dark:text-white transition-colors duration-500">
-      <main className="p-6 md:p-12 lg:p-16 transition-all duration-300">
+    <div className="min-h-screen bg-[#f6f7f9] text-slate-900 transition-colors duration-500 dark:bg-[#050505] dark:text-white">
+      <main className="p-6 transition-all duration-300 md:p-12 lg:p-16">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="mb-12 flex flex-col items-center text-center">
@@ -38,11 +49,11 @@ export default function IntegrationsPage() {
               <Plug className="w-3 h-3" />
               Connect & Automate
             </motion.div>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
+            <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-6xl">
               Integrations <span className="brand-text-gradient">Catalog</span>
             </h1>
-            <p className="text-base text-slate-500 dark:text-gray-400 leading-relaxed max-w-2xl mb-10">
-              Discover pre-built integrations that let you connect to APIs, services, and tools to extend your app's capabilities.
+            <p className="mb-10 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-gray-400">
+              Discover pre-built integrations that let you connect to APIs, services, and tools to extend your app&apos;s capabilities.
             </p>
 
             <div className="relative w-full max-w-xl group">
@@ -77,13 +88,13 @@ export default function IntegrationsPage() {
             ))}
           </div>
 
-          <div className="mb-8">
+          <div className="mb-8 rounded-[2rem] border border-white bg-white/80 p-6 shadow-xl shadow-slate-200/50 backdrop-blur dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/20">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Connectors</h2>
             <p className="text-sm text-slate-500 dark:text-gray-400">Quick OAuth connections to popular services, supported by LokoAI.</p>
           </div>
 
           {/* Grid Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <AnimatePresence mode="popLayout">
               {filteredIntegrations.map((item, index) => (
                 <IntegrationCard key={item.name} item={item} index={index} />
@@ -110,7 +121,7 @@ export default function IntegrationsPage() {
   );
 }
 
-function IntegrationCard({ item, index }: { item: any, index: number }) {
+function IntegrationCard({ item, index }: { item: Integration; index: number }) {
   return (
     <motion.div
       layout
@@ -119,36 +130,47 @@ function IntegrationCard({ item, index }: { item: any, index: number }) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ delay: index * 0.02, duration: 0.3 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/10 rounded-3xl p-6 flex flex-col h-full hover:border-sky-500/30 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-sky-500/5 cursor-pointer"
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[1.6rem] border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-2xl hover:shadow-sky-500/10 dark:border-white/10 dark:bg-[#0d0d0d]"
     >
-      <div className="mb-6 flex justify-between items-start">
-        <div 
-          className="w-12 h-12 relative flex items-center justify-center rounded-xl overflow-hidden border border-slate-100 dark:border-white/10 bg-white shadow-sm"
+      <div
+        className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full opacity-10 blur-3xl transition-opacity duration-300 group-hover:opacity-20"
+        style={{ backgroundColor: item.color }}
+      />
+      <div className="mb-5 flex items-start justify-between">
+        <div
+          className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-lg shadow-slate-200/70 dark:border-white/10 dark:shadow-black/20"
+          style={{ boxShadow: `0 18px 35px ${item.color}18` }}
         >
           <Image 
             src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=128`}
             alt={item.name}
-            width={32}
-            height={32}
+            width={34}
+            height={34}
             className="object-contain"
             unoptimized
           />
         </div>
-        <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+        <span
+          className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider"
+          style={{ borderColor: `${item.color}33`, color: item.color }}
+        >
+          <Sparkles className="h-3 w-3" />
+          Ready
+        </span>
       </div>
       
       <div className="flex-1">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-sky-500 transition-colors">
+        <h3 className="mb-2 text-base font-bold text-slate-900 transition-colors group-hover:text-sky-500 dark:text-white">
           {item.name}
         </h3>
-        <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed mb-6 line-clamp-2">
+        <p className="mb-6 min-h-10 text-xs leading-relaxed text-slate-500 dark:text-gray-400">
           {item.description}
         </p>
       </div>
       
       <div className="mt-auto">
         <button 
-          className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-[11px] font-bold text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-[11px] font-bold text-slate-700 transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:bg-white/5"
         >
           How to use
         </button>

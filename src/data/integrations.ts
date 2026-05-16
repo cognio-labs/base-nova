@@ -25,12 +25,20 @@ export const integrations: Integration[] = [
     color: "#00a1e0"
   },
   {
-    name: "Slack",
-    description: "Connect your workspace for real-time notifications.",
+    name: "Slack User",
+    description: "Send messages and manage Slack as a user.",
     category: "Communication",
     icon: "MessageSquare",
     domain: "slack.com",
     color: "#4a154b"
+  },
+  {
+    name: "Slack Bot",
+    description: "Post as a branded bot in your Slack workspace.",
+    category: "Communication",
+    icon: "Bot",
+    domain: "slack.com",
+    color: "#36c5f0"
   },
   {
     name: "Notion",
@@ -73,12 +81,44 @@ export const integrations: Integration[] = [
     color: "#0f9d58"
   },
   {
+    name: "Google Slides",
+    description: "Generate and manage presentations.",
+    category: "Productivity",
+    icon: "Presentation",
+    domain: "slides.google.com",
+    color: "#fbbc04"
+  },
+  {
     name: "Google Docs",
     description: "Generate and automate document creation.",
     category: "Productivity",
     icon: "FileText",
     domain: "docs.google.com",
     color: "#4285f4"
+  },
+  {
+    name: "Google BigQuery",
+    description: "Query and sync analytics data.",
+    category: "Analytics",
+    icon: "Database",
+    domain: "cloud.google.com/bigquery",
+    color: "#4285f4"
+  },
+  {
+    name: "Google Tasks",
+    description: "Manage to-do lists and tasks.",
+    category: "Productivity",
+    icon: "CheckCircle",
+    domain: "tasks.google.com",
+    color: "#1a73e8"
+  },
+  {
+    name: "Google Meet",
+    description: "Video conferences and meetings.",
+    category: "Communication",
+    icon: "Video",
+    domain: "meet.google.com",
+    color: "#00897b"
   },
   {
     name: "HubSpot",
@@ -113,8 +153,8 @@ export const integrations: Integration[] = [
     color: "#5865f2"
   },
   {
-    name: "Instagram",
-    description: "Publish content and manage comments on your account.",
+    name: "Instagram Business",
+    description: "Publish content and manage comments on your Business account.",
     category: "Social",
     icon: "Instagram",
     domain: "instagram.com",
@@ -185,6 +225,22 @@ export const integrations: Integration[] = [
     color: "#f4b400"
   },
   {
+    name: "Google Search Console",
+    description: "SEO and search analytics.",
+    category: "Analytics",
+    icon: "Search",
+    domain: "search.google.com/search-console",
+    color: "#4285f4"
+  },
+  {
+    name: "Google Classroom",
+    description: "Education and course management.",
+    category: "Education",
+    icon: "School",
+    domain: "classroom.google.com",
+    color: "#34a853"
+  },
+  {
     name: "Outlook",
     description: "Sync email and calendar from Microsoft 365.",
     category: "Communication",
@@ -217,12 +273,36 @@ export const integrations: Integration[] = [
     color: "#18bfff"
   },
   {
+    name: "Splitwise",
+    description: "Expense splitting and group bills.",
+    category: "Finance",
+    icon: "Receipt",
+    domain: "splitwise.com",
+    color: "#1cc29f"
+  },
+  {
     name: "Microsoft Teams",
     description: "Team chat, channels, and video meetings.",
     category: "Communication",
     icon: "Video",
     domain: "teams.microsoft.com",
     color: "#6264a7"
+  },
+  {
+    name: "Microsoft SharePoint",
+    description: "Document management and collaboration.",
+    category: "Storage",
+    icon: "Share2",
+    domain: "sharepoint.com",
+    color: "#038387"
+  },
+  {
+    name: "Microsoft OneDrive",
+    description: "Cloud file storage.",
+    category: "Storage",
+    icon: "Cloud",
+    domain: "onedrive.live.com",
+    color: "#0078d4"
   },
   {
     name: "Typeform",
