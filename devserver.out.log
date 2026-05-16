@@ -1004,3 +1004,12 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
  GET /dashboard 200 in 258ms (next.js: 3ms, application-code: 255ms)
 ✓ Compiled in 570ms
  GET /dashboard 200 in 414ms (next.js: 273ms, application-code: 141ms)
+✓ Compiled in 109ms
+✓ Compiled in 841ms
+ GET /dashboard 200 in 1251ms (next.js: 1107ms, application-code: 143ms)
+ GET /dashboard 200 in 55ms (next.js: 5ms, application-code: 50ms)
+ GET /dashboard 200 in 392ms (next.js: 228ms, application-code: 164ms)
+ GET /dashboard 200 in 340ms (next.js: 224ms, application-code: 116ms)
+ GET /integrations 200 in 248ms (next.js: 158ms, application-code: 91ms)
+ GET /integrations 200 in 86ms (next.js: 36ms, application-code: 50ms)
+ HEAD /integrations 200 in 771ms (next.js: 3ms, application-code: 767ms)

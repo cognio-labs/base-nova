@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "old_dashboard.tsx",
+    "temp_dashboard.tsx",
   ]),
 ]);
 
