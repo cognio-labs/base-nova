@@ -13,17 +13,24 @@ import {
   Grid2X2,
   Home,
   LayoutGrid,
+  LogIn,
   Loader2,
   Mic,
+  Moon,
   Plug,
   Plus,
   Rocket,
   SlidersHorizontal,
   Sparkles,
+  Sun,
   Users,
 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useGeneratorStore } from "@/lib/store";
+import AuthModal from "@/components/AuthModal";
+import UserMenu from "@/components/UserMenu";
+import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/components/ThemeProvider";
 
 type SpeechRecognitionResultEvent = {
   results: {
@@ -128,9 +135,12 @@ export default function DashboardWorkspace() {
   const [isPlanActive, setIsPlanActive] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { generateProject, isGenerating, error } = useGeneratorStore();
+  const { theme, setTheme } = useTheme();
+  const { user, isLoading } = useAuth();
 
   const startVoiceInput = () => {
     const speechWindow = window as SpeechRecognitionWindow;
@@ -168,23 +178,23 @@ export default function DashboardWorkspace() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900 transition-colors duration-300 dark:bg-[#050505] dark:text-white">
       <div className="grid min-h-[calc(100vh-5rem)] grid-cols-1 md:grid-cols-[240px_1fr]">
         {/* Sidebar */}
-        <aside className="hidden border-r border-slate-100 bg-white p-4 md:block">
+        <aside className="hidden border-r border-slate-100 bg-white p-4 transition-colors duration-300 dark:border-white/10 dark:bg-[#080808] md:block">
           <div className="flex flex-col gap-1">
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-900"
+              className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-900 transition-colors dark:bg-white/10 dark:text-white"
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-slate-100 bg-white shadow-sm dark:border-white/10 dark:bg-white/10">
                 <Grid2X2 className="h-4 w-4" />
               </div>
               Applications
             </Link>
             <Link
               href="/generate"
-              className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
             >
               <div className="flex h-6 w-6 items-center justify-center rounded-lg">
                 <Bot className="h-4 w-4" />
@@ -201,8 +211,8 @@ export default function DashboardWorkspace() {
                 href={item.href}
                 className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
                   pathname === item.href
-                  ? "bg-sky-50 text-sky-600" 
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300" 
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
                 }`}
               >
                 <item.icon className={`h-4 w-4 ${pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
@@ -216,7 +226,7 @@ export default function DashboardWorkspace() {
               type="button"
               aria-expanded={isCommunityOpen}
               onClick={() => setIsCommunityOpen(!isCommunityOpen)}
-              className="mb-4 flex w-full items-center justify-between rounded-lg px-4 py-1.5 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
+              className="mb-4 flex w-full items-center justify-between rounded-lg px-4 py-1.5 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:hover:bg-white/10"
             >
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Community</h3>
               <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${isCommunityOpen ? "rotate-180" : ""}`} />
@@ -237,8 +247,8 @@ export default function DashboardWorkspace() {
                       href={item.href}
                       className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
                         pathname === item.href
-                          ? "bg-sky-50 text-sky-600"
-                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                          ? "bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
                       }`}
                     >
                       <item.icon
@@ -258,13 +268,13 @@ export default function DashboardWorkspace() {
             <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
             <Link
               href="/projects"
-              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             >
               Pinned <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
             </Link>
             <Link
               href="/projects"
-              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             >
               Recents <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
             </Link>
@@ -272,8 +282,40 @@ export default function DashboardWorkspace() {
         </aside>
 
         {/* Main Section */}
-        <section className="relative bg-[#fcfcfd]">
-          <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-16">
+        <section className="relative bg-[#fcfcfd] transition-colors duration-300 dark:bg-[#050505]">
+          <div className="flex items-center justify-end gap-2 px-4 pt-4 sm:px-6 lg:px-8">
+            <Link
+              href="/pricing"
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-slate-950 px-4 text-xs font-bold text-white shadow-lg shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 dark:bg-white dark:text-slate-950 dark:shadow-none"
+            >
+              <Sparkles className="h-4 w-4 text-sky-400" />
+              <span className="hidden sm:inline">Upgrade</span>
+            </Link>
+
+            <button
+              type="button"
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+            >
+              {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+
+            {!isLoading && user ? (
+              <UserMenu />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsAuthOpen(true)}
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Login</span>
+              </button>
+            )}
+          </div>
+
+          <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-10">
             {/* Toggle Header */}
             <div className="mb-12 inline-flex max-w-full items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
               <button
