@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -78,19 +80,20 @@ const creationPrompts = {
 };
 
 const sidebarItems = [
-  { label: "Home", icon: Home, active: true },
-  { label: "Integrations", icon: Plug },
-  { label: "Pricing", icon: Sparkles },
+  { label: "Home", icon: Home, href: "/dashboard" },
+  { label: "Integrations", icon: Plug, href: "/integrations" },
+  { label: "Pricing", icon: Sparkles, href: "/pricing" },
 ];
 
 const communityItems = [
-  { label: "Launchpad", icon: Rocket },
-  { label: "Hire a Partner", icon: Users },
-  { label: "Affiliate Program", icon: Briefcase },
-  { label: "Templates", icon: LayoutGrid },
+  { label: "Launchpad", icon: Rocket, href: "/launchpad" },
+  { label: "Hire a Partner", icon: Users, href: "/partners" },
+  { label: "Affiliate Program", icon: Briefcase, href: "/affiliate" },
+  { label: "Templates", icon: LayoutGrid, href: "/generate" },
 ];
 
 export default function DashboardWorkspace() {
+  const pathname = usePathname();
   const [prompt, setPrompt] = useState("");
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const { generateProject, isGenerating, error } = useGeneratorStore();
@@ -108,60 +111,80 @@ export default function DashboardWorkspace() {
         {/* Sidebar */}
         <aside className="hidden border-r border-slate-100 bg-white p-4 md:block">
           <div className="flex flex-col gap-1">
-            <button className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-900">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-900"
+            >
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
                 <Grid2X2 className="h-4 w-4" />
               </div>
               Apps
-            </button>
-            <button className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-colors">
+            </Link>
+            <Link
+              href="/generate"
+              className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-colors"
+            >
               <div className="flex h-6 w-6 items-center justify-center rounded-lg">
                 <Bot className="h-4 w-4" />
               </div>
               Superagents
-            </button>
+            </Link>
           </div>
 
           <div className="mt-8 space-y-1">
             <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Navigation</h3>
             {sidebarItems.map((item) => (
-              <button
+              <Link
                 key={item.label}
-                type="button"
+                href={item.href}
                 className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
-                  item.active 
+                  pathname === item.href
                   ? "bg-sky-50 text-sky-600" 
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                <item.icon className={`h-4 w-4 ${item.active ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
+                <item.icon className={`h-4 w-4 ${pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
                 {item.label}
-              </button>
+              </Link>
             ))}
           </div>
 
           <div className="mt-8 space-y-1">
             <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Community</h3>
             {communityItems.map((item) => (
-              <button
+              <Link
                 key={item.label}
-                type="button"
-                className="group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-50 hover:text-slate-900"
+                href={item.href}
+                className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
+                  pathname === item.href
+                    ? "bg-sky-50 text-sky-600"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                }`}
               >
-                <item.icon className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
+                <item.icon
+                  className={`h-4 w-4 ${
+                    pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
+                  }`}
+                />
                 {item.label}
-              </button>
+              </Link>
             ))}
           </div>
 
           <div className="mt-8 space-y-1">
             <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
-            <button className="flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+            <Link
+              href="/projects"
+              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+            >
               Favorites <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
-            </button>
-            <button className="flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+            </Link>
+            <Link
+              href="/projects"
+              className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+            >
               Recents <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
-            </button>
+            </Link>
           </div>
         </aside>
 
