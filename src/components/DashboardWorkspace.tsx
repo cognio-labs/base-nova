@@ -81,6 +81,7 @@ const creationPrompts = {
 const sidebarItems = [
   { label: "Home", icon: Home, active: true },
   { label: "All apps", icon: LayoutGrid },
+  { label: "Integrations", icon: Plug },
   { label: "Community", icon: Users },
   { label: "Templates", icon: Briefcase },
 ];
