@@ -13,6 +13,7 @@ import {
   Mic,
   Plug,
   Plus,
+  Rocket,
   Search,
   Settings2,
   Sparkles,
