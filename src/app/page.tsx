@@ -167,7 +167,7 @@ export default function Home() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Describe the app you want to create (e.g., 'A modern CRM dashboard with dark mode and analytics cards')"
-                    className="w-full bg-transparent border-none focus:ring-0 text-lg md:text-xl text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 resize-none min-h-[120px]"
+                    className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-lg md:text-xl text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 resize-none min-h-[120px]"
                   />
                 </div>
                 
