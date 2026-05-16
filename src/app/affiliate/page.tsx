@@ -11,6 +11,7 @@ import {
   Sparkles,
   Trophy
 } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export default function AffiliatePage() {
   const faqs = [
@@ -182,6 +183,7 @@ export default function AffiliatePage() {
           </div>
         </section>
       </div>
+      <Footer />
     </div>
   );
 }
