@@ -303,37 +303,37 @@ export default function DashboardWorkspace() {
                       <AnimatePresence>
                         {showModelSelect && (
                           <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute bottom-full mb-2 left-0 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl z-50 overflow-hidden"
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            className="absolute top-full mt-2 left-0 w-64 rounded-xl border border-slate-200 bg-white p-1.5 shadow-2xl z-50 overflow-hidden"
                           >
-                            <div className="px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                               Select AI Model
                             </div>
-                            <div className="group relative flex items-start gap-3 rounded-xl bg-slate-50 p-4 border border-slate-100">
-                              <div className="mt-0.5 rounded-lg bg-white p-1.5 shadow-sm">
-                                <Sparkles className="h-4 w-4 text-slate-900" />
+                            <div className="group relative flex items-start gap-2.5 rounded-lg bg-slate-50 p-3 border border-slate-100">
+                              <div className="mt-0.5 rounded-md bg-white p-1 shadow-sm">
+                                <Sparkles className="h-3.5 w-3.5 text-slate-900" />
                               </div>
                               <div className="flex-1">
-                                <div className="text-sm font-bold text-slate-900">Automatic</div>
-                                <div className="text-[11px] leading-relaxed text-slate-500">
-                                  Matched with the best AI Model for each request
+                                <div className="text-xs font-bold text-slate-900">Automatic</div>
+                                <div className="text-[10px] leading-tight text-slate-500 mt-0.5">
+                                  Matched with the best model for your request
                                 </div>
                               </div>
-                              <Check className="mt-1 h-4 w-4 text-slate-900" />
+                              <Check className="mt-1 h-3 w-3 text-slate-900" />
                             </div>
                             
-                            <div className="my-2 border-t border-slate-100" />
+                            <div className="my-1.5 border-t border-slate-100" />
                             
                             <Link 
                               href="/pricing"
-                              className="flex items-center gap-3 rounded-xl p-4 transition-colors hover:bg-orange-50"
+                              className="flex items-center gap-2.5 rounded-lg p-3 transition-colors hover:bg-orange-50"
                             >
-                              <div className="rounded-lg bg-orange-100 p-1.5">
-                                <Gem className="h-4 w-4 text-orange-600" />
+                              <div className="rounded-md bg-orange-100 p-1">
+                                <Gem className="h-3.5 w-3.5 text-orange-600" />
                               </div>
-                              <span className="text-sm font-bold text-orange-600">
+                              <span className="text-xs font-bold text-orange-600">
                                 Upgrade to select an AI model
                               </span>
                             </Link>
