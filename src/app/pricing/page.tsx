@@ -167,75 +167,75 @@ export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="min-h-screen bg-[#fcfcfd] px-4 py-16 text-slate-950 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-[#fcfcfd] px-4 py-10 text-slate-950 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
         <div className="pointer-events-none absolute left-1/2 top-32 h-72 w-72 -translate-x-1/2 rounded-full bg-sky-200/40 blur-3xl" />
         <div className="pointer-events-none absolute right-10 top-[22rem] h-64 w-64 rounded-full bg-cyan-100/60 blur-3xl" />
-        <div className="mx-auto mb-14 max-w-3xl text-center">
+        <div className="mx-auto mb-10 max-w-2xl text-center">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-sky-500">
             Flexible Pricing
           </p>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-5xl">
             Plans that feel easy to start and strong enough to scale
           </h1>
-          <p className="mt-5 text-base leading-7 text-slate-600">
+          <p className="mt-4 text-sm leading-6 text-slate-600">
             Clear monthly pricing for creators, builders, and teams who want to launch faster with LokoAI.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.08 }}
-              whileHover={{ y: -6 }}
-              className={`group relative flex h-full flex-col overflow-hidden rounded-[2rem] border bg-white/95 shadow-[0_18px_50px_rgba(148,163,184,0.16)] transition-all duration-300 ${
+              whileHover={{ y: -4 }}
+              className={`group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] border bg-white/95 shadow-[0_14px_36px_rgba(148,163,184,0.14)] transition-all duration-300 ${
                 plan.popular
-                  ? "border-sky-300 shadow-[0_24px_60px_rgba(14,165,233,0.18)]"
-                  : "border-slate-200/80 hover:border-sky-200 hover:shadow-[0_24px_60px_rgba(56,189,248,0.12)]"
+                  ? "border-sky-300 shadow-[0_18px_45px_rgba(14,165,233,0.16)]"
+                  : "border-slate-200/80 hover:border-sky-200 hover:shadow-[0_18px_45px_rgba(56,189,248,0.1)]"
               }`}
             >
-              <div className="pointer-events-none absolute inset-x-6 top-0 h-24 rounded-b-[2rem] bg-gradient-to-b from-sky-100/70 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-x-6 top-0 h-20 rounded-b-[1.5rem] bg-gradient-to-b from-sky-100/70 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
               {plan.popular && (
-                <div className="absolute inset-x-0 top-0 bg-gradient-to-r from-sky-400 to-cyan-300 py-2 text-center text-[11px] font-bold uppercase tracking-[0.25em] text-slate-950">
+                <div className="absolute inset-x-0 top-0 bg-gradient-to-r from-sky-400 to-cyan-300 py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.24em] text-slate-950">
                   Most Popular
                 </div>
               )}
 
-              <div className={`flex h-full flex-col p-7 ${plan.popular ? "pt-14" : ""}`}>
-                <div className="mb-6">
+              <div className={`flex h-full flex-col p-5 ${plan.popular ? "pt-11" : ""}`}>
+                <div className="mb-4">
                   <div
-                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl border ${
+                    className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl border ${
                       plan.popular
                         ? "border-sky-200 bg-sky-50 text-sky-500 shadow-[0_12px_30px_rgba(56,189,248,0.18)]"
                         : "border-slate-200 bg-slate-50 text-slate-500 group-hover:border-sky-200 group-hover:bg-sky-50 group-hover:text-sky-500"
                     }`}
                   >
-                    <plan.icon className="h-6 w-6" />
+                    <plan.icon className="h-5 w-5" />
                   </div>
-                  <h2 className="text-3xl font-semibold tracking-tight text-slate-950">{plan.name}</h2>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{plan.name}</h2>
                   <p className="mt-2 text-sm text-slate-500">{plan.highlight}</p>
                 </div>
 
-                <div className="border-y border-slate-200/80 py-6">
+                <div className="border-y border-slate-200/80 py-4">
                   <div className="flex items-end gap-1">
-                    <span className="text-5xl font-semibold tracking-tight text-slate-950">${plan.price}</span>
-                    <span className="pb-1 text-base text-slate-400">/mo</span>
+                    <span className="text-4xl font-semibold tracking-tight text-slate-950">${plan.price}</span>
+                    <span className="pb-0.5 text-sm text-slate-400">/mo</span>
                   </div>
-                  <div className="mt-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-sky-50/80 p-4 shadow-inner shadow-white">
-                    <p className="text-sm font-medium text-slate-900">
+                  <div className="mt-3 rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-sky-50/80 p-3 shadow-inner shadow-white">
+                    <p className="text-xs font-semibold text-slate-900">
                       {plan.credits} Monthly credits <span className="text-slate-400">/mo</span>
                     </p>
-                    <p className="mt-2 text-sm font-medium text-slate-900">
+                    <p className="mt-2 text-xs font-semibold text-slate-900">
                       {plan.integCredits} Integration credits <span className="text-slate-400">/mo</span>
                     </p>
                   </div>
                 </div>
 
                 <button
-                  className={`mt-6 rounded-xl py-3 text-sm font-semibold transition ${
+                  className={`mt-5 rounded-xl py-2.5 text-sm font-semibold transition ${
                     plan.popular
                       ? "bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-lg shadow-sky-200 hover:from-sky-600 hover:to-cyan-500"
                       : "border border-slate-300 bg-white text-slate-900 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-600"
@@ -244,15 +244,15 @@ export default function PricingPage() {
                   {plan.cta}
                 </button>
 
-                <div className="mt-6 border-t border-slate-200/80 pt-5">
-                  <p className="mb-4 text-sm font-semibold text-slate-900">Plan highlights:</p>
-                  <div className="space-y-3">
+                <div className="mt-5 border-t border-slate-200/80 pt-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Highlights</p>
+                  <div className="space-y-2.5">
                     {plan.features.map((feature) => (
                       <div key={feature} className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50">
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <div className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50">
+                          <Check className="h-3 w-3 text-emerald-600" />
                         </div>
-                        <span className="text-sm leading-6 text-slate-700">{feature}</span>
+                        <span className="text-xs leading-5 text-slate-700">{feature}</span>
                       </div>
                     ))}
                   </div>
