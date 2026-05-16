@@ -24,6 +24,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('theme') || 'dark';
+                var isDark = theme === 'dark';
+                document.documentElement.classList.toggle('dark', isDark);
+                document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider defaultTheme="dark">
           <AuthProvider>
@@ -35,16 +49,6 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
       </body>
-      <Script id="theme-init" strategy="beforeInteractive">
-        {`
-          try {
-            var theme = localStorage.getItem('theme') || 'dark';
-            var isDark = theme === 'dark';
-            document.documentElement.classList.toggle('dark', isDark);
-            document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-          } catch (_) {}
-        `}
-      </Script>
     </html>
   );
 }

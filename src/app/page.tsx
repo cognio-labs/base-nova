@@ -145,10 +145,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/80 dark:bg-white/5 border border-sky-200/70 dark:border-white/10 text-xs font-medium text-slate-600 dark:text-gray-400 mb-8 shadow-sm">
-                <div className="relative w-8 h-8">
-                  <Image src="/logo.png" alt="Logo" fill className="object-contain" />
-                </div>
-                <span className="text-sky-600 dark:text-sky-300">LokoAI Superagents Online</span>
+                <span className="text-sky-600 dark:text-sky-300 font-semibold">LokoAI Superagents Online</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-950 dark:text-white mb-6">
                 What will you <span className="brand-text-gradient">build</span> next?

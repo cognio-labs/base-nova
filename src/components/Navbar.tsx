@@ -33,16 +33,9 @@ export default function Navbar() {
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center group">
-              <div className="relative h-16 w-48 sm:w-56">
-                <Image 
-                  src="/logo.png" 
-                  alt="LokoAI Logo" 
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 640px) 192px, 224px"
-                  priority
-                />
-              </div>
+              <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                LokoAI
+              </span>
             </Link>
           </div>
 
