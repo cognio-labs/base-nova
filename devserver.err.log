@@ -1,0 +1,41 @@
+LokoAI Superagent Error: Error: 401 Incorrect API key provided: sk-proj-****************here. You can find your API key at https://platform.openai.com/account/api-keys.
+    at async POST (src\app\api\superagents\route.ts:51:22)
+  49 |     `;
+  50 |
+> 51 |     const response = await openai.chat.completions.create({
+     |                      ^
+  52 |       model: process.env.OPENAI_MODEL || 'gpt-4o',
+  53 |       messages: [
+  54 |         { role: 'system', content: 'You are an elite multi-agent orchestration engine. Res... {
+  status: 401,
+  headers: Headers {
+    date: 'Sat, 16 May 2026 09:53:36 GMT',
+    'content-type': 'text/plain',
+    'content-length': '274',
+    connection: 'keep-alive',
+    'set-cookie': '__cf_bm=.SLakVKdjU5.Hy.0GDbyMdF4biLMA0MfmK9AMgMovh8-1778925215.4794915-1.0.1.1-7BHsTDKoMARDBDZ7AFKt_NKobG4m8X6ybZuULLAng0KNMhkt.VnMsweKx5g1hB6mRlyqg28EFY7U1qH_84NbFIaxFpJ8DS0Qf_l3YX4oeqv5NyCkse.TuUpbPJpMSyGq; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.openai.com; Expires=Sat, 16 May 2026 10:23:36 GMT, _cfuvid=K9EK76uD6jUcV4s.yENBXIB20fSicUPh7I.WmAZKckM-1778925215.4794915-1.0.1.1-iJ0Sokv0pNWOjZ4fX.Zh3mPYyV9r_X28sUcsDazzvMk; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.openai.com',
+    'cf-ray': '9fc97f04b969897e-DEL',
+    'cf-cache-status': 'DYNAMIC',
+    server: 'cloudflare',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'access-control-expose-headers': 'CF-Ray, CF-Ray',
+    'x-content-type-options': 'nosniff',
+    'x-error-json': 'ewogICJlcnJvciI6IHsKICAgICJtZXNzYWdlIjogIkluY29ycmVjdCBBUEkga2V5IHByb3ZpZGVkOiBzay1wcm9qLSoqKioqKioqKioqKioqKipoZXJlLiBZb3UgY2FuIGZpbmQgeW91ciBBUEkga2V5IGF0IGh0dHBzOi8vcGxhdGZvcm0ub3BlbmFpLmNvbS9hY2NvdW50L2FwaS1rZXlzLiIsCiAgICAidHlwZSI6ICJpbnZhbGlkX3JlcXVlc3RfZXJyb3IiLAogICAgImNvZGUiOiAiaW52YWxpZF9hcGlfa2V5IiwKICAgICJwYXJhbSI6IG51bGwKICB9LAogICJzdGF0dXMiOiA0MDEKfQ==',
+    'x-openai-authorization-error': '401',
+    'x-openai-ide-error-code': 'invalid_api_key',
+    'x-openai-internal-caller': 'unknown_through_ide',
+    'x-openai-proxy-wasm': 'v0.1',
+    'x-request-id': 'req_320dc5ae55864113b834b12339feeaec',
+    'alt-svc': 'h3=":443"; ma=86400'
+  },
+  requestID: 'req_320dc5ae55864113b834b12339feeaec',
+  error: {
+    message: 'Incorrect API key provided: sk-proj-****************here. You can find your API key at https://platform.openai.com/account/api-keys.',
+    type: 'invalid_request_error',
+    code: 'invalid_api_key',
+    param: null
+  },
+  code: 'invalid_api_key',
+  param: null,
+  type: 'invalid_request_error'
+}
