@@ -143,9 +143,10 @@ export default function AffiliatePage() {
 
         {/* Process Section - Sophisticated Dark Box */}
         <section className="mb-24">
-          <div className="rounded-[2.5rem] bg-slate-950 p-10 md:p-16 text-white shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 blur-[100px]" />
-            <div className="grid gap-10 md:grid-cols-4">
+          <div className="rounded-[2.5rem] bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-10 md:p-16 text-white shadow-2xl relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/20 blur-[120px] pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/10 blur-[120px] pointer-events-none" />
+            <div className="relative z-10 grid gap-10 md:grid-cols-4">
               {[
                 { step: "01", title: "Apply", desc: "Quick sign up." },
                 { step: "02", title: "Share", desc: "Use your link." },
@@ -153,9 +154,9 @@ export default function AffiliatePage() {
                 { step: "04", title: "Earn", desc: "Monthly payouts." }
               ].map((item) => (
                 <div key={item.step} className="group">
-                  <span className="mb-3 block text-2xl font-bold text-sky-500/40 tabular-nums">{item.step}</span>
-                  <h3 className="mb-2 text-base font-bold">{item.title}</h3>
-                  <p className="text-xs leading-relaxed text-slate-500 group-hover:text-slate-400 transition-colors">{item.desc}</p>
+                  <span className="mb-4 block text-4xl font-black bg-gradient-to-br from-sky-400 to-cyan-300 bg-clip-text text-transparent tabular-nums drop-shadow-sm">{item.step}</span>
+                  <h3 className="mb-2 text-lg font-bold text-white">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-400 group-hover:text-slate-300 transition-colors">{item.desc}</p>
                 </div>
               ))}
             </div>
