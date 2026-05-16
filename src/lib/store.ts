@@ -96,7 +96,7 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
   },
 
   saveToWorkspace: async () => {
-    const { generatedFiles, projectTitle } = get();
+    const { generatedFiles, projectTitle, previewHtml, currentPrompt } = get();
     if (!generatedFiles.length) return;
 
     set({ isSaving: true, error: null });
@@ -104,7 +104,12 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
       const response = await fetch('/api/save-files', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files: generatedFiles, projectTitle }),
+        body: JSON.stringify({
+          files: generatedFiles,
+          projectTitle,
+          description: currentPrompt,
+          previewHtml,
+        }),
       });
 
       const data = await response.json();
