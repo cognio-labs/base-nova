@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import AppChrome from "@/components/AppChrome";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -43,11 +42,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider defaultTheme="dark">
           <AuthProvider>
-            <Navbar />
-            <main className="pt-20 min-h-screen transition-colors duration-300">
-              {children}
-            </main>
-            <Footer />
+            <AppChrome>{children}</AppChrome>
           </AuthProvider>
         </ThemeProvider>
       </body>
