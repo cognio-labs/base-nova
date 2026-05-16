@@ -7,6 +7,8 @@ import {
   ArrowRight,
   Bot,
   Briefcase,
+  Check,
+  Gem,
   Grid2X2,
   Home,
   LayoutGrid,
@@ -16,10 +18,11 @@ import {
   Plus,
   Rocket,
   Settings2,
+  SlidersHorizontal,
   Sparkles,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useGeneratorStore } from "@/lib/store";
 
 const creationPrompts = {
@@ -95,8 +98,37 @@ const communityItems = [
 export default function DashboardWorkspace() {
   const pathname = usePathname();
   const [prompt, setPrompt] = useState("");
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [showModelSelect, setShowModelSelect] = useState(false);
+  const [isPlanActive, setIsPlanActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const { generateProject, isGenerating, error } = useGeneratorStore();
+
+  const startVoiceInput = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Speech recognition is not supported in your browser.");
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setPrompt(prev => prev + (prev ? " " : "") + transcript);
+    };
+
+    recognition.start();
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      alert(`Selected file: ${e.target.files[0].name}. File attachment logic will be implemented with the backend.`);
+    }
+  };
 
   const handleGenerate = async (nextPrompt = prompt) => {
     if (!nextPrompt.trim() || isGenerating) return;
@@ -223,22 +255,89 @@ export default function DashboardWorkspace() {
                     className="h-32 w-full resize-none border-0 bg-transparent px-4 py-2 text-base text-slate-900 outline-none placeholder:text-slate-400"
                   />
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
-                    <div className="flex items-center gap-2">
-                      <button type="button" className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+                    <div className="flex items-center gap-2 relative">
+                      <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleFileUpload} 
+                        className="hidden" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                      >
                         <Plus className="h-5 w-5" />
                       </button>
-                      <button type="button" className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
-                        <Settings2 className="h-5 w-5" />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowModelSelect(!showModelSelect)}
+                        className={`rounded-xl border border-slate-200 p-2 transition ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                      >
+                        <SlidersHorizontal className="h-5 w-5" />
                       </button>
+
+                      {/* AI Model Dropdown */}
+                      <AnimatePresence>
+                        {showModelSelect && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute bottom-full mb-2 left-0 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl z-50 overflow-hidden"
+                          >
+                            <div className="px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                              Select AI Model
+                            </div>
+                            <div className="group relative flex items-start gap-3 rounded-xl bg-slate-50 p-4 border border-slate-100">
+                              <div className="mt-0.5 rounded-lg bg-white p-1.5 shadow-sm">
+                                <Sparkles className="h-4 w-4 text-slate-900" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-sm font-bold text-slate-900">Automatic</div>
+                                <div className="text-[11px] leading-relaxed text-slate-500">
+                                  Matched with the best AI Model for each request
+                                </div>
+                              </div>
+                              <Check className="mt-1 h-4 w-4 text-slate-900" />
+                            </div>
+                            
+                            <div className="my-2 border-t border-slate-100" />
+                            
+                            <Link 
+                              href="/pricing"
+                              className="flex items-center gap-3 rounded-xl p-4 transition-colors hover:bg-orange-50"
+                            >
+                              <div className="rounded-lg bg-orange-100 p-1.5">
+                                <Gem className="h-4 w-4 text-orange-600" />
+                              </div>
+                              <span className="text-sm font-bold text-orange-600">
+                                Upgrade to select an AI model
+                              </span>
+                            </Link>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
+
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-1.5">
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Plan</span>
-                        <div className="h-4 w-8 rounded-full bg-slate-100 p-0.5">
-                          <div className="h-3 w-3 rounded-full bg-slate-400" />
-                        </div>
+                      {/* Plan Toggle */}
+                      <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2">
+                        <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPlanActive ? 'text-sky-600' : 'text-slate-400'}`}>
+                          Plan
+                        </span>
+                        <button 
+                          onClick={() => setIsPlanActive(!isPlanActive)}
+                          className={`relative h-5 w-10 rounded-full transition-colors duration-300 ${isPlanActive ? 'bg-sky-500' : 'bg-slate-200'}`}
+                        >
+                          <div className={`absolute left-1 top-1 h-3 w-3 rounded-full bg-white transition-transform duration-300 ${isPlanActive ? 'translate-x-5' : 'translate-x-0 shadow-sm'}`} />
+                        </button>
                       </div>
-                      <button className="text-slate-400 hover:text-slate-900 transition-colors">
+
+                      <button 
+                        onClick={startVoiceInput}
+                        className={`transition-all duration-300 ${isListening ? 'text-sky-500 scale-125 animate-pulse' : 'text-slate-400 hover:text-slate-900'}`}
+                      >
                         <Mic className="h-5 w-5" />
                       </button>
                       <button
