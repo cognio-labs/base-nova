@@ -17,33 +17,33 @@ type ThemeContextValue = {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
-function getInitialTheme(storageKey: string, defaultTheme: Theme): Theme {
-  if (typeof window === "undefined") {
-    return defaultTheme;
-  }
-
-  const storedTheme = window.localStorage.getItem(storageKey);
-  return storedTheme === "light" || storedTheme === "dark" ? storedTheme : defaultTheme;
-}
-
 export function ThemeProvider({
   children,
   defaultTheme = "dark",
   storageKey = "theme",
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = React.useState<Theme>(() => getInitialTheme(storageKey, defaultTheme));
+  const [theme, setThemeState] = React.useState<Theme>(defaultTheme);
 
-  React.useEffect(() => {
+  const applyTheme = React.useCallback((nextTheme: Theme) => {
     const root = document.documentElement;
 
-    root.classList.toggle("dark", theme === "dark");
-    root.style.colorScheme = theme;
-    window.localStorage.setItem(storageKey, theme);
-  }, [storageKey, theme]);
+    root.classList.toggle("dark", nextTheme === "dark");
+    root.style.colorScheme = nextTheme;
+  }, []);
+
+  React.useEffect(() => {
+    const storedTheme = window.localStorage.getItem(storageKey);
+    const nextTheme = storedTheme === "light" || storedTheme === "dark" ? storedTheme : defaultTheme;
+
+    setThemeState(nextTheme);
+    applyTheme(nextTheme);
+  }, [applyTheme, defaultTheme, storageKey]);
 
   const setTheme = React.useCallback((nextTheme: Theme) => {
     setThemeState(nextTheme);
-  }, []);
+    applyTheme(nextTheme);
+    window.localStorage.setItem(storageKey, nextTheme);
+  }, [applyTheme, storageKey]);
 
   const value = React.useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
 

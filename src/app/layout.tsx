@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
-      <head>
+      <body className="antialiased">
         <Script
           id="theme-initializer"
           strategy="beforeInteractive"
@@ -36,8 +36,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className="antialiased">
         <ThemeProvider defaultTheme="dark">
           <AuthProvider>
             <AppChrome>{children}</AppChrome>
