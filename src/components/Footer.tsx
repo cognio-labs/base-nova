@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Twitter, Linkedin, Github, Disc as Discord } from "lucide-react";
+import { Twitter, Linkedin, Code2, Disc as Discord } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -18,7 +18,7 @@ export default function Footer() {
               <Link href="#" className="text-slate-400 hover:text-sky-500 transition-colors"><Twitter className="w-5 h-5" /></Link>
               <Link href="#" className="text-slate-400 hover:text-sky-500 transition-colors"><Discord className="w-5 h-5" /></Link>
               <Link href="#" className="text-slate-400 hover:text-sky-500 transition-colors"><Linkedin className="w-5 h-5" /></Link>
-              <Link href="#" className="text-slate-400 hover:text-sky-500 transition-colors"><Github className="w-5 h-5" /></Link>
+              <Link href="#" className="text-slate-400 hover:text-sky-500 transition-colors"><Code2 className="w-5 h-5" /></Link>
             </div>
           </div>
           
