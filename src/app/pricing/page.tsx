@@ -290,7 +290,7 @@ export default function PricingPage() {
                   <feature.icon className="h-5 w-5 text-sky-500" />
                   <h3 className="mt-4 text-base font-semibold text-slate-950">{feature.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{feature.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
