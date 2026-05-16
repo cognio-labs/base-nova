@@ -13,6 +13,7 @@ export default function Footer() {
                   src="/logo.png" 
                   alt="LokoAI Logo" 
                   fill
+                  sizes="32px"
                   className="object-contain"
                 />
               </div>

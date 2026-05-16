@@ -76,7 +76,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-2 rounded-full bg-white/70 px-2 py-1.5 ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
                   <div className="relative h-7 w-7 overflow-hidden rounded-full bg-sky-400/20">
                     {user.user_metadata?.avatar_url ? (
-                      <Image src={user.user_metadata.avatar_url} alt="User avatar" fill className="object-cover" />
+                      <Image src={user.user_metadata.avatar_url} alt="User avatar" fill sizes="28px" className="object-cover" />
                     ) : (
                       <span className="flex h-full w-full items-center justify-center text-xs font-bold text-sky-600">
                         {(user.email || "U").charAt(0).toUpperCase()}

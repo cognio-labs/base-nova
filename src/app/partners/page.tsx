@@ -44,6 +44,7 @@ export default function PartnersPage() {
                   src={partner.avatar}
                   alt={partner.name}
                   fill
+                  sizes="80px"
                   className="object-cover"
                 />
               </div>
