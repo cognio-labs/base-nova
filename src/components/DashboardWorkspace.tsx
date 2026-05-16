@@ -186,8 +186,10 @@ export default function DashboardWorkspace() {
 
           <div className="mt-8 space-y-1">
             <button
+              type="button"
+              aria-expanded={isCommunityOpen}
               onClick={() => setIsCommunityOpen(!isCommunityOpen)}
-              className="flex w-full items-center justify-between px-4 mb-4"
+              className="mb-4 flex w-full items-center justify-between rounded-lg px-4 py-1.5 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
             >
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Community</h3>
               <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${isCommunityOpen ? "rotate-180" : ""}`} />
@@ -246,12 +248,20 @@ export default function DashboardWorkspace() {
         <section className="relative bg-[#fcfcfd]">
           <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-16">
             {/* Toggle Header */}
-            <div className="mb-12 inline-flex items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
-              <button className="flex items-center gap-2 rounded-xl bg-white px-5 py-2 text-sm font-bold shadow-sm border border-slate-200/50">
+            <div className="mb-12 inline-flex max-w-full items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
+              <button
+                type="button"
+                aria-pressed="true"
+                className="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200/50 bg-white px-4 py-2 text-sm font-bold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 sm:px-5"
+              >
                 <Grid2X2 className="h-4 w-4" />
                 Apps
               </button>
-              <button className="flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+              <button
+                type="button"
+                aria-pressed="false"
+                className="flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-white/60 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 sm:px-5"
+              >
                 <Bot className="h-4 w-4" />
                 Superagents
                 <span className="rounded-md bg-sky-100 px-1.5 py-0.5 text-[9px] font-black text-sky-600 uppercase">New</span>
@@ -286,15 +296,18 @@ export default function DashboardWorkspace() {
                       />
                       <button 
                         type="button" 
+                        aria-label="Attach a file"
                         onClick={() => fileInputRef.current?.click()}
-                        className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
                       >
                         <Plus className="h-5 w-5" />
                       </button>
                       <button 
                         type="button" 
+                        aria-label="Open model settings"
+                        aria-expanded={showModelSelect}
                         onClick={() => setShowModelSelect(!showModelSelect)}
-                        className={`rounded-xl border border-slate-200 p-2 transition ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                       >
                         <SlidersHorizontal className="h-5 w-5" />
                       </button>
@@ -342,31 +355,37 @@ export default function DashboardWorkspace() {
                       </AnimatePresence>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                       {/* Plan Toggle */}
-                      <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2">
+                      <div className="hidden items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2 sm:flex">
                         <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPlanActive ? 'text-sky-600' : 'text-slate-400'}`}>
                           Plan
                         </span>
                         <button 
+                          type="button"
+                          aria-label="Toggle planning mode"
+                          aria-pressed={isPlanActive}
                           onClick={() => setIsPlanActive(!isPlanActive)}
-                          className={`relative h-5 w-10 rounded-full transition-colors duration-300 ${isPlanActive ? 'bg-sky-500' : 'bg-slate-200'}`}
+                          className={`relative h-5 w-10 rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 ${isPlanActive ? 'bg-sky-500' : 'bg-slate-200'}`}
                         >
                           <div className={`absolute left-1 top-1 h-3 w-3 rounded-full bg-white transition-transform duration-300 ${isPlanActive ? 'translate-x-5' : 'translate-x-0 shadow-sm'}`} />
                         </button>
                       </div>
 
                       <button 
+                        type="button"
+                        aria-label={isListening ? "Listening" : "Start voice input"}
                         onClick={startVoiceInput}
-                        className={`transition-all duration-300 ${isListening ? 'text-sky-500 scale-125 animate-pulse' : 'text-slate-400 hover:text-slate-900'}`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${isListening ? 'text-sky-500 scale-110 animate-pulse bg-sky-50' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'}`}
                       >
                         <Mic className="h-5 w-5" />
                       </button>
                       <button
                         type="button"
+                        aria-label="Generate app"
                         onClick={() => handleGenerate()}
                         disabled={isGenerating || !prompt.trim()}
-                        className="flex items-center justify-center rounded-xl bg-slate-900 p-3 text-white shadow-lg transition hover:bg-black disabled:opacity-50"
+                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 focus-visible:ring-offset-2 disabled:opacity-50"
                       >
                         {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                       </button>
@@ -381,7 +400,7 @@ export default function DashboardWorkspace() {
                       type="button"
                       onClick={() => handleGenerate(item.prompt)}
                       disabled={isGenerating}
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 disabled:opacity-50"
+                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 disabled:opacity-50"
                     >
                       {item.label}
                     </button>
@@ -389,8 +408,9 @@ export default function DashboardWorkspace() {
                   <div className="relative">
                     <button
                       type="button"
+                      aria-expanded={isMoreOpen}
                       onClick={() => setIsMoreOpen((open) => !open)}
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2"
                     >
                       ... More
                     </button>
@@ -407,7 +427,7 @@ export default function DashboardWorkspace() {
                               key={item.label}
                               type="button"
                               onClick={() => handleGenerate(item.prompt)}
-                              className="block w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                              className="block min-h-9 w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
                             >
                               {item.label}
                             </button>

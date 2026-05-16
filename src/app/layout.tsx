@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import AppChrome from "@/components/AppChrome";
@@ -8,8 +8,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "LokoAI | Build Apps in Minutes with AI",
@@ -39,7 +37,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className="antialiased">
         <ThemeProvider defaultTheme="dark">
           <AuthProvider>
             <AppChrome>{children}</AppChrome>

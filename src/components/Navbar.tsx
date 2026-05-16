@@ -9,7 +9,6 @@ import Image from "next/image";
 import AuthModal from "@/components/AuthModal";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/UserMenu";
 
 const navItems = [
@@ -54,6 +53,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             {/* Theme Toggle Button */}
             <button
+              type="button"
+              aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} mode`}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className={`p-2.5 rounded-xl border-2 transition-all duration-300 flex items-center justify-center group ${
                 currentTheme === "dark"
@@ -82,12 +83,14 @@ export default function Navbar() {
             ) : (
               <>
                 <button
+                  type="button"
                   onClick={() => setIsAuthOpen(true)}
                   className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
                 >
                   Log in
                 </button>
                 <button
+                  type="button"
                   onClick={() => setIsAuthOpen(true)}
                   className="rounded-full brand-btn px-5 py-2 text-sm font-semibold shadow-lg shadow-sky-500/20"
                 >
@@ -100,6 +103,8 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-3">
              <button
+                type="button"
+                aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} mode`}
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className={`p-2 rounded-lg border transition-all duration-300 ${
                   currentTheme === "dark" ? "bg-black border-[#00BFFF] text-white" : "bg-white border-[#00BFFF] text-black"
@@ -108,6 +113,9 @@ export default function Navbar() {
                 {currentTheme === "dark" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               </button>
             <button
+              type="button"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white p-2"
             >
@@ -154,6 +162,7 @@ export default function Navbar() {
                       Dashboard
                     </Link>
                     <button
+                      type="button"
                       onClick={() => {
                         setIsOpen(false);
                         void signOut();
@@ -167,6 +176,7 @@ export default function Navbar() {
                 ) : (
                   <>
                     <button
+                      type="button"
                       onClick={() => {
                         setIsOpen(false);
                         setIsAuthOpen(true);
@@ -176,6 +186,7 @@ export default function Navbar() {
                       Log in
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setIsOpen(false);
                         setIsAuthOpen(true);

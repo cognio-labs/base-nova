@@ -62,6 +62,7 @@ export default function IntegrationsPage() {
                 <Search className="absolute left-4 w-5 h-5 text-slate-400 group-focus-within:text-sky-500 transition-colors" />
                 <input 
                   type="text" 
+                  aria-label="Search integrations"
                   placeholder="Search integrations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -75,9 +76,11 @@ export default function IntegrationsPage() {
           <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
             {categories.map(cat => (
               <button 
+                type="button"
+                aria-pressed={activeCategory === cat}
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 border ${
+                className={`min-h-9 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f7f9] dark:focus-visible:ring-offset-[#050505] ${
                   activeCategory === cat 
                   ? "bg-sky-500 border-sky-500 text-white shadow-lg shadow-sky-500/20" 
                   : "bg-white dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:border-sky-500/50 hover:text-sky-500"
@@ -163,7 +166,9 @@ function IntegrationCard({ item, index }: { item: Integration; index: number }) 
       
       <div className="mt-auto">
         <button 
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-[11px] font-bold text-slate-700 transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:bg-white/5"
+          type="button"
+          aria-label={`How to use ${item.name}`}
+          className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[11px] font-bold text-slate-700 transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:ring-offset-[#0d0d0d]"
         >
           How to use
         </button>
