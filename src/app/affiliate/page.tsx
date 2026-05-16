@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Trophy, DollarSign, Zap, BarChart3, HelpCircle } from "lucide-react";
 
 export default function AffiliatePage() {

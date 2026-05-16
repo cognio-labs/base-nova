@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Rocket, Trophy, Vote, Calendar, Star } from "lucide-react";
 
 export default function LaunchpadPage() {

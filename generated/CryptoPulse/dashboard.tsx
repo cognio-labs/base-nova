@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendingUp, ArrowUpRight, ArrowDownRight, Wallet, Activity, Zap, Bell, CreditCard, Repeat, ArrowRightLeft } from "lucide-react";
+import { TrendingUp, Activity, Zap, Bell, CreditCard, Repeat, ArrowRightLeft } from "lucide-react";
 
 const PortfolioOverview = () => (
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

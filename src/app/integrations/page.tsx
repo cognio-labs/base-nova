@@ -12,7 +12,7 @@ export default function IntegrationsPage() {
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Extend with <span className="brand-text-gradient">Integrations</span></h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          Discover pre-built integrations that let you connect to APIs, services, and tools to extend your app's capabilities.
+          Discover pre-built integrations that let you connect to APIs, services, and tools to extend your app&apos;s capabilities.
         </p>
       </div>
 
@@ -35,7 +35,7 @@ export default function IntegrationsPage() {
           
           <div className="glass p-6 rounded-2xl border-orange-500/20">
             <h4 className="text-sm font-bold mb-2">Request an Integration</h4>
-            <p className="text-xs text-gray-500 mb-4">Don't see what you need? Let us know what we should build next.</p>
+            <p className="text-xs text-gray-500 mb-4">Don&apos;t see what you need? Let us know what we should build next.</p>
             <button className="w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-semibold transition-colors">
               Request Now
             </button>
