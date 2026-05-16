@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Github, Loader2, Mail, Phone, ShieldCheck, X } from "lucide-react";
+import { Code2, Loader2, Mail, Phone, ShieldCheck, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -189,7 +189,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     Google
                   </Button>
                   <Button variant="outline" onClick={() => handleOAuth("github")} disabled={isLoading || !isConfigured}>
-                    <Github className="h-4 w-4" />
+                    <Code2 className="h-4 w-4" />
                     GitHub
                   </Button>
                 </div>
