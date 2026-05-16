@@ -41,29 +41,7 @@ export async function POST(req: Request) {
         "previewHtml": "String (Self-contained preview)"
       }
 
-      Ensure the code is high-quality, production-ready.
-
-      Always create websites using these technologies only:
-      - TypeScript
-      - React
-      - Next.js
-      - Tailwind CSS
-      - HTML5
-      - CSS3
-      - TSX
-      - JSX
-
-      Rules:
-      - Use TypeScript for all components
-      - Use React functional components
-      - Use Next.js App Router structure
-      - Use Tailwind CSS for all styling
-      - Create responsive modern SaaS UI
-      - Use clean folder structure
-      - Use reusable components
-      - Use modern animations and gradients
-      - Generate production-ready code only
-      - Avoid plain HTML websites unless requested
+      Ensure the code is high-quality, production-ready, and uses Next.js patterns.
     `;
 
     const content = await getGeminiResponse('You are an elite multi-agent orchestration engine. Respond only with JSON.', orchestrationPrompt, true);
