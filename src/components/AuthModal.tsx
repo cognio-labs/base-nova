@@ -36,8 +36,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     typeof window === "undefined" ? process.env.NEXT_PUBLIC_SITE_URL : window.location.origin;
 
   const getNextPath = () => {
-    if (typeof window === "undefined") return "/workspace";
-    return new URLSearchParams(window.location.search).get("next") || "/workspace";
+    if (typeof window === "undefined") return "/dashboard";
+    return new URLSearchParams(window.location.search).get("next") || "/dashboard";
   };
 
   const finishLogin = async () => {
@@ -77,7 +77,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (!signInError) {
-      setMessage("Welcome back. Opening your workspace...");
+      setMessage("Welcome back. Opening your dashboard...");
       await finishLogin();
       return;
     }
