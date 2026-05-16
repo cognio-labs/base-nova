@@ -101,6 +101,7 @@ export default function DashboardWorkspace() {
   const [isListening, setIsListening] = useState(false);
   const [showModelSelect, setShowModelSelect] = useState(false);
   const [isPlanActive, setIsPlanActive] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { generateProject, isGenerating, error } = useGeneratorStore();
