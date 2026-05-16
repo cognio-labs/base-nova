@@ -13,7 +13,6 @@ import {
   Plug,
   Plus,
   Rocket,
-  Search,
   Settings2,
   Sparkles,
   Users,
