@@ -8,6 +8,7 @@ import {
   Bot,
   Briefcase,
   Check,
+  ChevronDown,
   Gem,
   Grid2X2,
   Home,
@@ -102,6 +103,7 @@ export default function DashboardWorkspace() {
   const [showModelSelect, setShowModelSelect] = useState(false);
   const [isPlanActive, setIsPlanActive] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { generateProject, isGenerating, error } = useGeneratorStore();
@@ -183,25 +185,44 @@ export default function DashboardWorkspace() {
           </div>
 
           <div className="mt-8 space-y-1">
-            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Community</h3>
-            {communityItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
-                  pathname === item.href
-                    ? "bg-sky-50 text-sky-600"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                }`}
-              >
-                <item.icon
-                  className={`h-4 w-4 ${
-                    pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
-                  }`}
-                />
-                {item.label}
-              </Link>
-            ))}
+            <button
+              onClick={() => setIsCommunityOpen(!isCommunityOpen)}
+              className="flex w-full items-center justify-between px-4 mb-4"
+            >
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Community</h3>
+              <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${isCommunityOpen ? "rotate-180" : ""}`} />
+            </button>
+            
+            <AnimatePresence>
+              {isCommunityOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1 overflow-hidden"
+                >
+                  {communityItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
+                        pathname === item.href
+                          ? "bg-sky-50 text-sky-600"
+                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      }`}
+                    >
+                      <item.icon
+                        className={`h-4 w-4 ${
+                          pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`}
+                      />
+                      {item.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="mt-8 space-y-1">
