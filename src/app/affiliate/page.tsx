@@ -50,6 +50,7 @@ export default function AffiliatePage() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -137,7 +138,7 @@ export default function AffiliatePage() {
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="mb-6 text-5xl font-bold tracking-tight">How it works</h2>
-          <p className="mb-12 text-lg text-slate-400">Here's what you can expect when you become a LokoAI affiliate.</p>
+          <p className="mb-12 text-lg text-slate-400">Here&apos;s what you can expect when you become a LokoAI affiliate.</p>
           <button className="mb-32 rounded-full bg-[#d9ff66] px-10 py-4 text-sm font-black text-slate-950 transition hover:bg-[#c9ee55] shadow-lg shadow-sky-500/10">
             Join now
           </button>
@@ -146,7 +147,7 @@ export default function AffiliatePage() {
             {[
               { step: "1", title: "Sign up", desc: "Join the program, get a unique referral link, and start as soon as you're approved." },
               { step: "2", title: "Share", desc: "Promote your LokoAI projects to your network and include your personal link." },
-              { step: "3", title: "Track", desc: "Monitor your referrals and conversions in real-time to see who you've inspired." },
+              { step: "3", title: "Track", desc: "Monitor your referrals and conversions in real-time to see who you&apos;ve inspired." },
               { step: "4", title: "Earn", desc: "Earn a $100 commission on referrals that convert to paid users within a month from the lock in day." }
             ].map((item) => (
               <div key={item.step} className="group">
