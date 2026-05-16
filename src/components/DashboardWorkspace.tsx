@@ -84,16 +84,16 @@ const creationPrompts = {
 };
 
 const sidebarItems = [
-  { label: "Home", icon: Home, href: "/dashboard" },
-  { label: "Integrations", icon: Plug, href: "/integrations" },
-  { label: "Pricing", icon: Sparkles, href: "/pricing" },
+  { label: "My Dashboard", icon: Home, href: "/dashboard" },
+  { label: "Connections", icon: Plug, href: "/integrations" },
+  { label: "Upgrade", icon: Sparkles, href: "/pricing" },
 ];
 
 const communityItems = [
-  { label: "Launchpad", icon: Rocket, href: "/launchpad" },
-  { label: "Hire a Partner", icon: Users, href: "/partners" },
-  { label: "Affiliate Program", icon: Briefcase, href: "/affiliate" },
-  { label: "Templates", icon: LayoutGrid, href: "/generate" },
+  { label: "Explore", icon: Rocket, href: "/launchpad" },
+  { label: "Hire Experts", icon: Users, href: "/partners" },
+  { label: "Partnership", icon: Briefcase, href: "/affiliate" },
+  { label: "Blueprints", icon: LayoutGrid, href: "/generate" },
 ];
 
 export default function DashboardWorkspace() {
@@ -153,7 +153,7 @@ export default function DashboardWorkspace() {
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
                 <Grid2X2 className="h-4 w-4" />
               </div>
-              Apps
+              Applications
             </Link>
             <Link
               href="/generate"
@@ -162,7 +162,7 @@ export default function DashboardWorkspace() {
               <div className="flex h-6 w-6 items-center justify-center rounded-lg">
                 <Bot className="h-4 w-4" />
               </div>
-              Superagents
+              AI Assistants
             </Link>
           </div>
 
@@ -231,7 +231,7 @@ export default function DashboardWorkspace() {
               href="/projects"
               className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
             >
-              Favorites <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
+              Pinned <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
             </Link>
             <Link
               href="/projects"
