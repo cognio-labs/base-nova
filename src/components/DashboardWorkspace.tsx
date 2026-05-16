@@ -18,13 +18,37 @@ import {
   Plug,
   Plus,
   Rocket,
-  Settings2,
   SlidersHorizontal,
   Sparkles,
   Users,
 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useGeneratorStore } from "@/lib/store";
+
+type SpeechRecognitionResultEvent = {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+};
+
+type SpeechRecognitionInstance = {
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  start: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+type SpeechRecognitionWindow = Window &
+  typeof globalThis & {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  };
 
 const creationPrompts = {
   primary: [
@@ -109,17 +133,20 @@ export default function DashboardWorkspace() {
   const { generateProject, isGenerating, error } = useGeneratorStore();
 
   const startVoiceInput = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    const speechWindow = window as SpeechRecognitionWindow;
+    const Recognition =
+      speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+
+    if (!Recognition) {
       alert("Speech recognition is not supported in your browser.");
       return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const recognition = new Recognition();
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setPrompt(prev => prev + (prev ? " " : "") + transcript);
     };

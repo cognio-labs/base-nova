@@ -8,7 +8,6 @@ import {
   Zap, 
   Headphones, 
   ArrowRight,
-  Sparkles,
   Trophy
 } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -53,6 +52,8 @@ export default function AffiliatePage() {
         {/* Elegant Back Link */}
         <div className="mb-16">
           <button 
+            type="button"
+            aria-label="Go back to previous page"
             onClick={() => window.history.back()} 
             className="group flex items-center gap-2.5 text-[11px] font-bold text-slate-400 hover:text-sky-600 transition-all uppercase tracking-[0.2em]"
           >
@@ -86,11 +87,12 @@ export default function AffiliatePage() {
                transition={{ delay: 0.2 }}
               className="mx-auto mb-10 max-w-xl text-base md:text-lg leading-relaxed text-slate-500"
             >
-              Empower builders with the world's most advanced AI platform. Share LokoAI and earn $100 for every successful referral.
+              Empower builders with the world&apos;s most advanced AI platform. Share LokoAI and earn $100 for every successful referral.
             </motion.p>
             
             {/* Sleek Watery Button */}
             <motion.button 
+              type="button"
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ delay: 0.3 }}
