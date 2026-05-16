@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Twitter, Linkedin, Disc as Discord, Globe, ShieldCheck } from "lucide-react";
+import { MessageCircle, Briefcase, Share2, Globe, ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   const footerSections = [
@@ -92,9 +92,9 @@ export default function Footer() {
           {/* Social Icons (Left/Center as requested) */}
           <div className="flex items-center gap-6 order-1 md:order-2">
             {[
-              { icon: Twitter, href: "#" },
-              { icon: Linkedin, href: "#" },
-              { icon: Discord, href: "#" },
+              { icon: MessageCircle, href: "#" },
+              { icon: Briefcase, href: "#" },
+              { icon: Share2, href: "#" },
             ].map((social, i) => (
               <Link 
                 key={i} 
