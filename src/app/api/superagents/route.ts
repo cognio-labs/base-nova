@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { getGeminiResponse } from '@/lib/gemini';
 import { getCurrentUser } from '@/lib/supabase';
 import { getErrorMessage, unauthorizedResponse } from '@/lib/api';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: Request) {
   try {
@@ -48,17 +44,7 @@ export async function POST(req: Request) {
       Ensure the code is high-quality, production-ready, and uses Next.js patterns.
     `;
 
-    const response = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4o',
-      messages: [
-        { role: 'system', content: 'You are an elite multi-agent orchestration engine. Respond only with JSON.' },
-        { role: 'user', content: orchestrationPrompt },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-    });
-
-    const content = response.choices[0].message.content;
+    const content = await getGeminiResponse('You are an elite multi-agent orchestration engine. Respond only with JSON.', orchestrationPrompt, true);
     if (!content) throw new Error('No content returned');
 
     return NextResponse.json(JSON.parse(content));
