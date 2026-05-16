@@ -1069,3 +1069,7 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
  POST /api/superagents 500 in 598ms (next.js: 7ms, application-code: 591ms)
  POST /api/superagents 500 in 578ms (next.js: 12ms, application-code: 566ms)
  POST /api/superagents 500 in 1020ms (next.js: 2ms, application-code: 1017ms)
+✓ Compiled in 1373ms
+ GET /dashboard 200 in 932ms (next.js: 333ms, application-code: 599ms)
+ GET /dashboard 200 in 1076ms (next.js: 4ms, application-code: 1072ms)
+ GET /dashboard 200 in 255ms (next.js: 6ms, application-code: 248ms)

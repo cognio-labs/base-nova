@@ -18181,3 +18181,4 @@ Please retry in 32.652233965s. [{"@type":"type.googleapis.com/google.rpc.Help","
   31 |   }
   32 | }
   33 |
+⚠ Fast Refresh had to perform a full reload when ./src/components/ThemeProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
