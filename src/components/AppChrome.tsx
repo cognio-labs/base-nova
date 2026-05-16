@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
 
 const appRoutePrefixes = [
+  "/affiliate",
   "/dashboard",
   "/generate",
   "/integrations",
