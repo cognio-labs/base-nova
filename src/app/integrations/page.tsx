@@ -141,14 +141,7 @@ function IntegrationCard({ item, index }: { item: Integration; index: number }) 
           className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-lg shadow-slate-200/70 dark:border-white/10 dark:shadow-black/20"
           style={{ boxShadow: `0 18px 35px ${item.color}18` }}
         >
-          <Image 
-            src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=128`}
-            alt={item.name}
-            width={34}
-            height={34}
-            className="object-contain"
-            unoptimized
-          />
+          <IntegrationLogo item={item} />
         </div>
         <span
           className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider"
@@ -176,5 +169,36 @@ function IntegrationCard({ item, index }: { item: Integration; index: number }) 
         </button>
       </div>
     </motion.div>
+  );
+}
+
+function IntegrationLogo({ item }: { item: Integration }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <span
+        className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-extrabold uppercase"
+        style={{ backgroundColor: `${item.color}16`, color: item.color }}
+      >
+        {item.name
+          .split(" ")
+          .slice(0, 2)
+          .map((part) => part[0])
+          .join("")}
+      </span>
+    );
+  }
+
+  return (
+    <Image
+      src={`https://cdn.simpleicons.org/${item.logoSlug}`}
+      alt={item.name}
+      width={34}
+      height={34}
+      className="object-contain"
+      unoptimized
+      onError={() => setHasError(true)}
+    />
   );
 }
