@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   ExternalLink,
-  Linkedin,
+  Link2,
   MapPin,
   Search,
 } from "lucide-react";
@@ -103,7 +103,7 @@ export default function PartnersPage() {
                           className="inline-flex items-center gap-1 text-sky-600 transition hover:text-sky-700"
                         >
                           LinkedIn
-                          <Linkedin className="h-3.5 w-3.5" />
+                          <Link2 className="h-3.5 w-3.5" />
                         </Link>
                       )}
                     </div>
