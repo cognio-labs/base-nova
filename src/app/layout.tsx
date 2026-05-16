@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,12 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider defaultTheme="dark">
           <AuthProvider>
             <Navbar />
             <main className="pt-20 min-h-screen transition-colors duration-300">
@@ -39,6 +35,16 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
       </body>
+      <Script id="theme-init" strategy="beforeInteractive">
+        {`
+          try {
+            var theme = localStorage.getItem('theme') || 'dark';
+            var isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+          } catch (_) {}
+        `}
+      </Script>
     </html>
   );
 }
