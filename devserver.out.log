@@ -1,14 +1,12 @@
 
 > base44@0.1.0 dev
-> next dev
+> node --max-old-space-size=4096 node_modules/next/dist/bin/next dev
 
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.1.26:3000
 - Environments: .env.local
-✓ Ready in 782ms
+✓ Ready in 712ms
 Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
-○ Compiling / ...
-✓ Finished writing to filesystem cache in 11.9s
-[?25h
+ HEAD /profile 307 in 2.4s (next.js: 1670ms, application-code: 711ms)
