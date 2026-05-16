@@ -170,7 +170,7 @@ export default function DashboardWorkspace() {
               className="w-full max-w-2xl"
             >
               <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900">
-                What will you build next?
+                The Platform for Modern Builders
               </h1>
 
               <div className="relative group">
