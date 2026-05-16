@@ -317,11 +317,11 @@ export default function DashboardWorkspace() {
 
           <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-10">
             {/* Toggle Header */}
-            <div className="mb-12 inline-flex max-w-full items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
+            <div className="mb-12 inline-flex max-w-full items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner dark:bg-white/10">
               <button
                 type="button"
                 aria-pressed="true"
-                className="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200/50 bg-white px-4 py-2 text-sm font-bold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 sm:px-5"
+                className="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200/50 bg-white px-4 py-2 text-sm font-bold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white dark:text-slate-950 sm:px-5"
               >
                 <Grid2X2 className="h-4 w-4" />
                 Apps
@@ -329,7 +329,7 @@ export default function DashboardWorkspace() {
               <button
                 type="button"
                 aria-pressed="false"
-                className="flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-white/60 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 sm:px-5"
+                className="flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-white/60 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white sm:px-5"
               >
                 <Bot className="h-4 w-4" />
                 Superagents
@@ -342,20 +342,20 @@ export default function DashboardWorkspace() {
               animate={{ opacity: 1, y: 0 }}
               className="w-full max-w-2xl"
             >
-              <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900">
+              <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
                 The Platform for Modern Builders
               </h1>
 
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-                <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50">
+                <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50 transition-colors dark:border-white/10 dark:bg-[#0d0d0d] dark:shadow-black/30">
                   <textarea
                     value={prompt}
                     onChange={(event) => setPrompt(event.target.value)}
                     placeholder="Describe the app you want to create..."
-                    className="h-32 w-full resize-none border-0 bg-transparent px-4 py-2 text-base text-slate-900 outline-none placeholder:text-slate-400"
+                    className="h-32 w-full resize-none border-0 bg-transparent px-4 py-2 text-base text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
                   />
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-white/10">
                     <div className="flex items-center gap-2 relative">
                       <input 
                         type="file" 
@@ -367,7 +367,7 @@ export default function DashboardWorkspace() {
                         type="button" 
                         aria-label="Attach a file"
                         onClick={() => fileInputRef.current?.click()}
-                        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
+                        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
                       >
                         <Plus className="h-5 w-5" />
                       </button>
@@ -376,7 +376,7 @@ export default function DashboardWorkspace() {
                         aria-label="Open model settings"
                         aria-expanded={showModelSelect}
                         onClick={() => setShowModelSelect(!showModelSelect)}
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-300' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}
                       >
                         <SlidersHorizontal className="h-5 w-5" />
                       </button>
@@ -426,7 +426,7 @@ export default function DashboardWorkspace() {
 
                     <div className="flex items-center gap-3 sm:gap-4">
                       {/* Plan Toggle */}
-                      <div className="hidden items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2 sm:flex">
+                      <div className="hidden items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2 dark:border-white/10 dark:bg-white/5 sm:flex">
                         <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPlanActive ? 'text-sky-600' : 'text-slate-400'}`}>
                           Plan
                         </span>
@@ -445,7 +445,7 @@ export default function DashboardWorkspace() {
                         type="button"
                         aria-label={isListening ? "Listening" : "Start voice input"}
                         onClick={startVoiceInput}
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${isListening ? 'text-sky-500 scale-110 animate-pulse bg-sky-50' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'}`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${isListening ? 'text-sky-500 scale-110 animate-pulse bg-sky-50 dark:bg-sky-500/10' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}
                       >
                         <Mic className="h-5 w-5" />
                       </button>
@@ -454,7 +454,7 @@ export default function DashboardWorkspace() {
                         aria-label="Generate app"
                         onClick={() => handleGenerate()}
                         disabled={isGenerating || !prompt.trim()}
-                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 focus-visible:ring-offset-2 disabled:opacity-50"
+                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 focus-visible:ring-offset-2 disabled:opacity-50 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
                       >
                         {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                       </button>
@@ -469,7 +469,7 @@ export default function DashboardWorkspace() {
                       type="button"
                       onClick={() => handleGenerate(item.prompt)}
                       disabled={isGenerating}
-                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 disabled:opacity-50"
+                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 disabled:opacity-50 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
                     >
                       {item.label}
                     </button>
@@ -479,7 +479,7 @@ export default function DashboardWorkspace() {
                       type="button"
                       aria-expanded={isMoreOpen}
                       onClick={() => setIsMoreOpen((open) => !open)}
-                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2"
+                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                     >
                       ... More
                     </button>
@@ -496,7 +496,7 @@ export default function DashboardWorkspace() {
                               key={item.label}
                               type="button"
                               onClick={() => handleGenerate(item.prompt)}
-                              className="block min-h-9 w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30"
+                              className="block min-h-9 w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
                             >
                               {item.label}
                             </button>
@@ -517,6 +517,7 @@ export default function DashboardWorkspace() {
           </div>
         </section>
       </div>
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }

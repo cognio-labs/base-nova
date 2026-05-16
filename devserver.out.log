@@ -1013,3 +1013,17 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
  GET /integrations 200 in 248ms (next.js: 158ms, application-code: 91ms)
  GET /integrations 200 in 86ms (next.js: 36ms, application-code: 50ms)
  HEAD /integrations 200 in 771ms (next.js: 3ms, application-code: 767ms)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ✓ Compiled in 2.6s
+ GET /integrations 200 in 858ms (next.js: 413ms, application-code: 445ms)
+ GET /integrations 200 in 116ms (next.js: 3ms, application-code: 113ms)
+ GET /integrations 200 in 67ms (next.js: 14ms, application-code: 52ms)
+✓ Compiled in 837ms
+ GET /integrations 200 in 242ms (next.js: 155ms, application-code: 87ms)
+✓ Compiled in 1020ms
+ GET /integrations 200 in 518ms (next.js: 450ms, application-code: 68ms)
+✓ Compiled in 833ms
+ GET /integrations 200 in 333ms (next.js: 199ms, application-code: 134ms)
+✓ Compiled in 378ms
+ GET /integrations 200 in 265ms (next.js: 157ms, application-code: 107ms)
+ HEAD /dashboard 307 in 4.9s (next.js: 1611ms, application-code: 3.3s)
+ GET /integrations 200 in 65ms (next.js: 6ms, application-code: 59ms)
