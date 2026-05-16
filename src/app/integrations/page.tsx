@@ -26,16 +26,16 @@ export default function IntegrationsPage() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#f9fafb] text-slate-900">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#0a0a0a] text-slate-900 dark:text-white transition-colors duration-300">
       {/* Vertical Sidebar */}
-      <aside className="w-64 border-r border-slate-200 bg-white flex flex-col fixed h-[calc(100vh-80px)] top-20">
+      <aside className="hidden md:flex w-64 border-r border-slate-200 dark:border-white/5 bg-white dark:bg-[#0d0d0d] flex-col fixed h-[calc(100vh-80px)] top-20 z-40 transition-colors duration-300">
         <div className="p-4 flex flex-col gap-2">
-          <div className="flex flex-col p-1 bg-slate-100 rounded-xl">
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-900 bg-white shadow-sm rounded-lg">
-              <Layers className="w-4 h-4" />
+          <div className="flex flex-col p-1 bg-slate-100 dark:bg-white/5 rounded-xl">
+            <button className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white bg-white dark:bg-white/10 shadow-sm rounded-lg">
+              <LayoutGrid className="w-4 h-4 text-sky-500" />
               Apps
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">
               <Bot className="w-4 h-4" />
               Superagents
             </button>
@@ -45,29 +45,29 @@ export default function IntegrationsPage() {
         <nav className="flex-1 px-4 py-2 flex flex-col gap-1">
           <NavItem icon={Home} label="Home" />
           <NavItem icon={LayoutGrid} label="All apps" />
-          <NavItem icon={Layers} label="Integrations" active />
+          <NavItem icon={Plug} label="Integrations" active />
           <NavItem icon={Users} label="Community" hasArrow />
           <NavItem icon={FileStack} label="Templates" />
 
           <div className="mt-8">
             <div className="flex items-center justify-between px-2 mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Favorites</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500">Favorites</span>
               <ChevronRight className="w-3 h-3 text-slate-400" />
             </div>
-            <div className="p-4 border border-dashed border-slate-200 rounded-xl text-center">
-              <p className="text-[10px] text-slate-400">No favorites yet<br />Add your apps for quick access</p>
+            <div className="p-4 border border-dashed border-slate-200 dark:border-white/10 rounded-xl text-center">
+              <p className="text-[10px] text-slate-400 dark:text-gray-500">No favorites yet<br />Add your apps for quick access</p>
             </div>
           </div>
 
           <div className="mt-8">
              <div className="flex items-center justify-between px-2 mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Recents</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500">Recents</span>
               <ChevronRight className="w-3 h-3 text-slate-400" />
             </div>
             <div className="flex flex-col gap-1">
               <RecentItem label="Sakshi Dham International" />
               <RecentItem label="SpaceTech Consulting" />
-              <button className="text-[10px] text-slate-400 font-medium px-2 py-1 text-left hover:text-slate-600">View all</button>
+              <button className="text-[10px] text-slate-400 dark:text-gray-500 font-medium px-2 py-1 text-left hover:text-slate-600 dark:hover:text-gray-300">View all</button>
             </div>
           </div>
         </nav>
