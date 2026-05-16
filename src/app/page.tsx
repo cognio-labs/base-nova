@@ -7,6 +7,8 @@ import { useGeneratorStore } from "@/lib/store";
 import PreviewFrame from "@/components/PreviewFrame";
 import SuperagentDashboard from "@/components/SuperagentDashboard";
 import Image from "next/image";
+import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
 
 const creationPrompts = {
   primary: [
@@ -70,6 +72,8 @@ export default function Home() {
   const [isErrorVisible, setIsErrorVisible] = useState(false);
   const [errorInput, setErrorInput] = useState("");
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { user } = useAuth();
 
   const { 
     generateProject, 
@@ -89,6 +93,10 @@ export default function Home() {
 
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
     await generateProject(prompt);
   };
 
@@ -96,14 +104,30 @@ export default function Home() {
     if (isGenerating) return;
     setPrompt(categoryPrompt);
     setIsMoreOpen(false);
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
     await generateProject(categoryPrompt);
   };
 
   const handleDebug = async () => {
     if (!errorInput.trim() || isDebugging) return;
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
     await debugProject(errorInput);
     setIsErrorVisible(false);
     setErrorInput("");
+  };
+
+  const handleSaveToWorkspace = async () => {
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
+    await saveToWorkspace();
   };
 
   return (
@@ -275,7 +299,7 @@ export default function Home() {
                   Fix with AI
                 </button>
                 <button 
-                  onClick={saveToWorkspace}
+                  onClick={handleSaveToWorkspace}
                   disabled={isSaving}
                   className="flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-white/5 text-sm font-bold text-white transition-all border border-white/10"
                 >
@@ -386,6 +410,7 @@ export default function Home() {
           </motion.div>
         )}
       </div>
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }

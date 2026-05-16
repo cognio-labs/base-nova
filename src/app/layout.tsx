@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,11 +27,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="pt-20 min-h-screen transition-colors duration-300">
-            {children}
-          </main>
-          <Footer />
+          <AuthProvider>
+            <Navbar />
+            <main className="pt-20 min-h-screen transition-colors duration-300">
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

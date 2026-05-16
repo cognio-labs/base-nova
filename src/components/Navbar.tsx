@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X, Sun, Moon } from "lucide-react";
+import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X, Sun, Moon, LogOut, Gauge } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { name: "Home", href: "/", icon: Sparkles },
@@ -20,8 +23,10 @@ const navItems = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user, isLoading, signOut } = useAuth();
 
   // Avoid hydration mismatch
   useEffect(() => {
@@ -84,12 +89,46 @@ export default function Navbar() {
               </button>
             )}
 
-            <button className="text-sm font-medium text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white transition-colors">
-              Log in
-            </button>
-            <button className="px-5 py-2 rounded-full brand-btn text-sm font-semibold shadow-lg shadow-orange-500/20">
-              Get Started
-            </button>
+            {!isLoading && user ? (
+              <div className="flex items-center gap-3">
+                <Link href="/dashboard" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-sky-500/10 dark:text-gray-200">
+                  <Gauge className="h-4 w-4 text-sky-500" />
+                  Dashboard
+                </Link>
+                <div className="flex items-center gap-2 rounded-full bg-white/70 px-2 py-1.5 ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
+                  <div className="relative h-7 w-7 overflow-hidden rounded-full bg-sky-400/20">
+                    {user.user_metadata?.avatar_url ? (
+                      <Image src={user.user_metadata.avatar_url} alt="User avatar" fill className="object-cover" />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center text-xs font-bold text-sky-600">
+                        {(user.email || "U").charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <span className="max-w-36 truncate text-xs font-medium text-slate-700 dark:text-gray-200">
+                    {user.email || user.phone}
+                  </span>
+                </div>
+                <Button variant="ghost" size="icon" onClick={signOut} aria-label="Logout">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="rounded-full brand-btn px-5 py-2 text-sm font-semibold shadow-lg shadow-sky-500/20"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -140,18 +179,55 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-4 mt-2 border-t border-white/5 flex flex-col gap-3">
-                <button className="w-full py-3 text-center font-medium text-slate-500 dark:text-gray-400">
-                  Log in
-                </button>
-                <button className="w-full py-3 brand-btn rounded-xl font-bold">
-                  Get Started
-                </button>
+                {!isLoading && user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/5 py-3 font-bold text-slate-700 dark:text-white"
+                    >
+                      <Gauge className="h-4 w-4 text-sky-500" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        void signOut();
+                      }}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl py-3 font-bold text-red-500"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsAuthOpen(true);
+                      }}
+                      className="w-full py-3 text-center font-medium text-slate-500 dark:text-gray-400"
+                    >
+                      Log in
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsAuthOpen(true);
+                      }}
+                      className="w-full rounded-xl brand-btn py-3 font-bold"
+                    >
+                      Get Started
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </nav>
   );
 }
-// eslint-disable-next-line react-hooks/set-state-in-effect
