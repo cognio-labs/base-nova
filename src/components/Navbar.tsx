@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { name: "Home", href: "/", icon: Sparkles },
-  { name: "Integrations", href: "/integrations", icon: LayoutGrid },
   { name: "Partners", href: "/partners", icon: Users },
   { name: "Launchpad", href: "/launchpad", icon: Rocket },
   { name: "Affiliate", href: "/affiliate", icon: Trophy },
