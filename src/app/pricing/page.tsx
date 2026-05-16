@@ -256,11 +256,12 @@ export default function PricingPage() {
           ))}
         </div>
 
-        <section className="mt-16 space-y-6">
-          <div className="grid gap-6 rounded-[2rem] bg-[#2e2b36] p-8 text-white shadow-[0_24px_60px_rgba(15,23,42,0.2)] lg:grid-cols-[1.1fr_1.4fr]">
+        <section className="mt-18 space-y-6">
+          <div className="grid gap-8 rounded-[2rem] bg-[#2f2c37] p-8 text-white shadow-[0_24px_60px_rgba(15,23,42,0.2)] lg:grid-cols-[1.05fr_1.45fr] lg:p-10">
             <div className="flex flex-col justify-between">
               <div>
-                <h2 className="text-3xl font-semibold tracking-tight">LokoAI for Enterprise</h2>
+                <p className="text-xs font-bold uppercase tracking-[0.28em] text-orange-300">Enterprise</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-tight">LokoAI for Enterprise</h2>
                 <p className="mt-4 max-w-md text-sm leading-7 text-white/75">
                   Empower larger organizations to build solutions that fit their teams perfectly, safely, and at scale.
                 </p>
@@ -270,9 +271,9 @@ export default function PricingPage() {
               </button>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               {enterpriseFeatures.map((feature) => (
-                <div key={feature.title}>
+                <div key={feature.title} className="rounded-2xl border border-white/8 bg-white/[0.03] p-5">
                   <feature.icon className="h-5 w-5 text-orange-400" />
                   <h3 className="mt-4 text-base font-semibold">{feature.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-white/75">{feature.description}</p>
@@ -281,13 +282,13 @@ export default function PricingPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-[1.75rem] bg-gradient-to-r from-white via-[#fff3eb] to-[#ff955f] px-6 py-5 shadow-[0_18px_45px_rgba(249,115,22,0.12)]">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4 rounded-[1.75rem] bg-gradient-to-r from-white via-[#fff3eb] to-[#ff955f] px-6 py-5 shadow-[0_18px_45px_rgba(249,115,22,0.12)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-orange-500 shadow-sm">
                 <BadgeHelp className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xl font-semibold tracking-tight text-slate-950">
+                <p className="text-lg font-semibold tracking-tight text-slate-950 sm:text-xl">
                   Student or teacher? Get up to 50% off Starter or Builder plan
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
@@ -295,26 +296,29 @@ export default function PricingPage() {
                 </p>
               </div>
             </div>
-            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-transparent text-white transition hover:bg-white/15">
+            <button className="flex h-12 w-12 items-center justify-center self-end rounded-full bg-transparent text-white transition hover:bg-white/15 sm:self-auto">
               <ArrowRight className="h-6 w-6" />
             </button>
           </div>
         </section>
 
-        <section className="mt-16">
-          <h2 className="text-3xl font-semibold tracking-tight text-slate-950">Frequently Asked Questions</h2>
-          <div className="mt-8 divide-y divide-slate-200 rounded-[2rem] bg-white px-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+        <section className="mx-auto mt-18 max-w-6xl">
+          <div className="mb-8">
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-slate-400">Support</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Frequently Asked Questions</h2>
+          </div>
+          <div className="divide-y divide-slate-200 rounded-[2rem] border border-slate-200/80 bg-white px-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
             {faqs.map((faq, index) => {
               const isOpen = openFaq === index;
 
               return (
-                <div key={faq.question} className="py-6">
+                <div key={faq.question} className="py-5">
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? -1 : index)}
                     className="flex w-full items-center justify-between gap-4 text-left"
                   >
-                    <span className="text-xl font-medium text-slate-950">{faq.question}</span>
+                    <span className="text-lg font-medium text-slate-950 sm:text-xl">{faq.question}</span>
                     <ChevronDown
                       className={`h-5 w-5 flex-shrink-0 text-slate-500 transition-transform ${
                         isOpen ? "rotate-180" : ""
@@ -323,7 +327,7 @@ export default function PricingPage() {
                   </button>
 
                   {isOpen && (
-                    <div className="mt-4 max-w-5xl space-y-3 text-sm leading-7 text-slate-600">
+                    <div className="mt-4 max-w-5xl space-y-3 pr-2 text-sm leading-7 text-slate-600">
                       {faq.answer.map((paragraph) => (
                         <p key={paragraph}>{paragraph}</p>
                       ))}
