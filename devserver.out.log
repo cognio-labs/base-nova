@@ -10,3 +10,18 @@
 Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
  HEAD /profile 307 in 2.4s (next.js: 1670ms, application-code: 711ms)
+ GET /profile 307 in 113ms (next.js: 4ms, application-code: 109ms)
+ GET /settings 307 in 1412ms (next.js: 1297ms, application-code: 116ms)
+ GET / 200 in 212ms (next.js: 89ms, application-code: 123ms)
+ GET / 200 in 46ms (next.js: 7ms, application-code: 40ms)
+ GET /settings 200 in 40ms (next.js: 8ms, application-code: 32ms)
+ GET /profile 200 in 391ms (next.js: 4ms, application-code: 387ms)
+ GET /profile 200 in 441ms (next.js: 5ms, application-code: 436ms)
+ GET /dashboard 200 in 398ms (next.js: 87ms, application-code: 311ms)
+ GET /dashboard 200 in 308ms (next.js: 5ms, application-code: 302ms)
+✓ Compiled in 572ms
+ GET /dashboard 200 in 432ms (next.js: 257ms, application-code: 175ms)
+ GET /dashboard 200 in 67ms (next.js: 4ms, application-code: 63ms)
+ GET /dashboard 200 in 677ms (next.js: 8ms, application-code: 668ms)
+ GET /dashboard 200 in 263ms (next.js: 6ms, application-code: 258ms)
+ GET /dashboard 200 in 321ms (next.js: 3ms, application-code: 317ms)

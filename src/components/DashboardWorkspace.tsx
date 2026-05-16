@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Bot,
   Briefcase,
-  Clock,
   Grid2X2,
   Home,
   LayoutGrid,
@@ -265,37 +264,6 @@ export default function DashboardWorkspace() {
                 </div>
               )}
             </motion.div>
-          </div>
-
-          {/* Bottom Card */}
-          <div className="absolute bottom-0 left-1/2 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 rounded-t-[2.5rem] border-x border-t border-slate-100 bg-white p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.02)]">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-6">
-                <button type="button" className="text-sm font-bold text-slate-900 border-b-2 border-slate-900 pb-1">
-                  Recent apps
-                </button>
-                <button type="button" className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">
-                  Templates
-                </button>
-              </div>
-              <button type="button" className="flex items-center gap-2 text-xs font-bold text-sky-600 hover:text-sky-700 transition-colors">
-                View all <ArrowRight className="h-3 w-3" />
-              </button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {["CryptoPulse", "CRM Pipeline", "Booking Hub"].map((app) => (
-                <div key={app} className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 transition-all hover:border-sky-100 hover:shadow-xl hover:shadow-sky-500/5">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 group-hover:bg-sky-50 transition-colors">
-                    <Sparkles className="h-5 w-5 text-sky-500" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900">{app}</h3>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                    <Clock className="h-3.5 w-3.5" />
-                    Recently generated
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
       </div>
