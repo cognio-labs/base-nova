@@ -96,7 +96,7 @@ Contact
 AGM Creations
 AGM Creations
 Florida, United States
-eliteexchange.base44.app
+eliteexchange.lokoai.app
 Application Development
 I specialize in making your ideas come to life. Game creation, app design, website design, you name it. I can help make it happen.
 Languages: English
@@ -156,7 +156,7 @@ Contact
 The Coding Boyz
 The Coding Boyz
 San Antonio, United States
-vshare.base44.app
+vshare.lokoai.app
 Other
 This group is made of multiple people where we make a bunch of apps and games. Our known products include VShare, DrawAPic, and Gamble-F-Ton.
 Languages: English
@@ -205,7 +205,7 @@ Contact
 Vasilis Moschos
 Vasilis Moschos
 Serres, Greece
-klikatogr-a71cca8e.base44.app
+klikatogr-a71cca8e.lokoai.app
 AI Expert
 Application Development
 Strategic Consulting
