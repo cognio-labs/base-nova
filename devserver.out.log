@@ -1073,3 +1073,6 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
  GET /dashboard 200 in 932ms (next.js: 333ms, application-code: 599ms)
  GET /dashboard 200 in 1076ms (next.js: 4ms, application-code: 1072ms)
  GET /dashboard 200 in 255ms (next.js: 6ms, application-code: 248ms)
+ GET /dashboard 200 in 613ms (next.js: 117ms, application-code: 496ms)
+ GET /dashboard 200 in 498ms (next.js: 8ms, application-code: 490ms)
+ GET /dashboard 200 in 679ms (next.js: 8ms, application-code: 671ms)
