@@ -80,10 +80,11 @@ const creationPrompts = {
 
 const sidebarItems = [
   { label: "Home", icon: Home, active: true },
-  { label: "All apps", icon: LayoutGrid },
   { label: "Integrations", icon: Plug },
-  { label: "Community", icon: Users },
-  { label: "Templates", icon: Briefcase },
+  { label: "Partners", icon: Users },
+  { label: "Launchpad", icon: Rocket },
+  { label: "Affiliate", icon: Briefcase },
+  { label: "Pricing", icon: Sparkles },
 ];
 
 export default function DashboardWorkspace() {
@@ -113,31 +114,31 @@ export default function DashboardWorkspace() {
             </div>
           </div>
 
-          <div className="mt-4 space-y-1">
-            <div className="flex items-center gap-2 px-3 py-3 text-xs font-semibold">
-              <Search className="h-4 w-4" />
-              Search
-            </div>
+          <div className="mt-6 space-y-1">
+            <h3 className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Navigation</h3>
             {sidebarItems.map((item) => (
               <button
                 key={item.label}
                 type="button"
-                className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs font-semibold transition ${
-                  item.active ? "bg-[#ebe8e4]" : "hover:bg-[#ebe8e4]"
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-xs font-bold transition-all duration-300 ${
+                  item.active 
+                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" 
+                  : "text-slate-600 hover:bg-[#ebe8e4] hover:text-slate-900"
                 }`}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className={`h-4 w-4 ${item.active ? "text-white" : "text-slate-400 group-hover:text-sky-500"}`} />
                 {item.label}
               </button>
             ))}
           </div>
 
-          <div className="mt-5 space-y-1 px-3 text-xs text-slate-500">
-            <div className="flex items-center justify-between py-2">
-              Favorites <span>›</span>
+          <div className="mt-8 space-y-1 px-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
+            <div className="flex items-center justify-between py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">
+              Favorites <span className="text-[10px]">›</span>
             </div>
-            <div className="flex items-center justify-between py-2">
-              Recents <span>›</span>
+            <div className="flex items-center justify-between py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">
+              Recents <span className="text-[10px]">›</span>
             </div>
           </div>
         </aside>

@@ -46,22 +46,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav Removed - Moved to Sidebar */}
           <div className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                  pathname === item.href
-                    ? "bg-sky-500/10 text-slate-950 dark:bg-white/10 dark:text-white"
-                    : "text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white hover:bg-sky-500/10 dark:hover:bg-white/5"
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.name}
-              </Link>
-            ))}
           </div>
 
           <div className="hidden md:flex items-center gap-4">
