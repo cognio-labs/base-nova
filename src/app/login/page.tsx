@@ -1,10 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(true);
+  const nextPath = searchParams.get("next") || "/dashboard";
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.replace(nextPath.startsWith("/") ? nextPath : "/dashboard");
+    }
+  }, [isLoading, nextPath, router, user]);
 
   return (
     <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden px-4 py-20">
