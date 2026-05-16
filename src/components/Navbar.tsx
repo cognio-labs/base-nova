@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles, LayoutGrid, Zap, Users, Rocket, Trophy, Menu, X, Sun, Moon, LogOut, Gauge } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -25,13 +25,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const { user, isLoading, signOut } = useAuth();
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 dark:border-white/5 transition-colors duration-300">
@@ -72,22 +66,21 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-4">
             {/* Theme Toggle Button */}
-            {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`p-2.5 rounded-xl border-2 transition-all duration-300 flex items-center justify-center group ${
-                  theme === "dark"
-                    ? "bg-black border-[#00BFFF] text-white shadow-[0_0_15px_rgba(0,191,255,0.3)]"
-                    : "bg-white border-[#00BFFF] text-black shadow-lg"
-                }`}
-              >
-                {theme === "dark" ? (
-                  <Moon className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-500" />
-                ) : (
-                  <Sun className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                )}
-              </button>
-            )}
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className={`p-2.5 rounded-xl border-2 transition-all duration-300 flex items-center justify-center group ${
+                theme === "dark"
+                  ? "bg-black border-[#00BFFF] text-white shadow-[0_0_15px_rgba(0,191,255,0.3)]"
+                  : "bg-white border-[#00BFFF] text-black shadow-lg"
+              }`}
+              suppressHydrationWarning
+            >
+              {theme === "dark" ? (
+                <Moon className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-500" />
+              ) : (
+                <Sun className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+              )}
+            </button>
 
             {!isLoading && user ? (
               <div className="flex items-center gap-3">
@@ -133,16 +126,15 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-3">
-             {mounted && (
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className={`p-2 rounded-lg border transition-all duration-300 ${
-                    theme === "dark" ? "bg-black border-[#00BFFF] text-white" : "bg-white border-[#00BFFF] text-black"
-                  }`}
-                >
-                  {theme === "dark" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                </button>
-              )}
+             <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className={`p-2 rounded-lg border transition-all duration-300 ${
+                  theme === "dark" ? "bg-black border-[#00BFFF] text-white" : "bg-white border-[#00BFFF] text-black"
+                }`}
+                suppressHydrationWarning
+              >
+                {theme === "dark" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-500 hover:text-slate-950 dark:text-gray-400 dark:hover:text-white p-2"

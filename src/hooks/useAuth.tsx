@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, useEffect, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -23,16 +23,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const isConfigured = isSupabaseConfigured();
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     const {
       data: { user: nextUser },
     } = await supabase.auth.getUser();
     setUser(nextUser);
     setIsLoading(false);
-  };
+  }, [supabase]);
 
   useEffect(() => {
-    void refreshUser();
+    let isActive = true;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (!isActive) return;
+      setUser(data.user);
+      setIsLoading(false);
+    });
 
     const {
       data: { subscription },
@@ -42,19 +48,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       router.refresh();
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isActive = false;
+      subscription.unsubscribe();
+    };
   }, [router, supabase]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     router.push("/");
     router.refresh();
-  };
+  }, [router, supabase]);
 
   const value = useMemo(
     () => ({ user, isLoading, isConfigured, signOut, refreshUser }),
-    [user, isLoading, isConfigured]
+    [user, isLoading, isConfigured, signOut, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
