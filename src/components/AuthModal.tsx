@@ -3,11 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Code2, Loader2, Mail, Phone, ShieldCheck, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "email" | "phone";
@@ -19,8 +19,6 @@ interface AuthModalProps {
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/workspace";
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const { isConfigured, refreshUser } = useAuth();
 
@@ -37,10 +35,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const siteUrl =
     typeof window === "undefined" ? process.env.NEXT_PUBLIC_SITE_URL : window.location.origin;
 
+  const getNextPath = () => {
+    if (typeof window === "undefined") return "/workspace";
+    return new URLSearchParams(window.location.search).get("next") || "/workspace";
+  };
+
   const finishLogin = async () => {
     await refreshUser();
     onClose();
-    router.push(nextPath);
+    router.push(getNextPath());
     router.refresh();
   };
 
@@ -51,7 +54,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(getNextPath())}`,
       },
     });
 
@@ -83,7 +86,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       email,
       password,
       options: {
-        emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(getNextPath())}`,
       },
     });
 
