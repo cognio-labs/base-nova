@@ -8,10 +8,68 @@ import PreviewFrame from "@/components/PreviewFrame";
 import SuperagentDashboard from "@/components/SuperagentDashboard";
 import Image from "next/image";
 
+const creationPrompts = {
+  primary: [
+    {
+      label: "Tasks & Workflows",
+      prompt:
+        "Create a polished tasks and workflows web app with a dashboard, task board, priority filters, automation status, team assignments, due dates, and a clean productivity-focused interface.",
+    },
+    {
+      label: "CRM & Sales",
+      prompt:
+        "Create a modern CRM and sales web app with leads, deal pipeline, customer profiles, revenue metrics, follow-up tasks, and a professional sales dashboard.",
+    },
+    {
+      label: "Content & Sites",
+      prompt:
+        "Create a content and websites management web app with site pages, content calendar, SEO checklist, publishing workflow, analytics cards, and an elegant editorial interface.",
+    },
+    {
+      label: "Finance",
+      prompt:
+        "Create a finance web app with expense tracking, income overview, budget categories, cash-flow charts, recent transactions, and a secure financial dashboard style.",
+    },
+    {
+      label: "Booking",
+      prompt:
+        "Create a booking web app with service listings, availability calendar, appointment scheduling, customer details, booking status, and a smooth reservation flow.",
+    },
+  ],
+  more: [
+    {
+      label: "E-Commerce",
+      prompt:
+        "Create an e-commerce website with product grid, featured product section, cart summary, category filters, checkout call to action, and a premium shopping experience.",
+    },
+    {
+      label: "Projects",
+      prompt:
+        "Create a project management web app with project overview, milestones, task progress, team members, timeline, status reporting, and a focused operations dashboard.",
+    },
+    {
+      label: "Events & Community",
+      prompt:
+        "Create an events and community website with upcoming events, member highlights, RSVP flow, discussion sections, event categories, and a friendly community design.",
+    },
+    {
+      label: "Wellness",
+      prompt:
+        "Create a wellness website with habit tracking, daily plans, meditation sessions, progress cards, coach recommendations, and a calm health-focused interface.",
+    },
+    {
+      label: "Operations",
+      prompt:
+        "Create an operations dashboard web app with process tracking, inventory or resource status, alerts, team workload, performance metrics, and a clear command-center layout.",
+    },
+  ],
+};
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isErrorVisible, setIsErrorVisible] = useState(false);
   const [errorInput, setErrorInput] = useState("");
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   const { 
     generateProject, 
@@ -32,6 +90,13 @@ export default function Home() {
   const handleGenerate = async () => {
     if (!prompt.trim() || isGenerating) return;
     await generateProject(prompt);
+  };
+
+  const handleCategoryGenerate = async (categoryPrompt: string) => {
+    if (isGenerating) return;
+    setPrompt(categoryPrompt);
+    setIsMoreOpen(false);
+    await generateProject(categoryPrompt);
   };
 
   const handleDebug = async () => {
@@ -111,6 +176,63 @@ export default function Home() {
                         <ArrowRight className="w-5 h-5" />
                       )}
                     </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative mt-4 text-left">
+                <p className="mb-2 text-xs font-medium text-slate-600 dark:text-gray-400">
+                  What would you like to create?
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  {creationPrompts.primary.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => handleCategoryGenerate(item.prompt)}
+                      disabled={isGenerating}
+                      className="rounded-lg bg-white/85 px-3 py-2 text-xs font-semibold text-slate-800 shadow-sm ring-1 ring-slate-200/70 transition hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/8 dark:text-gray-200 dark:ring-white/10 dark:hover:bg-white/12"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsMoreOpen((open) => !open)}
+                      disabled={isGenerating}
+                      className="rounded-lg bg-white/85 px-3 py-2 text-xs font-semibold text-slate-800 shadow-sm ring-1 ring-slate-200/70 transition hover:bg-sky-50 hover:text-sky-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/8 dark:text-gray-200 dark:ring-white/10 dark:hover:bg-white/12"
+                      aria-expanded={isMoreOpen}
+                      aria-haspopup="menu"
+                    >
+                      ... More
+                    </button>
+
+                    <AnimatePresence>
+                      {isMoreOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-left shadow-xl dark:border-white/10 dark:bg-slate-950"
+                          role="menu"
+                        >
+                          {creationPrompts.more.map((item) => (
+                            <button
+                              key={item.label}
+                              type="button"
+                              onClick={() => handleCategoryGenerate(item.prompt)}
+                              className="block w-full px-3 py-2 text-left text-xs font-medium text-slate-800 transition hover:bg-sky-50 hover:text-sky-700 dark:text-gray-200 dark:hover:bg-white/10"
+                              role="menuitem"
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
