@@ -101,190 +101,196 @@ export default function DashboardWorkspace() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] bg-[#f6f5f3] text-slate-950">
-      <div className="grid min-h-[calc(100vh-5rem)] grid-cols-1 md:grid-cols-[168px_1fr]">
-        <aside className="hidden border-r border-black/5 bg-white/70 p-2 md:block">
-          <div className="space-y-1 rounded-lg bg-[#f2f0ed] p-1">
-            <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-bold shadow-sm">
-              <Grid2X2 className="h-4 w-4" />
+    <div className="min-h-screen bg-white text-slate-900">
+      <div className="grid min-h-[calc(100vh-5rem)] grid-cols-1 md:grid-cols-[240px_1fr]">
+        {/* Sidebar */}
+        <aside className="hidden border-r border-slate-100 bg-white p-4 md:block">
+          <div className="flex flex-col gap-1">
+            <button className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-900">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
+                <Grid2X2 className="h-4 w-4" />
+              </div>
               Apps
-            </div>
-            <div className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold">
-              <Bot className="h-4 w-4" />
+            </button>
+            <button className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-colors">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg">
+                <Bot className="h-4 w-4" />
+              </div>
               Superagents
-            </div>
+            </button>
           </div>
 
-          <div className="mt-6 space-y-1">
-            <h3 className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Navigation</h3>
+          <div className="mt-8 space-y-1">
+            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Navigation</h3>
             {sidebarItems.map((item) => (
               <button
                 key={item.label}
                 type="button"
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-xs font-bold transition-all duration-300 ${
+                className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
                   item.active 
-                  ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" 
-                  : "text-slate-600 hover:bg-[#ebe8e4] hover:text-slate-900"
+                  ? "bg-sky-50 text-sky-600" 
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                <item.icon className={`h-4 w-4 ${item.active ? "text-white" : "text-slate-400 group-hover:text-sky-500"}`} />
+                <item.icon className={`h-4 w-4 ${item.active ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
                 {item.label}
               </button>
             ))}
           </div>
 
-          <div className="mt-8 space-y-1 px-3">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
-            <div className="flex items-center justify-between py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">
-              Favorites <span className="text-[10px]">›</span>
-            </div>
-            <div className="flex items-center justify-between py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">
-              Recents <span className="text-[10px]">›</span>
-            </div>
+          <div className="mt-8 space-y-1">
+            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
+            <button className="flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              Favorites <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
+            </button>
+            <button className="flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              Recents <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100" />
+            </button>
           </div>
         </aside>
 
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#f4f3f1] via-[#ffe1c7] to-[#ff8a55]">
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-center px-4 pb-24 pt-10 md:pt-12">
-            <div className="mb-16 inline-flex items-center gap-2 rounded-xl bg-white/80 p-1 text-xs font-bold shadow-lg shadow-black/5">
-              <button type="button" className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm">
+        {/* Main Section */}
+        <section className="relative bg-[#fcfcfd]">
+          <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-16">
+            {/* Toggle Header */}
+            <div className="mb-12 inline-flex items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
+              <button className="flex items-center gap-2 rounded-xl bg-white px-5 py-2 text-sm font-bold shadow-sm border border-slate-200/50">
                 <Grid2X2 className="h-4 w-4" />
                 Apps
               </button>
-              <button type="button" className="flex items-center gap-2 rounded-lg px-3 py-2">
+              <button className="flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
                 <Bot className="h-4 w-4" />
                 Superagents
+                <span className="rounded-md bg-sky-100 px-1.5 py-0.5 text-[9px] font-black text-sky-600 uppercase">New</span>
               </button>
-              <span className="rounded-md bg-indigo-100 px-2 py-1 text-[10px] text-indigo-600">New</span>
             </div>
 
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-[548px]"
+              className="w-full max-w-2xl"
             >
-              <h1 className="mb-6 text-center text-2xl font-semibold tracking-tight md:text-3xl">
+              <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900">
                 What will you build next?
               </h1>
 
-              <div className="rounded-xl border border-white/80 bg-white/25 p-3 shadow-[0_20px_70px_rgba(145,80,30,0.16)] backdrop-blur">
-                <div className="rounded-xl bg-white shadow-sm">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+                <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50">
                   <textarea
                     value={prompt}
                     onChange={(event) => setPrompt(event.target.value)}
                     placeholder="Describe the app you want to create..."
-                    className="h-24 w-full resize-none rounded-t-xl border-0 bg-transparent px-4 py-4 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                    className="h-32 w-full resize-none border-0 bg-transparent px-4 py-2 text-base text-slate-900 outline-none placeholder:text-slate-400"
                   />
-                  <div className="flex items-center justify-between px-3 pb-3">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                     <div className="flex items-center gap-2">
-                      <button type="button" className="rounded-md border border-slate-200 p-2 transition hover:bg-slate-50">
-                        <Plus className="h-4 w-4" />
+                      <button type="button" className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+                        <Plus className="h-5 w-5" />
                       </button>
-                      <button type="button" className="rounded-md border border-slate-200 p-2 transition hover:bg-slate-50">
-                        <Settings2 className="h-4 w-4" />
+                      <button type="button" className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+                        <Settings2 className="h-5 w-5" />
                       </button>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold">Plan</span>
-                      <span className="h-4 w-8 rounded-full bg-slate-200">
-                        <span className="block h-4 w-4 rounded-full bg-white shadow" />
-                      </span>
-                      <Mic className="h-4 w-4 text-slate-700" />
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-1.5">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Plan</span>
+                        <div className="h-4 w-8 rounded-full bg-slate-100 p-0.5">
+                          <div className="h-3 w-3 rounded-full bg-slate-400" />
+                        </div>
+                      </div>
+                      <button className="text-slate-400 hover:text-slate-900 transition-colors">
+                        <Mic className="h-5 w-5" />
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleGenerate()}
                         disabled={isGenerating || !prompt.trim()}
-                        className="rounded-lg bg-black p-2.5 text-white shadow-lg transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex items-center justify-center rounded-xl bg-slate-900 p-3 text-white shadow-lg transition hover:bg-black disabled:opacity-50"
                       >
-                        {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                        {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 text-left">
-                  <p className="mb-2 text-[10px] font-medium text-slate-600">
-                    What would you like to create?
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {creationPrompts.primary.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => handleGenerate(item.prompt)}
-                        disabled={isGenerating}
-                        className="rounded-md bg-white px-3 py-2 text-[11px] font-bold shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => setIsMoreOpen((open) => !open)}
-                        className="rounded-md bg-white px-3 py-2 text-[11px] font-bold shadow-sm transition hover:bg-slate-50"
-                        aria-expanded={isMoreOpen}
-                        aria-haspopup="menu"
-                      >
-                        ... More
-                      </button>
-                      <AnimatePresence>
-                        {isMoreOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -4 }}
-                            className="absolute left-0 top-full z-20 mt-2 w-44 overflow-hidden rounded-md border border-slate-200 bg-white py-1 shadow-xl"
-                          >
-                            {creationPrompts.more.map((item) => (
-                              <button
-                                key={item.label}
-                                type="button"
-                                onClick={() => handleGenerate(item.prompt)}
-                                className="block w-full px-3 py-2 text-left text-xs font-medium hover:bg-slate-50"
-                              >
-                                {item.label}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                  {creationPrompts.primary.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => handleGenerate(item.prompt)}
+                      disabled={isGenerating}
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 disabled:opacity-50"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsMoreOpen((open) => !open)}
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                    >
+                      ... More
+                    </button>
+                    <AnimatePresence>
+                      {isMoreOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute bottom-full left-0 z-50 mb-4 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl"
+                        >
+                          {creationPrompts.more.map((item) => (
+                            <button
+                              key={item.label}
+                              type="button"
+                              onClick={() => handleGenerate(item.prompt)}
+                              className="block w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
 
               {error && (
-                <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">
+                <div className="mt-6 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-600 border border-red-100 text-center">
                   {error}
                 </div>
               )}
             </motion.div>
           </div>
 
-          <div className="absolute bottom-0 left-1/2 w-[min(78rem,calc(100%-2rem))] -translate-x-1/2 rounded-t-2xl bg-white p-7 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <button type="button" className="rounded-md border border-slate-200 px-3 py-2 text-xs font-bold">
+          {/* Bottom Card */}
+          <div className="absolute bottom-0 left-1/2 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 rounded-t-[2.5rem] border-x border-t border-slate-100 bg-white p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.02)]">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-6">
+                <button type="button" className="text-sm font-bold text-slate-900 border-b-2 border-slate-900 pb-1">
                   Recent apps
                 </button>
-                <button type="button" className="rounded-md px-3 py-2 text-xs font-bold hover:bg-slate-50">
+                <button type="button" className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">
                   Templates
                 </button>
               </div>
-              <button type="button" className="flex items-center gap-2 text-xs font-semibold">
+              <button type="button" className="flex items-center gap-2 text-xs font-bold text-sky-600 hover:text-sky-700 transition-colors">
                 View all <ArrowRight className="h-3 w-3" />
               </button>
             </div>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3">
               {["CryptoPulse", "CRM Pipeline", "Booking Hub"].map((app) => (
-                <div key={app} className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                  <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm">
-                    <Sparkles className="h-4 w-4 text-orange-500" />
+                <div key={app} className="group cursor-pointer rounded-2xl border border-slate-100 bg-white p-5 transition-all hover:border-sky-100 hover:shadow-xl hover:shadow-sky-500/5">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 group-hover:bg-sky-50 transition-colors">
+                    <Sparkles className="h-5 w-5 text-sky-500" />
                   </div>
-                  <h3 className="text-sm font-bold">{app}</h3>
-                  <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
-                    <Clock className="h-3 w-3" />
+                  <h3 className="text-base font-bold text-slate-900">{app}</h3>
+                  <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                    <Clock className="h-3.5 w-3.5" />
                     Recently generated
                   </p>
                 </div>
