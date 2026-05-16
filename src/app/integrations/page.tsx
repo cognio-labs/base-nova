@@ -74,11 +74,11 @@ export default function IntegrationsPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8 md:p-12">
+      <main className="flex-1 ml-0 md:ml-64 p-8 md:p-12 transition-all duration-300">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-slate-900 mb-2">Integrations</h1>
-            <p className="text-slate-500">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Integrations</h1>
+            <p className="text-slate-500 dark:text-gray-400">
               Discover pre-built integrations that let you connect to APIs, services, and tools to extend your app&apos;s capabilities.
             </p>
           </div>
@@ -90,13 +90,13 @@ export default function IntegrationsPage() {
               placeholder="Search integrations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all shadow-sm"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all shadow-sm text-slate-900 dark:text-white"
             />
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-slate-900 mb-1">Connectors</h2>
-            <p className="text-xs text-slate-500">Quick OAuth connections to popular services, supported by Base44.</p>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">Connectors</h2>
+            <p className="text-xs text-slate-500 dark:text-gray-500">Quick OAuth connections to popular services, supported by Base44.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -113,7 +113,7 @@ export default function IntegrationsPage() {
 function NavItem({ icon: Icon, label, active, hasArrow }: { icon: any, label: string, active?: boolean, hasArrow?: boolean }) {
   return (
     <button className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-      active ? "bg-slate-100 text-slate-900" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+      active ? "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5"
     }`}>
       <div className="flex items-center gap-3">
         <Icon className="w-4 h-4" />
@@ -126,8 +126,8 @@ function NavItem({ icon: Icon, label, active, hasArrow }: { icon: any, label: st
 
 function RecentItem({ label }: { label: string }) {
   return (
-    <button className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-all text-left">
-      <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+    <button className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 rounded-md transition-all text-left">
+      <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-gray-600" />
       <span className="truncate">{label}</span>
     </button>
   );
@@ -139,10 +139,10 @@ function IntegrationCard({ item, index }: { item: any, index: number }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col h-full hover:border-sky-200 hover:shadow-md transition-all group cursor-pointer"
+      className="bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/5 rounded-2xl p-6 flex flex-col h-full hover:border-sky-200 dark:hover:border-sky-500/30 hover:shadow-md transition-all group cursor-pointer"
     >
       <div className="mb-6">
-        <div className="w-10 h-10 relative flex items-center justify-center rounded-lg overflow-hidden bg-slate-50">
+        <div className="w-10 h-10 relative flex items-center justify-center rounded-lg overflow-hidden bg-slate-50 dark:bg-white/5">
           <Image 
             src={`https://www.google.com/s2/favicons?domain=${item.domain || item.name.toLowerCase() + '.com'}&sz=64`}
             alt={item.name}
@@ -154,13 +154,13 @@ function IntegrationCard({ item, index }: { item: any, index: number }) {
         </div>
       </div>
       
-      <h3 className="text-sm font-bold text-slate-900 mb-1">{item.name}</h3>
-      <p className="text-[11px] text-slate-500 leading-relaxed mb-6 line-clamp-2">
+      <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">{item.name}</h3>
+      <p className="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed mb-6 line-clamp-2">
         {item.description}
       </p>
       
       <div className="mt-auto">
-        <button className="w-full py-2 border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+        <button className="w-full py-2 border border-slate-200 dark:border-white/10 rounded-lg text-[10px] font-bold text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-colors">
           How to use
         </button>
       </div>
