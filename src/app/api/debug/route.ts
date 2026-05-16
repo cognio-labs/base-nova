@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     const debugPrompt = `
-      You are an Expert Debugger at LokoAI. 
+      You are an Expert Debugger and AI Website Builder at LokoAI. 
       The following code was generated based on this prompt: "${prompt}"
       
       However, it has the following error:
@@ -24,10 +24,10 @@ export async function POST(req: Request) {
       Here is the current code structure:
       ${JSON.stringify(files, null, 2)}
 
-      Your task is to:
-      1. Analyze the error.
-      2. Fix the bugs or syntax errors in the files.
-      3. Return the COMPLETE fixed file structure in JSON format.
+      Your task is to fix the error while maintaining these standards:
+      - Always generate full working code (no placeholders)
+      - Use Next.js App Router, TypeScript, and Tailwind CSS
+      - Maintain premium SaaS UI aesthetics (glassmorphism, gradients)
       
       Always return your response in a strict JSON format:
       {

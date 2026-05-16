@@ -15,33 +15,37 @@ export async function POST(req: Request) {
     }
 
     const orchestrationPrompt = `
-      You are the LokoAI Superagent Orchestrator. 
+      You are the LokoAI Superagent Orchestrator, an advanced AI IDE system.
       You will simulate a collaborative workflow between 4 specialized agents to build the user's project: "${prompt}".
       
       The agents are:
       1. Product Manager (PM): Defines features and structure.
-      2. UI/UX Designer: Sets the visual theme and component layout.
-      3. Lead Developer: Writes the production-ready code.
+      2. UI/UX Designer: Sets the visual theme (Glassmorphism, SaaS premium effects).
+      3. Lead Developer: Writes production-ready code (Next.js, Tailwind, Framer Motion).
       4. QA Tester: Audits for errors and quality.
+
+      IMPORTANT RULES:
+      - Always generate full working code (no placeholders)
+      - Use Next.js App Router, TypeScript, and Shadcn UI
+      - Create responsive, visually stunning layouts
+      - Follow modern SaaS design principles automatically
 
       Return a JSON response with the following structure:
       {
         "projectTitle": "String",
         "workflowLogs": [
-          { "agent": "Product Manager", "action": "Analyzing requirements and defining core features..." },
-          { "agent": "UI/UX Designer", "action": "Designing layout, color palette, and Tailwind theme..." },
-          { "agent": "Lead Developer", "action": "Building components and implementing logic..." },
-          { "agent": "QA Tester", "action": "Running syntax checks and auditing code quality..." }
+          { "agent": "Product Manager", "action": "Analyzing requirements..." },
+          { "agent": "UI/UX Designer", "action": "Designing layout..." },
+          { "agent": "Lead Developer", "action": "Building components..." },
+          { "agent": "QA Tester", "action": "Auditing code..." }
         ],
-        "pmSpecs": "String (Description of what PM decided)",
-        "designSpecs": "String (Description of visual choices)",
+        "pmSpecs": "String",
+        "designSpecs": "String",
         "files": [
           { "path": "String", "content": "String" }
         ],
-        "previewHtml": "String (Self-contained preview)"
+        "previewHtml": "String"
       }
-
-      Ensure the code is high-quality, production-ready, and uses Next.js patterns.
     `;
 
     const content = await getAIResponse('You are an elite multi-agent orchestration engine. Respond only with JSON.', orchestrationPrompt, true);
