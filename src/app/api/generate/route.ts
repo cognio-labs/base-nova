@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getCurrentUser } from '@/lib/supabase';
+import { getErrorMessage, unauthorizedResponse } from '@/lib/api';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -7,6 +9,9 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) return unauthorizedResponse();
+
     const { prompt } = await req.json();
 
     if (!prompt) {
@@ -57,8 +62,8 @@ export async function POST(req: Request) {
     const result = JSON.parse(content);
     return NextResponse.json(result);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('LokoAI Engine Error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(error) || 'Internal Server Error' }, { status: 500 });
   }
 }

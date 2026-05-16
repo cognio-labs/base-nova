@@ -1,18 +1,22 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { createSupabaseServerClient, getCurrentUser } from '@/lib/supabase';
+import { getErrorMessage, sanitizeProjectTitle, unauthorizedResponse } from '@/lib/api';
 
 export async function POST(req: Request) {
   try {
-    const { files, projectTitle } = await req.json();
+    const user = await getCurrentUser();
+    if (!user) return unauthorizedResponse();
+
+    const { files, projectTitle, description, previewHtml } = await req.json();
 
     if (!files || !Array.isArray(files)) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 });
     }
 
-    // Define the base directory for saving. 
-    // We'll save inside a 'generated' folder in the project root for safety.
-    const baseDir = path.join(process.cwd(), 'generated', projectTitle || 'untitled-app');
+    const safeTitle = sanitizeProjectTitle(projectTitle || 'untitled-app');
+    const baseDir = path.join(process.cwd(), 'generated', user.id, safeTitle);
 
     // Create the base directory if it doesn't exist
     await fs.mkdir(baseDir, { recursive: true });
@@ -29,13 +33,24 @@ export async function POST(req: Request) {
       await fs.writeFile(filePath, file.content, 'utf8');
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: `Successfully saved ${files.length} files to ${baseDir}` 
+    const supabase = await createSupabaseServerClient();
+    const { error: dbError } = await supabase.from('projects').insert({
+      user_id: user.id,
+      title: projectTitle || 'Untitled App',
+      description: description || null,
+      generated_code: files,
+      preview_url: previewHtml || null,
     });
 
-  } catch (error: any) {
+    if (dbError) throw dbError;
+
+    return NextResponse.json({ 
+      success: true, 
+      message: `Saved ${files.length} files to your LokoAI workspace` 
+    });
+
+  } catch (error: unknown) {
     console.error('LokoAI File Save Error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to save files' }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(error) || 'Failed to save files' }, { status: 500 });
   }
 }
