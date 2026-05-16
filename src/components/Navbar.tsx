@@ -10,6 +10,7 @@ import AuthModal from "@/components/AuthModal";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import UserMenu from "@/components/UserMenu";
 
 const navItems = [
   { name: "Home", href: "/", icon: Sparkles },
@@ -68,28 +69,15 @@ export default function Navbar() {
             </button>
 
             {!isLoading && user ? (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-sky-500/10 dark:text-gray-200">
+              <div className="flex items-center gap-4">
+                <Link 
+                  href="/dashboard" 
+                  className="hidden sm:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-sky-500/10 dark:text-gray-200"
+                >
                   <Gauge className="h-4 w-4 text-sky-500" />
                   Dashboard
                 </Link>
-                <div className="flex items-center gap-2 rounded-full bg-white/70 px-2 py-1.5 ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
-                  <div className="relative h-7 w-7 overflow-hidden rounded-full bg-sky-400/20">
-                    {user.user_metadata?.avatar_url ? (
-                      <Image src={user.user_metadata.avatar_url} alt="User avatar" fill sizes="28px" className="object-cover" />
-                    ) : (
-                      <span className="flex h-full w-full items-center justify-center text-xs font-bold text-sky-600">
-                        {(user.email || "U").charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <span className="max-w-36 truncate text-xs font-medium text-slate-700 dark:text-gray-200">
-                    {user.email || user.phone}
-                  </span>
-                </div>
-                <Button variant="ghost" size="icon" onClick={signOut} aria-label="Logout">
-                  <LogOut className="h-4 w-4" />
-                </Button>
+                <UserMenu />
               </div>
             ) : (
               <>
