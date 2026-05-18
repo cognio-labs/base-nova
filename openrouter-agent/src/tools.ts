@@ -1,5 +1,5 @@
 import { tool } from '@openrouter/agent';
-import { z } from 'zod/v4/core';
+import * as z from 'zod/v4/core';
 
 export const timeTool = tool({
   name: 'get_current_time',
