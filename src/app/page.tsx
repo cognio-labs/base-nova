@@ -263,8 +263,8 @@ const testimonials = [
 const pricingPlans = [
   {
     name: "Starter",
-    monthlyPrice: 19,
-    yearlyPrice: 15,
+    monthlyPrice: 15,
+    yearlyPrice: 12,
     highlight: "Best for trying LokoAI",
     credits: "120 Monthly credits",
     integCredits: "3k Integration credits",
@@ -279,8 +279,8 @@ const pricingPlans = [
   },
   {
     name: "Builder",
-    monthlyPrice: 39,
-    yearlyPrice: 31,
+    monthlyPrice: 31,
+    yearlyPrice: 25,
     highlight: "Best for solo founders",
     credits: "300 Monthly credits",
     integCredits: "12k Integration credits",
@@ -296,8 +296,8 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    monthlyPrice: 79,
-    yearlyPrice: 63,
+    monthlyPrice: 63,
+    yearlyPrice: 50,
     highlight: "Best for growing product teams",
     credits: "650 Monthly credits",
     integCredits: "25k Integration credits",
@@ -314,8 +314,8 @@ const pricingPlans = [
   },
   {
     name: "Elite",
-    monthlyPrice: 149,
-    yearlyPrice: 119,
+    monthlyPrice: 119,
+    yearlyPrice: 95,
     highlight: "Best for agencies and scale-ups",
     credits: "1.5k Monthly credits",
     integCredits: "60k Integration credits",
@@ -334,7 +334,7 @@ const pricingPlans = [
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isYearly, setIsYearly] = useState(true);
+  const [isYearly, setIsYearly] = useState(false);
 
   return (
     <div className="relative min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
