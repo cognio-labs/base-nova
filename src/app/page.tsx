@@ -263,11 +263,11 @@ const testimonials = [
 const pricingPlans = [
   {
     name: "Starter",
-    monthlyPrice: 15,
-    yearlyPrice: 12,
+    monthlyPrice: 19,
+    yearlyPrice: 15,
     highlight: "Best for trying LokoAI",
-    credits: "120 Monthly credits",
-    integCredits: "3k Integration credits",
+    credits: "120 Monthly credits /mo",
+    integCredits: "3k Integration credits /mo",
     features: [
       "Unlimited apps and superagents",
       "Built-in integrations",
@@ -279,11 +279,11 @@ const pricingPlans = [
   },
   {
     name: "Builder",
-    monthlyPrice: 31,
-    yearlyPrice: 25,
+    monthlyPrice: 39,
+    yearlyPrice: 31,
     highlight: "Best for solo founders",
-    credits: "300 Monthly credits",
-    integCredits: "12k Integration credits",
+    credits: "300 Monthly credits /mo",
+    integCredits: "12k Integration credits /mo",
     features: [
       "Unlimited apps and superagents",
       "Unlimited collaborators with shared credits",
@@ -296,11 +296,11 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    monthlyPrice: 63,
-    yearlyPrice: 50,
+    monthlyPrice: 79,
+    yearlyPrice: 63,
     highlight: "Best for growing product teams",
-    credits: "650 Monthly credits",
-    integCredits: "25k Integration credits",
+    credits: "650 Monthly credits /mo",
+    integCredits: "25k Integration credits /mo",
     features: [
       "Everything in Builder",
       "Private templates",
@@ -314,11 +314,11 @@ const pricingPlans = [
   },
   {
     name: "Elite",
-    monthlyPrice: 119,
-    yearlyPrice: 95,
+    monthlyPrice: 149,
+    yearlyPrice: 119,
     highlight: "Best for agencies and scale-ups",
-    credits: "1.5k Monthly credits",
-    integCredits: "60k Integration credits",
+    credits: "1.5k Monthly credits /mo",
+    integCredits: "60k Integration credits /mo",
     features: [
       "Everything in Pro",
       "Dedicated onboarding",
@@ -710,7 +710,7 @@ export default function Home() {
 
                     {/* Features list */}
                     <div className="space-y-3.5 mb-8">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">PLAN BENEFITS</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Highlights</p>
                       {plan.features.map((feature, fIdx) => (
                         <div key={fIdx} className="flex items-start gap-3">
                           <div className="h-4.5 w-4.5 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/20">
