@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { render, Box, Text, useInput, useApp } from 'ink';
-import type { StreamableOutputItem } from '@openrouter/sdk';
+import type { StreamableOutputItem } from '@openrouter/agent';
 import { createAgent, type Agent, type Message } from './agent.js';
 import { defaultTools } from './tools.js';
 
