@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: resolve("."),
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
   devIndicators: false,
 };
 
