@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Sparkles, Check, Star, ArrowRight, ChevronRight
+  Sparkles, Check, Star, ArrowRight, ChevronRight,
+  Mail, Video, Calendar, Youtube, Linkedin, Twitter, MessageSquare, BookOpen, Slack, Github, Activity, ShoppingBag
 } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 
@@ -25,74 +26,74 @@ const clientBrands = [
 
 // App/Tool Icons for Section 3 (Opposing Vertical Scrolling grids)
 const integrationTools = [
-  { name: "Gmail", color: "bg-red-500/10 text-red-500 border-red-500/20" },
-  { name: "Google Meet", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
-  { name: "Calendly", color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
-  { name: "YouTube", color: "bg-red-600/10 text-red-600 border-red-600/20" },
-  { name: "LinkedIn", color: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20" },
-  { name: "Twitter X", color: "bg-slate-950/10 dark:bg-white/10 text-slate-950 dark:text-white border-slate-950/20 dark:border-white/20" },
-  { name: "WhatsApp", color: "bg-green-500/10 text-green-500 border-green-500/20" },
-  { name: "Notion", color: "bg-neutral-800/10 text-neutral-800 dark:text-white border-neutral-800/20" },
-  { name: "Slack", color: "bg-purple-500/10 text-purple-500 border-purple-500/20" },
-  { name: "GitHub", color: "bg-slate-900/10 dark:bg-white/10 text-slate-900 dark:text-white border-slate-900/20" },
-  { name: "HubSpot", color: "bg-orange-500/10 text-orange-500 border-orange-500/20" },
-  { name: "Shopify", color: "bg-lime-500/10 text-lime-500 border-lime-500/20" }
+  { name: "Gmail", icon: Mail, color: "text-[#EA4335] bg-red-500/5 border-red-500/10 dark:border-red-500/20" },
+  { name: "Google Meet", icon: Video, color: "text-[#0F9D58] bg-emerald-500/5 border-emerald-500/10 dark:border-emerald-500/20" },
+  { name: "Calendly", icon: Calendar, color: "text-[#006BFF] bg-blue-500/5 border-blue-500/10 dark:border-blue-500/20" },
+  { name: "YouTube", icon: Youtube, color: "text-[#FF0000] bg-rose-500/5 border-rose-500/10 dark:border-rose-500/20" },
+  { name: "LinkedIn", icon: Linkedin, color: "text-[#0A66C2] bg-sky-500/5 border-sky-500/10 dark:border-sky-500/20" },
+  { name: "Twitter X", icon: Twitter, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
+  { name: "WhatsApp", icon: MessageSquare, color: "text-[#25D366] bg-green-500/5 border-green-500/10 dark:border-green-500/20" },
+  { name: "Notion", icon: BookOpen, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
+  { name: "Slack", icon: Slack, color: "text-[#4A154B] dark:text-purple-400 bg-purple-500/5 border-purple-500/10 dark:border-purple-500/20" },
+  { name: "GitHub", icon: Github, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
+  { name: "HubSpot", icon: Activity, color: "text-[#FF7A59] bg-orange-500/5 border-orange-500/10 dark:border-orange-500/20" },
+  { name: "Shopify", icon: ShoppingBag, color: "text-[#7AB55C] bg-lime-500/5 border-lime-500/10 dark:border-lime-500/20" }
 ];
 
 // Testimonials for Section 4 (9 realistic cards)
 const testimonials = [
   {
-    name: "Shannon S.",
+    name: "Sarah Jenkins",
     role: "Operations Lead @ BrightPath Agency",
-    avatarBg: "from-sky-400 to-cyan-500",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80",
     review: "LokoAI helped us automate tasks we were still doing manually every day. The setup was surprisingly fast, and the agents just work without constant babysitting."
   },
   {
-    name: "Yoav E.",
-    role: "Senior Engineer @ Cortex Labs",
-    avatarBg: "from-purple-400 to-indigo-500",
+    name: "David Chen",
+    role: "Senior AI Engineer @ Cortex Labs",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
     review: "LokoAI strikes a great balance between flexibility and simplicity. Multi-model support, tool integrations, and clean execution make it easy to build serious agents without infrastructure overhead."
   },
   {
-    name: "Shubham K.",
-    role: "Backend Engineer @ DataForge",
-    avatarBg: "from-emerald-400 to-teal-500",
+    name: "Arjun Mehta",
+    role: "Lead Architect @ DataForge",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
     review: "The agent orchestration and model switching are very well designed. We can route different tasks to different LLMs without rewriting logic, which is a big win."
   },
   {
-    name: "Matthew A.",
+    name: "Emily Watson",
     role: "Product Manager @ LaunchStack",
-    avatarBg: "from-pink-400 to-rose-500",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
     review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows — just explain the task and deploy. It's now part of our daily operations."
   },
   {
-    name: "Guadalupe M.",
+    name: "Sofia Rodriguez",
     role: "Customer Success Manager @ Helpwise",
-    avatarBg: "from-amber-400 to-orange-500",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&auto=format&fit=crop&q=80",
     review: "Our support workflows are much smoother now. The chatbot handles common queries, and escalations are seamless when a human is needed."
   },
   {
-    name: "Rajat K.",
+    name: "Rohan Das",
     role: "Growth & Strategy @ ScaleUp Studio",
-    avatarBg: "from-blue-400 to-sky-500",
+    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=120&auto=format&fit=crop&q=80",
     review: "LokoAI helped us automate lead qualification and internal reporting. What used to take hours now runs quietly in the background."
   },
   {
-    name: "Michaela G.",
+    name: "Jessica Taylor",
     role: "Marketing Manager @ Vantage Digital",
-    avatarBg: "from-teal-400 to-emerald-500",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80",
     review: "We use LokoAI for content generation and campaign research. It saves hours every week and keeps everything in one place instead of juggling multiple tools."
   },
   {
-    name: "Joel S.",
+    name: "Marcus Stone",
     role: "Founder @ NovaBridge",
-    avatarBg: "from-violet-400 to-purple-500",
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80",
     review: "We replaced three separate AI subscriptions with LokoAI. Lower cost, better control, and far less complexity for our team."
   },
   {
-    name: "Ruchika S.",
+    name: "Dr. Priya Nair",
     role: "Academic Researcher @ IIT Delhi",
-    avatarBg: "from-rose-400 to-pink-500",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
     review: "LokoAI has been extremely useful in managing academic workflows. From organizing course materials to assisting with research summaries, it has significantly reduced repetitive effort."
   }
 ];
@@ -347,43 +348,43 @@ export default function Home() {
               <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-slate-50 dark:from-[#0d1527] to-transparent z-10 pointer-events-none" />
 
               {/* Column 1: Scrolling Up */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-up whitespace-nowrap">
+              <div className="flex flex-col gap-3 animate-marquee-vertical-up">
                 {integrationTools.slice(0, 4).map((tool, idx) => (
-                  <div key={`c1-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c1-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
                 {integrationTools.slice(0, 4).map((tool, idx) => (
-                  <div key={`c1-dup-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c1-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
               </div>
 
               {/* Column 2: Scrolling Down */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-down whitespace-nowrap">
+              <div className="flex flex-col gap-3 animate-marquee-vertical-down">
                 {integrationTools.slice(4, 8).map((tool, idx) => (
-                  <div key={`c2-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c2-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
                 {integrationTools.slice(4, 8).map((tool, idx) => (
-                  <div key={`c2-dup-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c2-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
               </div>
 
               {/* Column 3: Scrolling Up */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-up whitespace-nowrap">
+              <div className="flex flex-col gap-3 animate-marquee-vertical-up">
                 {integrationTools.slice(8, 12).map((tool, idx) => (
-                  <div key={`c3-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c3-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
                 {integrationTools.slice(8, 12).map((tool, idx) => (
-                  <div key={`c3-dup-${idx}`} className={`flex flex-col items-center justify-center border rounded-2xl p-4 aspect-square ${tool.color} shadow-sm`}>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">{tool.name}</span>
+                  <div key={`c3-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
+                    <tool.icon className="w-7 h-7 stroke-[2]" />
                   </div>
                 ))}
               </div>
@@ -422,8 +423,13 @@ export default function Home() {
               <div>
                 {/* Avatar Info */}
                 <div className="flex items-center gap-3.5 mb-4">
-                  <div className={`w-11 h-11 rounded-full bg-gradient-to-tr ${t.avatarBg} flex items-center justify-center font-bold text-white shadow-sm`}>
-                    {t.name.split(" ")[0][0]}
+                  <div className="relative w-11 h-11 rounded-full overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm flex-shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={t.avatar} 
+                      alt={t.name}
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-950 dark:text-white text-sm">{t.name}</h4>
