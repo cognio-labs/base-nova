@@ -9,5 +9,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@openrouter/sdk": "^0.12.35",
+    "eventemitter3": "^5.0.4",
+    "ink": "^7.0.3",
+    "react": "^19.2.6",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "tsx": "^4.22.1",
+    "typescript": "^6.0.3"
+  }
 }
