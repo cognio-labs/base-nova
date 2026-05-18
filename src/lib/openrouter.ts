@@ -88,7 +88,7 @@ function getOfflineJson(userPrompt: string) {
             <div class="list">
               <div class="item"><strong>Hero</strong><div class="muted">Headline + CTA ready</div></div>
               <div class="item"><strong>Sections</strong><div class="muted">Features, testimonials, pricing</div></div>
-              <div class="item"><strong>Export</strong><div class="muted">Save files into `generated/`</div></div>
+              <div class="item"><strong>Export</strong><div class="muted">Save files into generated/</div></div>
             </div>
           </div>
           <div class="item">
@@ -214,3 +214,4 @@ export async function getOpenRouterResponse(
     throw error;
   }
 }
+
