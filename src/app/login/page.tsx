@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,6 +24,10 @@ function LoginContent() {
       router.replace(nextPath.startsWith("/") ? nextPath : "/dashboard");
     }
   }, [isLoading, nextPath, router, user]);
+
+  if (isLoading) {
+    return <LoginLoadingState />;
+  }
 
   return (
     <div className="relative min-h-[calc(100vh-64px)] overflow-hidden">
@@ -67,6 +71,25 @@ function LoginShell() {
         <h1 className="mb-5 text-4xl font-bold tracking-tight text-slate-950 dark:text-white md:text-6xl">
           Preparing secure login...
         </h1>
+      </div>
+    </div>
+  );
+}
+
+function LoginLoadingState() {
+  return (
+    <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden px-4 py-20">
+      <div className="absolute inset-0 bg-grid-pattern opacity-80" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#7dd3fc22,transparent_35%),radial-gradient(circle_at_bottom,#ffffff14,transparent_35%)]" />
+      <div className="relative max-w-2xl text-center">
+        <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-sky-500" />
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-sky-500">Secure Workspace Access</p>
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-950 dark:text-white md:text-6xl">
+          Checking your session...
+        </h1>
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          We are verifying your account before continuing.
+        </p>
       </div>
     </div>
   );
