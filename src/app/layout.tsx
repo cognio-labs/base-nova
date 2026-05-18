@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import Script from "next/script";
+
 import "./globals.css";
 import AppChrome from "@/components/AppChrome";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -20,22 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable, "dark")}>
       <body className="antialiased">
-        <Script
-          id="theme-initializer"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var theme = localStorage.getItem('theme') || 'dark';
-                var isDark = theme === 'dark';
-                document.documentElement.classList.toggle('dark', isDark);
-                document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-              } catch (_) {}
-            `,
-          }}
-        />
+
         <ThemeProvider defaultTheme="dark">
           <AuthProvider>
             <AppChrome>{children}</AppChrome>
