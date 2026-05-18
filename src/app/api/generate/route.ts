@@ -1,17 +1,13 @@
-import { NextResponse } from 'next/server';
-import { getAIResponse } from '@/lib/ai';
-import { getCurrentUser } from '@/lib/supabase';
-import { getErrorMessage, unauthorizedResponse } from '@/lib/api';
+﻿import { NextResponse } from "next/server";
+import { getAIResponse } from "@/lib/ai";
+import { getErrorMessage } from "@/lib/api";
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user) return unauthorizedResponse();
-
     const { prompt } = await req.json();
 
     if (!prompt) {
-      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
     const systemPrompt = `
@@ -59,16 +55,18 @@ export async function POST(req: Request) {
     `;
 
     const content = await getAIResponse(systemPrompt, prompt, true);
-    
+
     if (!content) {
-      throw new Error('No content returned from AI');
+      throw new Error("No content returned from AI");
     }
 
     const result = JSON.parse(content);
     return NextResponse.json(result);
-
   } catch (error: unknown) {
-    console.error('LokoAI Engine Error:', error);
-    return NextResponse.json({ error: getErrorMessage(error) || 'Internal Server Error' }, { status: 500 });
+    console.error("LokoAI Engine Error:", error);
+    return NextResponse.json(
+      { error: getErrorMessage(error) || "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
