@@ -636,7 +636,7 @@ export default function Home() {
       <section className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-slate-100 dark:border-white/5">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
-            Simple and Feasible Pricing
+            Simple Pricing for Powerful AI
           </h2>
           <p className="mx-auto max-w-2xl text-slate-500 dark:text-gray-400 text-base sm:text-lg mb-8">
             Choose a plan that scales with your AI ambitions. No hidden fees, cancel anytime.
