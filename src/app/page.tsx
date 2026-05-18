@@ -375,7 +375,7 @@ export default function Home() {
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-600 dark:text-gray-400">
-            Build custom AI agents, collaborate with your team, and access every major model — GPT-4, Claude, Gemini, Llama, and more. Starting at <span className="font-bold text-slate-900 dark:text-white">$19/month</span>.
+            From UI design and animations to content, code, and deployment — Loko AI helps you build complete websites faster than ever.
           </p>
 
           {/* Buttons */}
