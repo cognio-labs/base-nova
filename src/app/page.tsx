@@ -51,19 +51,80 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 // Brand Logo Details for Section 2 (Infinite Marquee)
+// Brand Logo Details for Section 2 (Infinite Marquee)
 const clientBrands = [
-  { name: "Deloitte.", color: "text-[#86BC25]", font: "font-sans font-black tracking-tight" },
-  { name: "zomato", color: "text-[#E23744]", font: "font-serif italic font-extrabold" },
-  { name: "BHASHINI", color: "text-[#0A2540]", font: "font-sans font-bold tracking-widest" },
-  { name: "OpenAI", color: "text-slate-900 dark:text-white", font: "font-mono font-bold" },
-  { name: "Google Gemini", color: "text-sky-500", font: "font-sans font-extrabold tracking-tight" },
-  { name: "Anthropic", color: "text-[#E0B883]", font: "font-serif font-bold" },
-  { name: "Meta Llama", color: "text-blue-600", font: "font-sans font-bold" },
-  { name: "Cohere", color: "text-[#3B593E]", font: "font-mono" },
-  { name: "Vercel", color: "text-black dark:text-white", font: "font-sans font-black tracking-tighter" },
-  { name: "Supabase", color: "text-[#3ECF8E]", font: "font-sans font-bold" },
-  { name: "Pinecone", color: "text-amber-500", font: "font-sans font-extrabold" },
-  { name: "LangChain", color: "text-emerald-500", font: "font-mono font-bold" }
+  { 
+    name: "Deloitte.", 
+    font: "font-sans font-black tracking-tight", 
+    color: "text-[#86BC25]",
+    bg: "bg-[#86BC25]/5 hover:bg-[#86BC25]/10 border-[#86BC25]/15 dark:border-[#86BC25]/30 shadow-[#86BC25]/5 hover:shadow-[#86BC25]/15" 
+  },
+  { 
+    name: "zomato", 
+    font: "font-serif italic font-extrabold", 
+    color: "text-[#E23744]",
+    bg: "bg-[#E23744]/5 hover:bg-[#E23744]/10 border-[#E23744]/15 dark:border-[#E23744]/30 shadow-[#E23744]/5 hover:shadow-[#E23744]/15" 
+  },
+  { 
+    name: "BHASHINI", 
+    font: "font-sans font-bold tracking-widest", 
+    color: "text-[#0A2540] dark:text-[#4F8BFF]",
+    bg: "bg-[#0A2540]/5 hover:bg-[#0A2540]/10 border-[#0A2540]/15 dark:border-[#4F8BFF]/30 shadow-[#0A2540]/5 hover:shadow-[#4F8BFF]/15" 
+  },
+  { 
+    name: "OpenAI", 
+    font: "font-mono font-bold", 
+    color: "text-slate-900 dark:text-white",
+    bg: "bg-slate-500/5 hover:bg-slate-500/10 border-slate-500/15 dark:border-slate-500/30 shadow-slate-500/5" 
+  },
+  { 
+    name: "Google Gemini", 
+    font: "font-sans font-extrabold tracking-tight", 
+    color: "text-sky-500",
+    bg: "bg-sky-500/5 hover:bg-sky-500/10 border-sky-500/15 dark:border-sky-500/30 shadow-sky-500/5 hover:shadow-sky-500/15" 
+  },
+  { 
+    name: "Anthropic", 
+    font: "font-serif font-bold", 
+    color: "text-[#E0B883]",
+    bg: "bg-[#E0B883]/5 hover:bg-[#E0B883]/10 border-[#E0B883]/15 dark:border-[#E0B883]/30 shadow-[#E0B883]/5 hover:shadow-[#E0B883]/15" 
+  },
+  { 
+    name: "Meta Llama", 
+    font: "font-sans font-bold", 
+    color: "text-blue-600",
+    bg: "bg-blue-600/5 hover:bg-blue-600/10 border-blue-600/15 dark:border-blue-600/30 shadow-blue-600/5 hover:shadow-blue-600/15" 
+  },
+  { 
+    name: "Cohere", 
+    font: "font-mono", 
+    color: "text-[#3B593E] dark:text-[#6BB374]",
+    bg: "bg-[#3B593E]/5 hover:bg-[#3B593E]/10 border-[#3B593E]/15 dark:border-[#6BB374]/30 shadow-[#3B593E]/5 hover:shadow-[#6BB374]/15" 
+  },
+  { 
+    name: "Vercel", 
+    font: "font-sans font-black tracking-tighter", 
+    color: "text-black dark:text-white",
+    bg: "bg-slate-500/5 hover:bg-slate-500/10 border-slate-500/15 dark:border-slate-500/30 shadow-slate-500/5" 
+  },
+  { 
+    name: "Supabase", 
+    font: "font-sans font-bold", 
+    color: "text-[#3ECF8E]",
+    bg: "bg-[#3ECF8E]/5 hover:bg-[#3ECF8E]/10 border-[#3ECF8E]/15 dark:border-[#3ECF8E]/30 shadow-[#3ECF8E]/5 hover:shadow-[#3ECF8E]/15" 
+  },
+  { 
+    name: "Pinecone", 
+    font: "font-sans font-extrabold", 
+    color: "text-amber-500",
+    bg: "bg-amber-500/5 hover:bg-amber-500/10 border-amber-500/15 dark:border-amber-500/30 shadow-amber-500/5 hover:shadow-amber-500/15" 
+  },
+  { 
+    name: "LangChain", 
+    font: "font-mono font-bold", 
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/5 hover:bg-emerald-500/10 border-emerald-500/15 dark:border-emerald-500/30 shadow-emerald-500/5 hover:shadow-emerald-500/15" 
+  }
 ];
 
 // App/Tool Icons for Section 3 (Opposing Vertical Scrolling grids)
@@ -306,7 +367,7 @@ export default function Home() {
             {clientBrands.map((brand, idx) => (
               <div 
                 key={`b1-${idx}`}
-                className="inline-flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-8 py-5 min-w-[200px] shadow-sm hover:shadow transition-shadow duration-300 select-none"
+                className={`inline-flex items-center justify-center border rounded-2xl px-8 py-5 min-w-[200px] shadow-sm hover:shadow transition-all hover:scale-105 duration-300 select-none ${brand.bg}`}
               >
                 <span className={`${brand.font} ${brand.color} text-lg md:text-xl`}>
                   {brand.name}
@@ -317,7 +378,7 @@ export default function Home() {
             {clientBrands.map((brand, idx) => (
               <div 
                 key={`b2-${idx}`}
-                className="inline-flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-8 py-5 min-w-[200px] shadow-sm hover:shadow transition-shadow duration-300 select-none"
+                className={`inline-flex items-center justify-center border rounded-2xl px-8 py-5 min-w-[200px] shadow-sm hover:shadow transition-all hover:scale-105 duration-300 select-none ${brand.bg}`}
               >
                 <span className={`${brand.font} ${brand.color} text-lg md:text-xl`}>
                   {brand.name}
