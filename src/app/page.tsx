@@ -4,9 +4,51 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Sparkles, Check, Star, ArrowRight, ChevronRight,
-  Mail, Video, Calendar, Youtube, Linkedin, Twitter, MessageSquare, BookOpen, Slack, Github, Activity, ShoppingBag
+  Mail, Video, Calendar, MessageSquare, BookOpen, Activity, ShoppingBag
 } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
+
+// Custom Brand SVG Icons (Since trademark brands are removed/unsupported in some lucide-react versions)
+const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={props.className}>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
+
+const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+  </svg>
+);
+
+const SlackIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+    <rect x="13" y="2" width="3" height="8" rx="1.5" />
+    <path d="M19 8.5a1.5 1.5 0 1 1-3 0V7h1.5A1.5 1.5 0 0 1 19 8.5z" />
+    <rect x="14" y="14" width="8" height="3" rx="1.5" />
+    <path d="M15.5 19a1.5 1.5 0 1 1 0-3H17v1.5a1.5 1.5 0 0 1-1.5 1.5z" />
+    <rect x="8" y="14" width="3" height="8" rx="1.5" />
+    <path d="M5 15.5a1.5 1.5 0 1 1 3 0V17H6.5A1.5 1.5 0 0 1 5 15.5z" />
+    <rect x="2" y="7" width="8" height="3" rx="1.5" />
+    <path d="M8.5 5a1.5 1.5 0 1 1 0 3H7V6.5A1.5 1.5 0 0 1 8.5 5z" />
+  </svg>
+);
+
+const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
+  </svg>
+);
 
 // Brand Logo Details for Section 2 (Infinite Marquee)
 const clientBrands = [
@@ -29,13 +71,13 @@ const integrationTools = [
   { name: "Gmail", icon: Mail, color: "text-[#EA4335] bg-red-500/5 border-red-500/10 dark:border-red-500/20" },
   { name: "Google Meet", icon: Video, color: "text-[#0F9D58] bg-emerald-500/5 border-emerald-500/10 dark:border-emerald-500/20" },
   { name: "Calendly", icon: Calendar, color: "text-[#006BFF] bg-blue-500/5 border-blue-500/10 dark:border-blue-500/20" },
-  { name: "YouTube", icon: Youtube, color: "text-[#FF0000] bg-rose-500/5 border-rose-500/10 dark:border-rose-500/20" },
-  { name: "LinkedIn", icon: Linkedin, color: "text-[#0A66C2] bg-sky-500/5 border-sky-500/10 dark:border-sky-500/20" },
-  { name: "Twitter X", icon: Twitter, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
+  { name: "YouTube", icon: YoutubeIcon, color: "text-[#FF0000] bg-rose-500/5 border-rose-500/10 dark:border-rose-500/20" },
+  { name: "LinkedIn", icon: LinkedinIcon, color: "text-[#0A66C2] bg-sky-500/5 border-sky-500/10 dark:border-sky-500/20" },
+  { name: "Twitter X", icon: TwitterIcon, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
   { name: "WhatsApp", icon: MessageSquare, color: "text-[#25D366] bg-green-500/5 border-green-500/10 dark:border-green-500/20" },
   { name: "Notion", icon: BookOpen, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
-  { name: "Slack", icon: Slack, color: "text-[#4A154B] dark:text-purple-400 bg-purple-500/5 border-purple-500/10 dark:border-purple-500/20" },
-  { name: "GitHub", icon: Github, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
+  { name: "Slack", icon: SlackIcon, color: "text-[#4A154B] dark:text-purple-400 bg-purple-500/5 border-purple-500/10 dark:border-purple-500/20" },
+  { name: "GitHub", icon: GithubIcon, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
   { name: "HubSpot", icon: Activity, color: "text-[#FF7A59] bg-orange-500/5 border-orange-500/10 dark:border-orange-500/20" },
   { name: "Shopify", icon: ShoppingBag, color: "text-[#7AB55C] bg-lime-500/5 border-lime-500/10 dark:border-lime-500/20" }
 ];
