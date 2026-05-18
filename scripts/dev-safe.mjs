@@ -1,11 +1,13 @@
-import { existsSync, rmSync } from "node:fs";
+﻿import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { spawn } from "node:child_process";
 
 const projectRoot = process.cwd();
 const devOutputDir = resolve(projectRoot, ".next", "dev");
 
-if (existsSync(devOutputDir)) {
+// Deleting `.next/dev` can cause transient 500s (missing manifest files) on first requests.
+// Only clear it when explicitly requested.
+if (process.env.DEV_SAFE_CLEAR === "1" && existsSync(devOutputDir)) {
   rmSync(devOutputDir, { recursive: true, force: true });
   console.log(`[dev-safe] Cleared ${devOutputDir}`);
 }
