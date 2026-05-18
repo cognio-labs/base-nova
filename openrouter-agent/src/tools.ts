@@ -7,9 +7,9 @@ export const timeTool = tool({
   inputSchema: z.object({
     timezone: z.string().optional().describe('Timezone (e.g., "UTC", "America/New_York")'),
   }),
-  execute: async ({ input: { timezone } }) => {
+  execute: async ({ timezone }) => {
     return {
-      time: new Date().toLocaleString('en-US', { timeZone: (timezone as string) || 'UTC' }),
+      time: new Date().toLocaleString('en-US', { timeZone: timezone || 'UTC' }),
       timezone: timezone || 'UTC',
     };
   },
@@ -21,9 +21,9 @@ export const calculatorTool = tool({
   inputSchema: z.object({
     expression: z.string().describe('Math expression (e.g., "2 + 2", "sqrt(16)")'),
   }),
-  execute: async ({ input: { expression } }) => {
+  execute: async ({ expression }) => {
     // Simple safe eval for basic math
-    const sanitized = (expression as string).replace(/[^0-9+\-*/().\s]/g, '');
+    const sanitized = expression.replace(/[^0-9+\-*/().\s]/g, '');
     const result = Function(`"use strict"; return (${sanitized})`)();
     return { expression, result };
   },
