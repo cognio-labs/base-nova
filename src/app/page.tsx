@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -225,7 +225,7 @@ const testimonials = [
     name: "Emily Watson",
     role: "Product Manager @ LaunchStack",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows ā€” just explain the task and deploy. It's now part of our daily operations."
+    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows Äâ‚¬â€ just explain the task and deploy. It's now part of our daily operations."
   },
   {
     name: "Sofia Rodriguez",
@@ -376,7 +376,7 @@ export default function Home() {
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-600 dark:text-gray-400">
-            From UI design and animations to content, code, and deployment ā€” Loko AI helps you build complete websites faster than ever.
+            From UI design and animations to content, code, and deployment Äâ‚¬â€ Loko AI helps you build complete websites faster than ever.
           </p>
 
           {/* Buttons */}
