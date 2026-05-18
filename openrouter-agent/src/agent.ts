@@ -31,14 +31,14 @@ export interface AgentConfig {
   apiKey: string;
   model?: string;
   instructions?: string;
-  tools?: Tool<z.ZodTypeAny, z.ZodTypeAny>[];
+  tools?: Tool[];
   maxSteps?: number;
 }
 
 // The Agent class - runs independently of any UI
 export class Agent extends EventEmitter<AgentEvents> {
   private client: OpenRouter;
-  private messages: Message[] = [];
+  private messages: any[] = [];
   private config: Required<Omit<AgentConfig, 'apiKey'>> & { apiKey: string };
 
   constructor(config: AgentConfig) {
@@ -69,7 +69,7 @@ export class Agent extends EventEmitter<AgentEvents> {
   }
 
   // Register additional tools at runtime
-  addTool(newTool: Tool<z.ZodTypeAny, z.ZodTypeAny>): void {
+  addTool(newTool: Tool): void {
     this.config.tools.push(newTool);
   }
 
@@ -77,16 +77,16 @@ export class Agent extends EventEmitter<AgentEvents> {
   // Items are emitted multiple times with the same ID but progressively updated content
   // Replace items by their ID rather than accumulating chunks
   async send(content: string): Promise<string> {
-    const userMessage: Message = { role: 'user', content };
+    const userMessage = { role: 'user', content };
     this.messages.push(userMessage);
-    this.emit('message:user', userMessage);
+    this.emit('message:user', userMessage as Message);
     this.emit('thinking:start');
 
     try {
       const result = this.client.callModel({
         model: this.config.model,
         instructions: this.config.instructions,
-        input: this.messages.map((m) => ({ role: m.role, content: m.content })),
+        input: this.messages as any,
         tools: this.config.tools.length > 0 ? this.config.tools : undefined,
         stopWhen: [stepCountIs(this.config.maxSteps)],
       });
@@ -155,15 +155,15 @@ export class Agent extends EventEmitter<AgentEvents> {
 
   // Send without streaming (simpler for programmatic use)
   async sendSync(content: string): Promise<string> {
-    const userMessage: Message = { role: 'user', content };
+    const userMessage = { role: 'user', content };
     this.messages.push(userMessage);
-    this.emit('message:user', userMessage);
+    this.emit('message:user', userMessage as Message);
 
     try {
       const result = this.client.callModel({
         model: this.config.model,
         instructions: this.config.instructions,
-        input: this.messages.map((m) => ({ role: m.role, content: m.content })),
+        input: this.messages as any,
         tools: this.config.tools.length > 0 ? this.config.tools : undefined,
         stopWhen: [stepCountIs(this.config.maxSteps)],
       });

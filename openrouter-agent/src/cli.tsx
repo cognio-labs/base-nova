@@ -114,7 +114,7 @@ function App() {
 
     // Items-based streaming: replace items by ID, don't accumulate
     const onItemUpdate = (item: StreamableOutputItem) => {
-      setItems((prev) => new Map(prev).set(item.id, item));
+      setItems((prev) => new Map(prev).set((item as any).id, item));
     };
 
     const onMessageAssistant = () => {
@@ -167,7 +167,7 @@ function App() {
 
         {/* Render streaming items by type (items-based pattern) */}
         {Array.from(items.values()).map((item) => (
-          <ItemRenderer key={item.id} item={item} />
+          <ItemRenderer key={(item as any).id} item={item} />
         ))}
       </Box>
 
