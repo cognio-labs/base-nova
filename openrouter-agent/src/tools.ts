@@ -36,6 +36,26 @@ export const weatherTool = tool({
     location: z.string().describe('City name'),
   }) as any,
   execute: async ({ location }: any) => {
+    // Mock weather data
+    const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Partly Cloudy'];
+    const condition = conditions[Math.floor(Math.random() * conditions.length)];
+    const temp = Math.floor(Math.random() * 30) + 10;
+    return {
+      location,
+      temperature: `${temp}°C`,
+      condition,
+    };
+  },
+});
+
+export const defaultTools = [timeTool, calculatorTool, weatherTool];
+
+  name: 'get_weather',
+  description: 'Get the current weather for a location',
+  inputSchema: z.object({
+    location: z.string().describe('City name'),
+  }) as any,
+  execute: async ({ location }: any) => {
     return {
       location,
       temperature: '72°F',
