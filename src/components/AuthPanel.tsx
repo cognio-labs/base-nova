@@ -138,16 +138,20 @@ export default function AuthPanel({ nextPath = "/dashboard", onSuccess }: AuthPa
   };
 
   return (
-    <Card className="w-full max-w-md rounded-3xl border border-slate-200/80 bg-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.10)] backdrop-blur">
-      <CardHeader>
+    <div className="w-full max-w-md">
+      <div className="relative rounded-[1.75rem] p-[1px] bg-gradient-to-b from-sky-200/80 via-white to-cyan-200/80 shadow-[0_22px_70px_rgba(14,165,233,0.18)]">
+        <div className="pointer-events-none absolute -inset-10 rounded-[2.25rem] bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.22),transparent_55%),radial-gradient(circle_at_bottom,rgba(14,165,233,0.16),transparent_50%)] blur-2xl" />
+        <Card className="relative w-full rounded-[1.7rem] border border-white/50 bg-white/85 shadow-[0_10px_30px_rgba(15,23,42,0.10)] backdrop-blur-xl"
+        >
+          <div className="pointer-events-none absolute inset-x-6 top-0 h-20 rounded-b-[1.5rem] bg-gradient-to-b from-sky-100/80 to-transparent opacity-80 blur-2xl" />
+          <CardHeader>
         <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-400/15 text-sky-500">
           <ShieldCheck className="h-6 w-6" />
         </div>
         <CardTitle>Welcome Back!</CardTitle>
         <CardDescription>Choose your preferred provider to get started.</CardDescription>
       </CardHeader>
-
-      <CardContent className="space-y-4">
+          <CardContent className="space-y-4">
         {!isConfigured && (
           <div className="rounded-xl border border-amber-300/40 bg-amber-400/10 p-3 text-xs text-amber-700 dark:text-amber-200">
             Supabase keys are not configured yet. Add them to `.env.local` to enable login.
@@ -155,11 +159,11 @@ export default function AuthPanel({ nextPath = "/dashboard", onSuccess }: AuthPa
         )}
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" onClick={() => handleOAuth("google")} disabled={isLoading || !isConfigured}>
+          <Button variant="outline" onClick={() => handleOAuth("google")} disabled={isLoading || !isConfigured} className="rounded-xl bg-white/80 shadow-sm hover:bg-white">
             <Mail className="h-4 w-4" />
             Google
           </Button>
-          <Button variant="outline" onClick={() => handleOAuth("github")} disabled={isLoading || !isConfigured}>
+          <Button variant="outline" onClick={() => handleOAuth("github")} disabled={isLoading || !isConfigured} className="rounded-xl bg-white/80 shadow-sm hover:bg-white">
             <Code2 className="h-4 w-4" />
             GitHub
           </Button>
@@ -190,7 +194,7 @@ export default function AuthPanel({ nextPath = "/dashboard", onSuccess }: AuthPa
           <div className="space-y-3">
             <Input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.com" type="email" />
             <Input value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" type="password" />
-            <Button className="w-full" onClick={handleEmailAuth} disabled={isLoading || !isConfigured}>
+            <Button className="w-full rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-950/15 hover:bg-slate-900" onClick={handleEmailAuth} disabled={isLoading || !isConfigured}>
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
               Continue with Email
             </Button>
@@ -199,7 +203,7 @@ export default function AuthPanel({ nextPath = "/dashboard", onSuccess }: AuthPa
           <div className="space-y-3">
             <Input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+1 555 000 0000" type="tel" />
             {otpSent && <Input value={otp} onChange={(event) => setOtp(event.target.value)} placeholder="6-digit OTP" inputMode="numeric" />}
-            <Button className="w-full" onClick={otpSent ? handleVerifyOtp : handleSendOtp} disabled={isLoading || !isConfigured}>
+            <Button className="w-full rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-950/15 hover:bg-slate-900" onClick={otpSent ? handleVerifyOtp : handleSendOtp} disabled={isLoading || !isConfigured}>
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Phone className="h-4 w-4" />}
               {otpSent ? "Verify OTP" : "Send OTP"}
             </Button>
@@ -209,6 +213,8 @@ export default function AuthPanel({ nextPath = "/dashboard", onSuccess }: AuthPa
         {message && <div className="rounded-xl bg-green-500/10 p-3 text-xs text-green-600 dark:text-green-300">{message}</div>}
         {error && <div className="rounded-xl bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-300">{error}</div>}
       </CardContent>
-    </Card>
+        </Card>
+      </div>
+    </div>
   );
 }
