@@ -195,3 +195,44 @@ body {
     cursor: not-allowed;
   }
 }
+
+/* Premium Infinite Scrolling Animations */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-vertical-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.animate-marquee-vertical-up {
+  animation: marquee-vertical-up 18s linear infinite;
+}
+
+.animate-marquee-vertical-up:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-vertical-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.animate-marquee-vertical-down {
+  animation: marquee-vertical-down 18s linear infinite;
+}
+
+.animate-marquee-vertical-down:hover {
+  animation-play-state: paused;
+}
+
