@@ -29,4 +29,35 @@ export const calculatorTool = tool({
   },
 });
 
-export const defaultTools = [timeTool, calculatorTool];
+export const weatherTool = tool({
+  name: 'get_weather',
+  description: 'Get the current weather for a location',
+  inputSchema: z.object({
+    location: z.string().describe('City name'),
+  }) as any,
+  execute: async ({ location }: any) => {
+    return {
+      location,
+      temperature: '72°F',
+      condition: 'Sunny',
+    };
+  },
+});
+
+export const defaultTools = [timeTool, calculatorTool, weatherTool];
+
+  name: 'get_weather',
+  description: 'Get the current weather for a location',
+  inputSchema: z.object({
+    location: z.string().describe('City name'),
+  }) as any,
+  execute: async ({ location }: any) => {
+    return {
+      location,
+      temperature: '72°F',
+      condition: 'Sunny',
+    };
+  },
+});
+
+export const defaultTools = [timeTool, calculatorTool, weatherTool];
