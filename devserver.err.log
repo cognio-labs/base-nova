@@ -261,3 +261,184 @@ Debug info:
     at <unknown> (TurbopackInternalError: Failed to lookup task ids: Looking up task id for CachedTaskType { native_fn: NativeFunction { name: "get_written_endpoint_with_issues_operation", global_name: "next_napi_bindings::next_api::endpoint::get_written_endpoint_with_issues_operation", .. }, this: None, arg: (OperationVc { node: RawVc::TaskOutput(595) },) } from database failed) {
   location: 'turbopack\\crates\\turbo-tasks-backend\\src\\backend\\operation\\mod.rs:619:14'
 }
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 7 tasks
+
+Caused by:
+    0: Looking up typed data for 7 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002420.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002420.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (14048) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 6 tasks
+
+Caused by:
+    0: Looking up typed data for 6 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002419.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002419.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (9380) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 6 tasks
+
+Caused by:
+    0: Looking up typed data for 6 tasks from database failed
+    1: Unable to open static sorted file referenced from 00001255.meta
+    2: Unable to open static sorted file 00001253.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001253.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (9692) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 65 tasks
+
+Caused by:
+    0: Looking up typed data for 65 tasks from database failed
+    1: Unable to open static sorted file referenced from 00004546.meta
+    2: Unable to open static sorted file 00004542.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00004542.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 7 tasks
+
+Caused by:
+    0: Looking up typed data for 7 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002420.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002420.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (14048) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 6 tasks
+
+Caused by:
+    0: Looking up typed data for 6 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002419.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002419.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (9380) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 6 tasks
+
+Caused by:
+    0: Looking up typed data for 6 tasks from database failed
+    1: Unable to open static sorted file referenced from 00001255.meta
+    2: Unable to open static sorted file 00001253.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001253.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (9692) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 65 tasks
+
+Caused by:
+    0: Looking up typed data for 65 tasks from database failed
+    1: Unable to open static sorted file referenced from 00004546.meta
+    2: Unable to open static sorted file 00004542.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00004542.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 463620)
+
+Caused by:
+    0: Looking up task storage for TaskId 463620 from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002419.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002419.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 463628)
+
+Caused by:
+    0: Looking up task storage for TaskId 463628 from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002420.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002420.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 464650)
+
+Caused by:
+    0: Looking up task storage for TaskId 464650 from database failed
+    1: Unable to open static sorted file referenced from 00004546.meta
+    2: Unable to open static sorted file 00004542.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00004542.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 464663)
+
+Caused by:
+    0: Looking up task storage for TaskId 464663 from database failed
+    1: Unable to open static sorted file referenced from 00001071.meta
+    2: Unable to open static sorted file 00001069.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001069.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 461715)
+
+Caused by:
+    0: Looking up task storage for TaskId 461715 from database failed
+    1: Unable to open static sorted file referenced from 00001071.meta
+    2: Unable to open static sorted file 00001069.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001069.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 3 tasks
+
+Caused by:
+    0: Looking up typed data for 3 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002419.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002419.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 461847)
+
+Caused by:
+    0: Looking up task storage for TaskId 461847 from database failed
+    1: Unable to open static sorted file referenced from 00001071.meta
+    2: Unable to open static sorted file 00001069.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001069.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 461852)
+
+Caused by:
+    0: Looking up task storage for TaskId 461852 from database failed
+    1: Unable to open static sorted file referenced from 00001071.meta
+    2: Unable to open static sorted file 00001069.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00001069.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:197:17:
+Failed to restore task data (corrupted database or bug): Data for TaskId 460557)
+
+Caused by:
+    0: Looking up task storage for TaskId 460557 from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002420.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002420.sst
+    4: The system cannot find the file specified. (os error 2)
+
+thread 'tokio-runtime-worker' (16008) panicked at turbopack\crates\turbo-tasks-backend\src\backend\operation\mod.rs:225:17:
+Failed to restore task data (corrupted database or bug): Data for batch of 3 tasks
+
+Caused by:
+    0: Looking up typed data for 3 tasks from database failed
+    1: Unable to open static sorted file referenced from 00002422.meta
+    2: Unable to open static sorted file 00002420.sst
+    3: Failed to open SST file C:\Users\PC\base44\.next\dev\cache/turbopack\ee6e79b1\00002420.sst
+    4: The system cannot find the file specified. (os error 2)
+^C
