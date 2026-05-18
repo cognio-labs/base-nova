@@ -11,3 +11,6 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
   Reload env: .env.local
   Reload env: .env.local
+○ Compiling / ...
+ GET / 500 in 7.8s (next.js: 7.7s, application-code: 43ms)
+ GET / 500 in 7.8s (next.js: 7.7s, application-code: 44ms)
