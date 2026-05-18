@@ -14,3 +14,4 @@ Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 ○ Compiling / ...
  GET / 500 in 7.8s (next.js: 7.7s, application-code: 43ms)
  GET / 500 in 7.8s (next.js: 7.7s, application-code: 44ms)
+✓ Compiled in 1717ms
