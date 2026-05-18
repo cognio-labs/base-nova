@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -129,6 +129,7 @@ const communityItems = [
 
 export default function DashboardWorkspace() {
   const pathname = usePathname();
+  const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [showModelSelect, setShowModelSelect] = useState(false);
@@ -190,6 +191,10 @@ export default function DashboardWorkspace() {
     setPrompt(nextPrompt);
     setIsMoreOpen(false);
     await generateProject(nextPrompt);
+    const state = useGeneratorStore.getState();
+    if (state.previewHtml && !state.error) {
+      router.push("/create");
+    }
   };
 
   return (
@@ -528,6 +533,8 @@ export default function DashboardWorkspace() {
                   {error}
                 </div>
               )}
+
+
             </motion.div>
           </div>
         </section>
@@ -536,5 +543,7 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
+
 
 

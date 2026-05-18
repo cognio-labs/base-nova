@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const appRoutePrefixes = [
   "/affiliate",
+  "/create",
   "/dashboard",
   "/generate",
   "/integrations",
@@ -44,3 +45,4 @@ export default function AppChrome({ children }: { children: ReactNode }) {
     </>
   );
 }
+
