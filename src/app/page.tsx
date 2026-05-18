@@ -1,6 +1,7 @@
 ﻿"use client";
 
-import { useState } from "react";\r\nimport { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
   Sparkles, Check, Star, ArrowRight
@@ -332,7 +333,9 @@ const pricingPlans = [
 ];
 
 export default function Home() {
-  const [isYearly, setIsYearly] = useState(false);\r\n  const router = useRouter();\r\n  const goToLogin = () => router.push("/login?next=/dashboard");
+  const [isYearly, setIsYearly] = useState(false);
+  const router = useRouter();
+  const goToLogin = () => router.push("/login?next=/dashboard");
 
   return (
     <div className="relative min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
