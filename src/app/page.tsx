@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -367,9 +367,9 @@ export default function Home() {
 
           {/* Heading */}
           <h1 className="text-5xl sm:text-6xl md:text-[5.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.05] mb-6">
-            Stop Paying for 12 AI Subscriptions.<br className="hidden md:inline" />
+            One Platform to Build Any Website<br className="hidden md:inline" />
             <span className="bg-gradient-to-r from-sky-500 via-cyan-400 to-sky-600 bg-clip-text text-transparent">
-              One Platform, 100+ Superagents.
+              Loko AI Makes Creation Effortless
             </span>
           </h1>
 
