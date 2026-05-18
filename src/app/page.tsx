@@ -1,4 +1,4 @@
-Ôªø"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -225,7 +225,7 @@ const testimonials = [
     name: "Emily Watson",
     role: "Product Manager @ LaunchStack",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows ƒÅ‚Ç¨‚Äù‚Äî just explain the task and deploy. It's now part of our daily operations."
+    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows aÄîó just explain the task and deploy. It's now part of our daily operations."
   },
   {
     name: "Sofia Rodriguez",
@@ -338,20 +338,20 @@ export default function Home() {
   const goToLogin = () => router.push("/login?next=/dashboard");
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
+    <div className="relative min-h-screen overflow-x-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-white">
       
       {/* ========================================================================= */}
       {/* BACKGROUND ELEMENTS & GRID MESH (Same to same as Hero Image) */}
       {/* ========================================================================= */}
       <div className="absolute inset-0 bg-grid-pattern opacity-80 pointer-events-none" />
-      <div className="absolute top-1/4 -left-20 w-[450px] h-[450px] bg-sky-400/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 -right-20 w-[450px] h-[450px] bg-cyan-400/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] bg-sky-300/5 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute left-[-4.5rem] top-24 h-[220px] w-[220px] rounded-full bg-sky-400/10 blur-[90px] pointer-events-none sm:top-1/4 sm:-left-20 sm:h-[450px] sm:w-[450px] sm:blur-[140px]" />
+      <div className="absolute right-[-4.5rem] top-40 h-[220px] w-[220px] rounded-full bg-cyan-400/10 blur-[90px] pointer-events-none sm:top-1/3 sm:-right-20 sm:h-[450px] sm:w-[450px] sm:blur-[140px]" />
+      <div className="absolute bottom-12 left-1/2 h-[240px] w-[240px] -translate-x-1/2 rounded-full bg-sky-300/5 blur-[100px] pointer-events-none sm:bottom-1/4 sm:left-1/3 sm:h-[500px] sm:w-[500px] sm:translate-x-0 sm:blur-[160px]" />
 
       {/* ========================================================================= */}
       {/* SECTION 1: HERO SECTION (Same as First Image) */}
       {/* ========================================================================= */}
-      <section className="relative pt-20 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 text-center">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pb-24 sm:pt-20 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -359,15 +359,15 @@ export default function Home() {
           className="max-w-5xl mx-auto"
         >
           {/* Elegant Top Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-600 dark:text-gray-400 mb-8 shadow-sm">
+          <div className="mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-gray-400 sm:mb-8 sm:gap-2.5 sm:px-4 sm:text-xs">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             Trusted by teams across 3 continents
-            <span className="text-slate-300 dark:text-gray-700">|</span>
+            <span className="hidden text-slate-300 dark:text-gray-700 sm:inline">|</span>
             <span>Plans from $19/mo</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-[4.35rem] font-semibold tracking-[-0.03em] text-slate-700 dark:text-slate-100 leading-[1.08] mb-6">
+          <h1 className="mb-5 text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-slate-700 dark:text-slate-100 sm:mb-6 sm:text-5xl md:text-[4.35rem]">
             One Platform to Build Any Website<br className="hidden md:inline" />
             <span className="bg-gradient-to-r from-slate-700 via-sky-600 to-cyan-500 bg-clip-text text-transparent">
               Loko AI Makes Creation Effortless
@@ -375,15 +375,15 @@ export default function Home() {
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto mb-10 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-600 dark:text-gray-400">
-            From UI design and animations to content, code, and deployment ƒÅ‚Ç¨‚Äù‚Äî Loko AI helps you build complete websites faster than ever.
+          <p className="mx-auto mb-8 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-gray-400 sm:mb-10 sm:text-lg md:text-xl">
+            From UI design and animations to content, code, and deployment aÄîó Loko AI helps you build complete websites faster than ever.
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 max-w-md mx-auto sm:max-w-none">
+          <div className="mx-auto mb-12 flex max-w-md flex-col items-stretch justify-center gap-3 sm:mb-16 sm:max-w-none sm:flex-row sm:items-center sm:gap-4">
             <button
               onClick={goToLogin}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-8 py-4 transition-all shadow-lg shadow-sky-500/20 active:scale-95 group text-sm md:text-base cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-sky-500/20 transition-all active:scale-95 group hover:bg-sky-600 sm:w-auto sm:px-8 sm:py-4 md:text-base"
             >
               <Sparkles className="w-5 h-5 animate-pulse text-sky-200" />
               Build Your First Agent
@@ -391,14 +391,14 @@ export default function Home() {
             </button>
             <button
               onClick={goToLogin}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold px-8 py-4 transition-all active:scale-95 text-sm md:text-base cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3.5 text-sm font-bold text-slate-800 transition-all active:scale-95 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 hover:bg-slate-50 sm:w-auto sm:px-8 sm:py-4 md:text-base"
             >
               Book a demo
             </button>
           </div>
 
           {/* Checks */}
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs md:text-sm font-semibold text-slate-500 dark:text-gray-400 border-t border-slate-200/50 dark:border-white/5 pt-8 max-w-4xl mx-auto">
+          <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-4 gap-y-3 border-t border-slate-200/50 pt-6 text-[11px] font-semibold text-slate-500 dark:border-white/5 dark:text-gray-400 sm:gap-x-8 sm:pt-8 sm:text-sm">
             <span className="flex items-center gap-2"><Check className="w-4 h-4 text-sky-500" /> 100+ AI Models</span>
             <span className="flex items-center gap-2"><Check className="w-4 h-4 text-sky-500" /> No Code Required</span>
             <span className="flex items-center gap-2"><Check className="w-4 h-4 text-sky-500" /> Team Collaboration</span>
@@ -411,7 +411,7 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SECTION 2: CUSTOMERS LOGO SCROLLER (Same as Second Image) */}
       {/* ========================================================================= */}
-      <section className="relative py-12 border-y border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-950/20 overflow-hidden z-10">
+      <section className="relative z-10 overflow-hidden border-y border-slate-100 bg-slate-50/50 py-10 dark:border-white/5 dark:bg-slate-950/20 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm font-bold uppercase tracking-[0.25em] text-sky-600 dark:text-sky-400">
             Our Trusted Customers
@@ -426,9 +426,9 @@ export default function Home() {
             {clientBrands.map((brand, idx) => (
               <div 
                 key={`b1-${idx}`}
-                className={`pointer-events-none inline-flex h-[74px] min-w-[210px] items-center justify-center rounded-[22px] border px-8 py-5 backdrop-blur-sm select-none ${brand.bg}`}
+                className={`pointer-events-none inline-flex h-[64px] min-w-[160px] items-center justify-center rounded-[18px] border px-5 py-4 backdrop-blur-sm select-none sm:h-[74px] sm:min-w-[210px] sm:rounded-[22px] sm:px-8 sm:py-5 ${brand.bg}`}
               >
-                <span className={`${brand.font} ${brand.color} text-lg md:text-xl`}>
+                <span className={`${brand.font} ${brand.color} text-base sm:text-lg md:text-xl`}>
                   {brand.name}
                 </span>
               </div>
@@ -437,9 +437,9 @@ export default function Home() {
             {clientBrands.map((brand, idx) => (
               <div 
                 key={`b2-${idx}`}
-                className={`pointer-events-none inline-flex h-[74px] min-w-[210px] items-center justify-center rounded-[22px] border px-8 py-5 backdrop-blur-sm select-none ${brand.bg}`}
+                className={`pointer-events-none inline-flex h-[64px] min-w-[160px] items-center justify-center rounded-[18px] border px-5 py-4 backdrop-blur-sm select-none sm:h-[74px] sm:min-w-[210px] sm:rounded-[22px] sm:px-8 sm:py-5 ${brand.bg}`}
               >
-                <span className={`${brand.font} ${brand.color} text-lg md:text-xl`}>
+                <span className={`${brand.font} ${brand.color} text-base sm:text-lg md:text-xl`}>
                   {brand.name}
                 </span>
               </div>
@@ -451,8 +451,8 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SECTION 3: CONNECT WITH THE TOOLS YOU LOVE (Same as Third Image) */}
       {/* ========================================================================= */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           
           {/* Copy Area */}
           <motion.div
@@ -465,7 +465,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-widest">
               SMART INTEGRATIONS
             </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+            <h2 className="text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
               All Your Tools.<br />
               <span className="text-sky-500">One Smart Platform.</span>
             </h2>
@@ -474,20 +474,20 @@ export default function Home() {
             </p>
             <button
               onClick={goToLogin}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-3.5 transition-all shadow-md shadow-sky-500/10 active:scale-95 cursor-pointer text-sm group"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-sky-500/10 transition-all active:scale-95 group hover:bg-sky-600 sm:w-auto sm:px-7"
             >
               Get Started
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
 
-          {/* Sliding Grid/Mockup Mockup Box */}
+          {/* Mobile Integrations Grid */}\n          <div className="grid grid-cols-2 gap-3 md:hidden">\n            {integrationTools.map((tool) => (\n              <div\n                key={tool.name}\n                className={`flex min-h-24 flex-col items-center justify-center gap-2 rounded-3xl border p-4 text-center backdrop-blur-sm ${tool.card}`}\n              >\n                <tool.icon className="h-8 w-8" />\n                <span className="text-xs font-bold text-slate-700">{tool.name}</span>\n              </div>\n            ))}\n          </div>\n\n          {/* Sliding Grid/Mockup Mockup Box */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative h-[480px] bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-[2rem] p-6 shadow-2xl overflow-hidden"
+            className="relative hidden h-[480px] overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 p-6 shadow-2xl dark:border-white/10 dark:bg-slate-900/50 md:block"
           >
             {/* Top Mockup Header Bar */}
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4 mb-4">
@@ -574,9 +574,9 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SECTION 4: TESTIMONIALS (What Our Users Say - Same as Fourth Image) */}
       {/* ========================================================================= */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-slate-100 dark:border-white/5">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+      <section className="relative z-10 mx-auto max-w-7xl border-t border-slate-100 px-4 py-16 dark:border-white/5 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mb-12 text-center sm:mb-16">
+          <h2 className="mb-4 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
             What Our Users Say
           </h2>
           <p className="mx-auto max-w-2xl text-slate-500 dark:text-gray-400 text-base sm:text-lg">
@@ -633,9 +633,9 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SECTION 5: SIMPLE AND FEASIBLE PRICING (Same as Fifth Image) */}
       {/* ========================================================================= */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-slate-100 dark:border-white/5">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+      <section className="relative z-10 mx-auto max-w-7xl border-t border-slate-100 px-4 py-16 dark:border-white/5 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mb-12 text-center sm:mb-16">
+          <h2 className="mb-4 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
             Simple Pricing for Powerful AI
           </h2>
           <p className="mx-auto max-w-2xl text-slate-500 dark:text-gray-400 text-base sm:text-lg mb-8">
@@ -643,7 +643,7 @@ export default function Home() {
           </p>
 
           {/* Toggle billing plan */}
-          <div className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full p-1 shadow-sm">
+          <div className="inline-flex max-w-full items-center gap-1 border border-slate-200 bg-slate-100 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
             <button
               onClick={() => setIsYearly(false)}
               className={`rounded-full px-5 py-2 text-xs font-bold transition-all cursor-pointer ${
@@ -743,3 +743,4 @@ export default function Home() {
 </div>
   );
 }
+

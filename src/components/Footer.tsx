@@ -45,7 +45,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white border-t border-slate-100 font-sans selection:bg-sky-100 selection:text-sky-900">
-      <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-20">
           {/* Logo & Brand Info */}
           <div className="space-y-10">
@@ -61,7 +61,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation Columns */}
-          <div className="mt-16 grid grid-cols-2 gap-12 xl:col-span-2 xl:mt-0 md:grid-cols-4">
+          <div className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-4 xl:col-span-2 xl:mt-0">
             {footerSections.map((section) => (
               <div key={section.title}>
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-900 mb-8">{section.title}</h3>
@@ -83,7 +83,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-20 pt-10 border-t border-slate-50 flex flex-col items-center justify-between gap-8 md:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-6 border-t border-slate-50 pt-8 md:mt-20 md:flex-row md:gap-8 md:pt-10">
           {/* Copyright */}
           <p className="text-xs font-medium text-slate-400 order-3 md:order-1">
             © {new Date().getFullYear()} LokoAI Inc. All rights reserved.
@@ -121,3 +121,4 @@ export default function Footer() {
     </footer>
   );
 }
+

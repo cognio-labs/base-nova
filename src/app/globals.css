@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -223,3 +223,4 @@ body {
 .animate-marquee-vertical-down {
   animation: marquee-vertical-down 16s linear infinite;
 }
+
