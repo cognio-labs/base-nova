@@ -6,6 +6,6 @@
 - Local:         http://localhost:302
 - Network:       http://192.168.1.25:302
 - Environments: .env.local
-✓ Ready in 666ms
+✓ Ready in 703ms
 Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
