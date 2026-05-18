@@ -225,7 +225,7 @@ const testimonials = [
     name: "Emily Watson",
     role: "Product Manager @ LaunchStack",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows — just explain the task and deploy. It's now part of our daily operations."
+    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows ā€” just explain the task and deploy. It's now part of our daily operations."
   },
   {
     name: "Sofia Rodriguez",
@@ -367,16 +367,16 @@ export default function Home() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-5xl sm:text-6xl md:text-[5.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.05] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-[4.35rem] font-semibold tracking-[-0.03em] text-slate-700 dark:text-slate-100 leading-[1.08] mb-6">
             One Platform to Build Any Website<br className="hidden md:inline" />
-            <span className="bg-gradient-to-r from-sky-500 via-cyan-400 to-sky-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-slate-700 via-sky-600 to-cyan-500 bg-clip-text text-transparent">
               Loko AI Makes Creation Effortless
             </span>
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-600 dark:text-gray-400">
-            From UI design and animations to content, code, and deployment — Loko AI helps you build complete websites faster than ever.
+            From UI design and animations to content, code, and deployment ā€” Loko AI helps you build complete websites faster than ever.
           </p>
 
           {/* Buttons */}
