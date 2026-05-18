@@ -1,4 +1,4 @@
-import { tool } from '@openrouter/sdk';
+import { tool } from '@openrouter/agent';
 import { z } from 'zod';
 
 export const timeTool = tool({
@@ -7,9 +7,9 @@ export const timeTool = tool({
   inputSchema: z.object({
     timezone: z.string().optional().describe('Timezone (e.g., "UTC", "America/New_York")'),
   }),
-  execute: async ({ timezone }) => {
+  execute: async ({ input: { timezone } }) => {
     return {
-      time: new Date().toLocaleString('en-US', { timeZone: timezone || 'UTC' }),
+      time: new Date().toLocaleString('en-US', { timeZone: (timezone as string) || 'UTC' }),
       timezone: timezone || 'UTC',
     };
   },
@@ -21,9 +21,9 @@ export const calculatorTool = tool({
   inputSchema: z.object({
     expression: z.string().describe('Math expression (e.g., "2 + 2", "sqrt(16)")'),
   }),
-  execute: async ({ expression }) => {
+  execute: async ({ input: { expression } }) => {
     // Simple safe eval for basic math
-    const sanitized = expression.replace(/[^0-9+\-*/().\s]/g, '');
+    const sanitized = (expression as string).replace(/[^0-9+\-*/().\s]/g, '');
     const result = Function(`"use strict"; return (${sanitized})`)();
     return { expression, result };
   },

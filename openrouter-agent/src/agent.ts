@@ -1,5 +1,5 @@
-import { OpenRouter, tool, stepCountIs } from '@openrouter/sdk';
-import type { Tool, StopCondition, StreamableOutputItem } from '@openrouter/sdk';
+import { OpenRouter, tool, stepCountIs } from '@openrouter/agent';
+import type { Tool, StopCondition, StreamableOutputItem } from '@openrouter/agent';
 import { EventEmitter } from 'eventemitter3';
 import { z } from 'zod';
 
