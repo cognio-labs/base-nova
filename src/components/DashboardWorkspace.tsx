@@ -192,10 +192,6 @@ export default function DashboardWorkspace() {
     setIsMoreOpen(false);
     router.push("/create");
     await generateProject(nextPrompt);
-    const state = useGeneratorStore.getState();
-    if (state.previewHtml && !state.error) {
-      router.push("/create");
-    }
   };
 
   return (
