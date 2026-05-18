@@ -6,12 +6,6 @@
 - Local:         http://localhost:302
 - Network:       http://192.168.1.25:302
 - Environments: .env.local
-✓ Ready in 849ms
+✓ Ready in 666ms
 Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
- GET /dashboard 200 in 2.4s (next.js: 563ms, application-code: 1886ms)
- GET /dashboard 200 in 254ms (next.js: 5ms, application-code: 249ms)
- GET /dashboard 200 in 302ms (next.js: 7ms, application-code: 296ms)
- GET /dashboard 200 in 919ms (next.js: 5ms, application-code: 914ms)
- GET /dashboard 200 in 245ms (next.js: 4ms, application-code: 241ms)
- GET /dashboard 200 in 292ms (next.js: 4ms, application-code: 287ms)
