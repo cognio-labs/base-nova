@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Sparkles, Check, Star, ArrowRight, ChevronRight,
-  Mail, Video, Calendar, MessageSquare, BookOpen, Activity, ShoppingBag
+  Sparkles, Check, Star, ArrowRight, ChevronRight
 } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 
@@ -16,37 +15,96 @@ const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect x="2" y="9" width="4" height="12" />
-    <circle cx="4" cy="4" r="2" />
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <rect x="2" y="2" width="20" height="20" rx="4" fill="#0A66C2" />
+    <path d="M9 17V10H7v7h2zm-1-8.12c.7 0 1.12-.45 1.12-1.01-.01-.58-.42-1.01-1.1-1.01-.68 0-1.12.43-1.12 1.01 0 .56.42 1.01 1.08 1.01h.02zm9 8.12v-3.95c0-2.11-1.13-3.1-2.63-3.1-1.21 0-1.75.67-2.05 1.14h.02v-.98h-2c.03.56 0 6 0 6h2v-3.36c0-.18.01-.36.06-.49.14-.36.47-.73.99-.73.7 0 .98.53.98 1.31V17h2z" fill="white" />
   </svg>
 );
 
 const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <rect x="2" y="4" width="20" height="16" rx="5" fill="#FF0000" />
+    <polygon points="10 8 16 12 10 16" fill="white" />
   </svg>
 );
 
 const SlackIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-    <rect x="13" y="2" width="3" height="8" rx="1.5" />
-    <path d="M19 8.5a1.5 1.5 0 1 1-3 0V7h1.5A1.5 1.5 0 0 1 19 8.5z" />
-    <rect x="14" y="14" width="8" height="3" rx="1.5" />
-    <path d="M15.5 19a1.5 1.5 0 1 1 0-3H17v1.5a1.5 1.5 0 0 1-1.5 1.5z" />
-    <rect x="8" y="14" width="3" height="8" rx="1.5" />
-    <path d="M5 15.5a1.5 1.5 0 1 1 3 0V17H6.5A1.5 1.5 0 0 1 5 15.5z" />
-    <rect x="2" y="7" width="8" height="3" rx="1.5" />
-    <path d="M8.5 5a1.5 1.5 0 1 1 0 3H7V6.5A1.5 1.5 0 0 1 8.5 5z" />
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <circle cx="9" cy="6" r="2.5" fill="#36C5F0" />
+    <rect x="7.75" y="7.5" width="2.5" height="5" rx="1.25" fill="#36C5F0" />
+    <circle cx="18" cy="9" r="2.5" fill="#2EB67D" />
+    <rect x="11.5" y="7.75" width="5" height="2.5" rx="1.25" fill="#2EB67D" />
+    <circle cx="15" cy="18" r="2.5" fill="#ECB22E" />
+    <rect x="13.75" y="11.5" width="2.5" height="5" rx="1.25" fill="#ECB22E" />
+    <circle cx="6" cy="15" r="2.5" fill="#E01E5A" />
+    <rect x="7.5" y="13.75" width="5" height="2.5" rx="1.25" fill="#E01E5A" />
   </svg>
 );
 
 const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
+  <svg viewBox="0 0 24 24" fill="currentColor" className={props.className}>
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.234c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.22.694.825.576C20.565 21.795 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
+  </svg>
+);
+
+const CalendlyIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <circle cx="12" cy="12" r="10" fill="#006BFF" />
+    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5a4.99 4.99 0 0 0 4.24-2.35l-1.74-1A3 3 0 1 1 12 9c1.1 0 2.05.6 2.5 1.5l1.74-1A4.99 4.99 0 0 0 12 7z" fill="white" />
+  </svg>
+);
+
+const GmailIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#F2F2F2" />
+    <path d="M22 6v12c0 1.1-.9 2-2 2h-3V8l5-4z" fill="#4285F4" />
+    <path d="M2 6v12c0 1.1.9 2 2 2h3V8l-5-4z" fill="#EA4335" />
+    <path d="M2 6l10 7 10-7V5l-10 7L2 5v1z" fill="#EA4335" />
+    <path d="M12 13L2 6v2l10 7 10-7V6L12 13z" fill="#FBBC05" />
+  </svg>
+);
+
+const GoogleMeetIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <path d="M15 8l4.5-4.5c.3-.3.8-.1.8.4v16.2c0 .5-.5.7-.8.4L15 16V8z" fill="#00A82F" />
+    <rect x="2" y="4" width="13" height="16" rx="3" fill="#0084FF" />
+    <path d="M2 13h13v7H5a3 3 0 0 1-3-3v-4z" fill="#00A82F" />
+    <path d="M15 4v9H2V7a3 3 0 0 1 3-3h10z" fill="#FF2E2E" />
+    <circle cx="8.5" cy="8.5" r="2.5" fill="white" />
+  </svg>
+);
+
+const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <circle cx="12" cy="12" r="11" fill="#25D366" />
+    <path d="M12 5a7 7 0 0 0-6 10.6L5 19l3.5-.9A7 7 0 1 0 12 5zm3.7 9.8c-.2.6-1.1 1.1-1.6 1.2-.5 0-1.1.2-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.3-1-2.5 0-1.2.6-1.8.8-2 .2-.2.5-.3.7-.3h.5c.2 0 .4-.1.6.3.2.5.8 1.9.9 2 .1.2.1.4 0 .6-.1.2-.2.3-.3.5-.1.2-.2.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.9 1.5 1.9 2.4.9.9 1.7 1.2 2 1.4.3.2.4.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1s1.3.6 1.5.7c.2.1.4.2.4.3 0 .2-.1.9-.3 1.5z" fill="white" />
+  </svg>
+);
+
+const NotionIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={props.className}>
+    <path d="M3 2.687c0-.585.348-.847.886-.847.284 0 .759.108 1.265.267l14.417 4.542c.475.138.537.369.537.847v13.84c0 .585-.348.847-.886.847-.284 0-.759-.108-1.265-.267L3.537 17.375C3.062 17.237 3 17.006 3 16.528V2.687zm4.331 4.793v7.351c0 .415.207.6.621.6.241 0 .54-.085.9-.254l5.127-2.392c.083-.042.124-.123.124-.242v-5.69c0-.416-.207-.601-.621-.601-.241 0-.54.085-.9.254L7.455 8.891c-.083.042-.124.123-.124.242zm2.083-1.684l5.77-2.693c.277-.123.415-.316.415-.578a.65.65 0 0 0-.621-.6h-2c-.328 0-.655.085-.983.254l-2.58 1.204V3.687c0-.415-.207-.6-.621-.6H7.3c-.414 0-.621.185-.621.6v3.136c0 .415.207.6.621.6h.145c.343 0 .685-.085 1.026-.254l.947-.442z" />
+  </svg>
+);
+
+const HubspotIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <circle cx="12" cy="12" r="10" fill="#FF7A59" />
+    <circle cx="12" cy="12" r="3.5" fill="white" />
+    <circle cx="12" cy="6.5" r="2" fill="white" />
+    <circle cx="7.2" cy="14.8" r="2" fill="white" />
+    <circle cx="16.8" cy="14.8" r="2" fill="white" />
+    <line x1="12" y1="12" x2="12" y2="6.5" stroke="white" strokeWidth="1.5" />
+    <line x1="12" y1="12" x2="7.2" y2="14.8" stroke="white" strokeWidth="1.5" />
+    <line x1="12" y1="12" x2="16.8" y2="14.8" stroke="white" strokeWidth="1.5" />
+  </svg>
+);
+
+const ShopifyIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" className={props.className}>
+    <path d="M19.5 7h-3.2l-.8-3.2c-.2-.8-.9-1.3-1.7-1.3H10.2c-.8 0-1.5.5-1.7 1.3l-.8 3.2H4.5C3.7 7 3 7.7 3 8.5v11c0 .8.7 1.5 1.5 1.5h15c.8 0 1.5-.7 1.5-1.5v-11c0-.8-.7-1.5-1.5-1.5z" fill="#95BF47" />
+    <path d="M12 9c-1.8 0-3 1.2-3 3v2c0 1.8 1.2 3 3 3s3-1.2 3-3v-2c0-1.8-1.2-3-3-3zM10.5 4l.5-2h2l.5 2h-3z" fill="white" opacity="0.3" />
+    <path d="M12 11c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5z" fill="white" />
   </svg>
 );
 
@@ -129,18 +187,18 @@ const clientBrands = [
 
 // App/Tool Icons for Section 3 (Opposing Vertical Scrolling grids)
 const integrationTools = [
-  { name: "Gmail", icon: Mail, color: "text-[#EA4335] bg-red-500/5 border-red-500/10 dark:border-red-500/20" },
-  { name: "Google Meet", icon: Video, color: "text-[#0F9D58] bg-emerald-500/5 border-emerald-500/10 dark:border-emerald-500/20" },
-  { name: "Calendly", icon: Calendar, color: "text-[#006BFF] bg-blue-500/5 border-blue-500/10 dark:border-blue-500/20" },
-  { name: "YouTube", icon: YoutubeIcon, color: "text-[#FF0000] bg-rose-500/5 border-rose-500/10 dark:border-rose-500/20" },
-  { name: "LinkedIn", icon: LinkedinIcon, color: "text-[#0A66C2] bg-sky-500/5 border-sky-500/10 dark:border-sky-500/20" },
-  { name: "Twitter X", icon: TwitterIcon, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
-  { name: "WhatsApp", icon: MessageSquare, color: "text-[#25D366] bg-green-500/5 border-green-500/10 dark:border-green-500/20" },
-  { name: "Notion", icon: BookOpen, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
-  { name: "Slack", icon: SlackIcon, color: "text-[#4A154B] dark:text-purple-400 bg-purple-500/5 border-purple-500/10 dark:border-purple-500/20" },
-  { name: "GitHub", icon: GithubIcon, color: "text-slate-900 dark:text-white bg-slate-500/5 border-slate-500/10 dark:border-slate-500/20" },
-  { name: "HubSpot", icon: Activity, color: "text-[#FF7A59] bg-orange-500/5 border-orange-500/10 dark:border-orange-500/20" },
-  { name: "Shopify", icon: ShoppingBag, color: "text-[#7AB55C] bg-lime-500/5 border-lime-500/10 dark:border-lime-500/20" }
+  { name: "Gmail", icon: GmailIcon },
+  { name: "Google Meet", icon: GoogleMeetIcon },
+  { name: "Calendly", icon: CalendlyIcon },
+  { name: "YouTube", icon: YoutubeIcon },
+  { name: "LinkedIn", icon: LinkedinIcon },
+  { name: "Twitter X", icon: TwitterIcon },
+  { name: "WhatsApp", icon: WhatsappIcon },
+  { name: "Notion", icon: NotionIcon },
+  { name: "Slack", icon: SlackIcon },
+  { name: "GitHub", icon: GithubIcon },
+  { name: "HubSpot", icon: HubspotIcon },
+  { name: "Shopify", icon: ShopifyIcon }
 ];
 
 // Testimonials for Section 4 (9 realistic cards)
@@ -444,7 +502,7 @@ export default function Home() {
             </div>
 
             {/* Scrolling columns inside the box */}
-            <div className="grid grid-cols-3 gap-4 h-[380px] overflow-hidden relative">
+            <div className="grid grid-cols-4 gap-3 h-[380px] overflow-hidden relative justify-items-center px-1">
               
               {/* Overlay Gradient at top & bottom to fade scrolling items */}
               <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-slate-50 dark:from-[#0d1527] to-transparent z-10 pointer-events-none" />
@@ -452,42 +510,56 @@ export default function Home() {
 
               {/* Column 1: Scrolling Up */}
               <div className="flex flex-col gap-3 animate-marquee-vertical-up">
-                {integrationTools.slice(0, 4).map((tool, idx) => (
-                  <div key={`c1-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(0, 3).map((tool, idx) => (
+                  <div key={`c1-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
-                {integrationTools.slice(0, 4).map((tool, idx) => (
-                  <div key={`c1-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(0, 3).map((tool, idx) => (
+                  <div key={`c1-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
               </div>
 
               {/* Column 2: Scrolling Down */}
               <div className="flex flex-col gap-3 animate-marquee-vertical-down">
-                {integrationTools.slice(4, 8).map((tool, idx) => (
-                  <div key={`c2-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(3, 6).map((tool, idx) => (
+                  <div key={`c2-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
-                {integrationTools.slice(4, 8).map((tool, idx) => (
-                  <div key={`c2-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(3, 6).map((tool, idx) => (
+                  <div key={`c2-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
               </div>
 
               {/* Column 3: Scrolling Up */}
               <div className="flex flex-col gap-3 animate-marquee-vertical-up">
-                {integrationTools.slice(8, 12).map((tool, idx) => (
-                  <div key={`c3-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(6, 9).map((tool, idx) => (
+                  <div key={`c3-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
-                {integrationTools.slice(8, 12).map((tool, idx) => (
-                  <div key={`c3-dup-${idx}`} className={`flex items-center justify-center border rounded-[1.25rem] p-4 aspect-square bg-white dark:bg-slate-950 transition-all hover:scale-105 shadow-sm hover:shadow ${tool.color}`}>
-                    <tool.icon className="w-7 h-7 stroke-[2]" />
+                {integrationTools.slice(6, 9).map((tool, idx) => (
+                  <div key={`c3-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Column 4: Scrolling Down */}
+              <div className="flex flex-col gap-3 animate-marquee-vertical-down">
+                {integrationTools.slice(9, 12).map((tool, idx) => (
+                  <div key={`c4-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
+                  </div>
+                ))}
+                {integrationTools.slice(9, 12).map((tool, idx) => (
+                  <div key={`c4-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-8.5 h-8.5" />
                   </div>
                 ))}
               </div>
