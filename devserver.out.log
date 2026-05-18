@@ -9,3 +9,5 @@
 ✓ Ready in 703ms
 Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
 
+  Reload env: .env.local
+  Reload env: .env.local
