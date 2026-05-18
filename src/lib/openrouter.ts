@@ -110,24 +110,193 @@ function getOfflineJson(userPrompt: string) {
       { agent: "QA Tester", action: "Offline: sanity checks..." },
     ],
     pmSpecs: `Offline mode: basic structure for "${projectTitle}"`,
-    designSpecs: "Light, modern, glassy card layout",
-    files: [
-      {
-        path: "app/page.tsx",
-        content:
-          "export default function Page() {\n  return (\n    <main style={{ padding: 24, fontFamily: 'system-ui' }}>\n      <h1>" +
-          projectTitle.replace(/"/g, "\\\"") +
-          "</h1>\n      <p>" +
-          description.replace(/"/g, "\\\"") +
-          "</p>\n    </main>\n  );\n}\n",
-      },
+    designSpecs: "Light, modern, glassy card layout",    files: [
       {
         path: "app/layout.tsx",
-        content:
-          "export default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"en\">\n      <body>{children}</body>\n    </html>\n  );\n}\n",
+        content: `import type { ReactNode } from "react";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body style={{ margin: 0, fontFamily: "system-ui" }}>{children}</body>
+    </html>
+  );
+}
+`,
       },
-    ],
-    previewHtml,
+      {
+        path: "components/navbar.tsx",
+        content: `export default function Navbar() {
+  return (
+    <header style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "14px 18px",
+      borderBottom: "1px solid rgba(15,23,42,0.08)",
+      position: "sticky",
+      top: 0,
+      background: "rgba(255,255,255,0.85)",
+      backdropFilter: "blur(10px)",
+    }}>
+      <div style={{ fontWeight: 900 }}>${projectTitle.replace(/\"/g, "")}</div>
+      <nav style={{ display: "flex", gap: 12, fontSize: 13, fontWeight: 800 }}>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </header>
+  );
+}
+`,
+      },
+      {
+        path: "components/sidebar.tsx",
+        content: `export default function Sidebar() {
+  const items = ["Overview", "Orders", "Menu", "Customers", "Settings"];
+  return (
+    <aside style={{
+      width: 260,
+      padding: 16,
+      borderRight: "1px solid rgba(15,23,42,0.08)",
+      background: "rgba(255,255,255,0.7)",
+      backdropFilter: "blur(10px)",
+    }}>
+      <div style={{ fontSize: 12, fontWeight: 900, letterSpacing: 1.5, opacity: 0.6 }}>DASHBOARD</div>
+      <div style={{ height: 10 }} />
+      <div style={{ display: "grid", gap: 8 }}>
+        {items.map((label) => (
+          <div key={label} style={{
+            padding: "10px 12px",
+            borderRadius: 12,
+            border: "1px solid rgba(15,23,42,0.08)",
+            background: "white",
+            fontSize: 13,
+            fontWeight: 800,
+          }}>
+            {label}
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+}
+`,
+      },
+      {
+        path: "app/page.tsx",
+        content: `import Navbar from "../components/navbar";
+
+export default function Page() {
+  return (
+    <div>
+      <Navbar />
+      <main style={{ padding: 24, maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{
+          padding: 22,
+          borderRadius: 20,
+          border: "1px solid rgba(15,23,42,0.08)",
+          background: "rgba(255,255,255,0.75)",
+          backdropFilter: "blur(10px)",
+        }}>
+          <h1 style={{ margin: 0, fontSize: 42, letterSpacing: "-0.03em" }}>${projectTitle.replace(/\"/g, "")}</h1>
+          <p style={{ marginTop: 10, lineHeight: 1.6, opacity: 0.8 }}>${description.replace(/\"/g, "")}</p>
+          <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <a href="/dashboard" style={{
+              padding: "12px 14px",
+              borderRadius: 14,
+              background: "#0ea5e9",
+              color: "white",
+              fontWeight: 900,
+              textDecoration: "none",
+            }}>Open Dashboard</a>
+            <a href="#features" style={{
+              padding: "12px 14px",
+              borderRadius: 14,
+              border: "1px solid rgba(15,23,42,0.12)",
+              background: "white",
+              color: "#0f172a",
+              fontWeight: 900,
+              textDecoration: "none",
+            }}>See Features</a>
+          </div>
+        </div>
+
+        <section id="features" style={{ marginTop: 24, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+          {["Beautiful UI", "Fast setup", "Easy editing", "Ready preview"].map((t) => (
+            <div key={t} style={{ padding: 16, borderRadius: 18, border: "1px solid rgba(15,23,42,0.08)", background: "white" }}>
+              <div style={{ fontWeight: 900 }}>{t}</div>
+              <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>Offline starter file — replace with AI output when API is ready.</div>
+            </div>
+          ))}
+        </section>
+      </main>
+    </div>
+  );
+}
+`,
+      },
+      {
+        path: "app/dashboard/page.tsx",
+        content: `import Sidebar from "../../components/sidebar";
+import Navbar from "../../components/navbar";
+
+export default function DashboardPage() {
+  return (
+    <div>
+      <Navbar />
+      <div style={{ display: "flex", minHeight: "calc(100vh - 56px)" }}>
+        <Sidebar />
+        <main style={{ flex: 1, padding: 18 }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900 }}>Dashboard</h2>
+          <p style={{ marginTop: 8, opacity: 0.75 }}>This is a starter dashboard generated in offline mode.</p>
+          <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+            {["Revenue", "Orders", "Customers", "Conversion"].map((k) => (
+              <div key={k} style={{ padding: 16, borderRadius: 18, border: "1px solid rgba(15,23,42,0.08)", background: "white" }}>
+                <div style={{ fontSize: 12, fontWeight: 900, opacity: 0.6 }}>{k.toUpperCase()}</div>
+                <div style={{ marginTop: 6, fontSize: 24, fontWeight: 900 }}>{Math.floor(Math.random() * 900 + 100)}</div>
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+`,
+      },
+      {
+        path: "lib/auth.ts",
+        content: `export type SessionUser = { id: string; email: string };
+
+export function isAuthenticated(): boolean {
+  // Offline mode stub. Replace with Supabase/auth provider when ready.
+  return true;
+}
+`,
+      },
+      {
+        path: "app/api/health/route.ts",
+        content: `export async function GET() {
+  return Response.json({ ok: true });
+}
+`,
+      },
+      {
+        path: "supabase/schema.sql",
+        content: `-- Offline starter schema
+create table if not exists projects (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid,
+  title text not null,
+  description text,
+  generated_code jsonb default '[]'::jsonb,
+  preview_url text,
+  created_at timestamptz default now()
+);
+`,
+      },
+    ],    previewHtml,
   };
 }
 
@@ -214,4 +383,5 @@ export async function getOpenRouterResponse(
     throw error;
   }
 }
+
 
