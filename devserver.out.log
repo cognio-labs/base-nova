@@ -1,18 +1,9 @@
-
-> lokoai@0.1.0 dev
-> node --max-old-space-size=4096 node_modules/next/dist/bin/next dev -p 302
-
-▲ Next.js 16.2.6 (Turbopack)
+[dev-safe] Cleared C:\Users\PC\base44\.next\dev
+▲ Next.js 16.2.6 (webpack)
 - Local:         http://localhost:302
 - Network:       http://192.168.1.25:302
 - Environments: .env.local
-✓ Ready in 703ms
-Creating turbopack project { dir: 'C:\\Users\\PC\\base44', testMode: true }
+✓ Ready in 1017ms
 
-  Reload env: .env.local
-  Reload env: .env.local
 ○ Compiling / ...
- GET / 500 in 7.8s (next.js: 7.7s, application-code: 43ms)
- GET / 500 in 7.8s (next.js: 7.7s, application-code: 44ms)
-✓ Compiled in 1717ms
-[?25h
+ GET / 200 in 17.0s (next.js: 16.4s, application-code: 597ms)
