@@ -263,8 +263,8 @@ const testimonials = [
 const pricingPlans = [
   {
     name: "Starter",
-    monthlyPrice: 19,
-    yearlyPrice: 15,
+    monthlyPrice: 9,
+    yearlyPrice: 7,
     highlight: "Best for trying LokoAI",
     credits: "120 Monthly credits /mo",
     integCredits: "3k Integration credits /mo",
@@ -279,8 +279,8 @@ const pricingPlans = [
   },
   {
     name: "Builder",
-    monthlyPrice: 39,
-    yearlyPrice: 31,
+    monthlyPrice: 29,
+    yearlyPrice: 24,
     highlight: "Best for solo founders",
     credits: "300 Monthly credits /mo",
     integCredits: "12k Integration credits /mo",
@@ -296,8 +296,8 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    monthlyPrice: 79,
-    yearlyPrice: 63,
+    monthlyPrice: 59,
+    yearlyPrice: 49,
     highlight: "Best for growing product teams",
     credits: "650 Monthly credits /mo",
     integCredits: "25k Integration credits /mo",
@@ -314,8 +314,8 @@ const pricingPlans = [
   },
   {
     name: "Elite",
-    monthlyPrice: 149,
-    yearlyPrice: 119,
+    monthlyPrice: 99,
+    yearlyPrice: 82,
     highlight: "Best for agencies and scale-ups",
     credits: "1.5k Monthly credits /mo",
     integCredits: "60k Integration credits /mo",
