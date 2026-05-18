@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Sparkles, Check, Star, ArrowRight, ChevronRight
+  Sparkles, Check, Star, ArrowRight
 } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 
@@ -461,22 +461,22 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs font-semibold uppercase tracking-wider">
-              Seamless Ecosystem
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-widest">
+              SMART INTEGRATIONS
             </div>
             <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
-              Connect with the<br />
-              <span className="text-sky-500">tools you love.</span>
+              All Your Tools.<br />
+              <span className="text-sky-500">One Smart Platform.</span>
             </h2>
             <p className="text-base sm:text-lg leading-relaxed text-slate-600 dark:text-gray-400">
-              Stop switching tabs. Streamline your workflow by integrating LokoAI with over 50+ popular platforms. Sync data, automate tasks, and stay in your flow state.
+              Connect your favorite apps with Loko AI and automate your workflow effortlessly. Sync data, streamline tasks, and work faster without switching tabs.
             </p>
             <button
               onClick={() => setIsAuthOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-3.5 transition-all shadow-md shadow-sky-500/10 active:scale-95 cursor-pointer text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-3.5 transition-all shadow-md shadow-sky-500/10 active:scale-95 cursor-pointer text-sm group"
             >
               Get Started
-              <ChevronRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
 
@@ -502,64 +502,64 @@ export default function Home() {
             </div>
 
             {/* Scrolling columns inside the box */}
-            <div className="grid grid-cols-4 gap-3 h-[380px] overflow-hidden relative justify-items-center px-1">
+            <div className="grid grid-cols-4 gap-4 h-[380px] overflow-hidden relative justify-items-center px-2">
               
               {/* Overlay Gradient at top & bottom to fade scrolling items */}
               <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-slate-50 dark:from-[#0d1527] to-transparent z-10 pointer-events-none" />
               <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-slate-50 dark:from-[#0d1527] to-transparent z-10 pointer-events-none" />
 
               {/* Column 1: Scrolling Up */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-up">
+              <div className="flex flex-col gap-4 animate-marquee-vertical-up">
                 {integrationTools.slice(0, 3).map((tool, idx) => (
-                  <div key={`c1-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c1-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
                 {integrationTools.slice(0, 3).map((tool, idx) => (
-                  <div key={`c1-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c1-dup-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
               </div>
 
               {/* Column 2: Scrolling Down */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-down">
+              <div className="flex flex-col gap-4 animate-marquee-vertical-down">
                 {integrationTools.slice(3, 6).map((tool, idx) => (
-                  <div key={`c2-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c2-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
                 {integrationTools.slice(3, 6).map((tool, idx) => (
-                  <div key={`c2-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c2-dup-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
               </div>
 
               {/* Column 3: Scrolling Up */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-up">
+              <div className="flex flex-col gap-4 animate-marquee-vertical-up">
                 {integrationTools.slice(6, 9).map((tool, idx) => (
-                  <div key={`c3-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c3-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
                 {integrationTools.slice(6, 9).map((tool, idx) => (
-                  <div key={`c3-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c3-dup-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
               </div>
 
               {/* Column 4: Scrolling Down */}
-              <div className="flex flex-col gap-3 animate-marquee-vertical-down">
+              <div className="flex flex-col gap-4 animate-marquee-vertical-down">
                 {integrationTools.slice(9, 12).map((tool, idx) => (
-                  <div key={`c4-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c4-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
                 {integrationTools.slice(9, 12).map((tool, idx) => (
-                  <div key={`c4-dup-${idx}`} className="flex items-center justify-center w-14 h-14 border border-slate-100 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
-                    <tool.icon className="w-8.5 h-8.5" />
+                  <div key={`c4-dup-${idx}`} className="flex items-center justify-center w-16 h-16 border border-slate-200/60 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900/90 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:scale-110 duration-300 select-none flex-shrink-0 cursor-pointer">
+                    <tool.icon className="w-9 h-9" />
                   </div>
                 ))}
               </div>
