@@ -12,3 +12,8 @@
  GET / 200 in 143ms (next.js: 3ms, application-code: 140ms)
  GET / 200 in 307ms (next.js: 4ms, application-code: 303ms)
  GET / 200 in 222ms (next.js: 3ms, application-code: 220ms)
+○ Compiling /_error ...
+ GET / 500 in 6.3s (next.js: 6.3s, application-code: 30ms)
+ GET / 500 in 6.3s (next.js: 6.3s, application-code: 33ms)
+ GET / 500 in 910ms (next.js: 886ms, application-code: 24ms)
+ GET / 500 in 910ms (next.js: 886ms, application-code: 24ms)
