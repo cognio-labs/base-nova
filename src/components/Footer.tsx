@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { MessageCircle, Briefcase, Share2, Globe } from "lucide-react";
 
 export default function Footer() {
@@ -56,7 +56,7 @@ export default function Footer() {
                <span className="text-xl font-bold tracking-tight text-slate-900">LokoAI</span>
             </Link>
             <p className="text-sm leading-7 text-slate-500 max-w-sm">
-              LokoAI is the AI-powered platform that lets users build fully functioning apps in minutes. Using nothing but natural language, LokoAI enables anyone to turn their words into productivity apps, back-office tools, customer portals, or complete enterprise products that are ready to use—no integrations required.
+              LokoAI is the AI-powered platform that lets users build fully functioning apps in minutes. Using nothing but natural language, LokoAI enables anyone to turn their words into productivity apps, back-office tools, customer portals, or complete enterprise products that are ready to use - no integrations required.
             </p>
           </div>
 
@@ -121,4 +121,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 

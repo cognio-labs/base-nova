@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -225,7 +225,7 @@ const testimonials = [
     name: "Emily Watson",
     role: "Product Manager @ LaunchStack",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows a€”— just explain the task and deploy. It's now part of our daily operations."
+    review: "What impressed me most was how quickly we went from idea to a live agent. No complex workflows  - â€” just explain the task and deploy. It's now part of our daily operations."
   },
   {
     name: "Sofia Rodriguez",
@@ -376,7 +376,7 @@ export default function Home() {
 
           {/* Subheading */}
           <p className="mx-auto mb-8 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-gray-400 sm:mb-10 sm:text-lg md:text-xl">
-            From UI design and animations to content, code, and deployment a€”— Loko AI helps you build complete websites faster than ever.
+            From UI design and animations to content, code, and deployment  - â€” Loko AI helps you build complete websites faster than ever.
           </p>
 
           {/* Buttons */}
@@ -481,7 +481,20 @@ export default function Home() {
             </button>
           </motion.div>
 
-          {/* Mobile Integrations Grid */}\n          <div className="grid grid-cols-2 gap-3 md:hidden">\n            {integrationTools.map((tool) => (\n              <div\n                key={tool.name}\n                className={`flex min-h-24 flex-col items-center justify-center gap-2 rounded-3xl border p-4 text-center backdrop-blur-sm ${tool.card}`}\n              >\n                <tool.icon className="h-8 w-8" />\n                <span className="text-xs font-bold text-slate-700">{tool.name}</span>\n              </div>\n            ))}\n          </div>\n\n          {/* Sliding Grid/Mockup Mockup Box */}
+          {/* Mobile Integrations Grid */}
+          <div className="grid grid-cols-2 gap-3 md:hidden">
+            {integrationTools.map((tool) => (
+              <div
+                key={tool.name}
+                className={`flex min-h-24 flex-col items-center justify-center gap-2 rounded-3xl border p-4 text-center backdrop-blur-sm ${tool.card}`}
+              >
+                <tool.icon className="h-8 w-8" />
+                <span className="text-xs font-bold text-slate-700">{tool.name}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Sliding Grid/Mockup Mockup Box */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -743,4 +756,6 @@ export default function Home() {
 </div>
   );
 }
+
+
 
