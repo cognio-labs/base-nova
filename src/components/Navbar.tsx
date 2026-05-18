@@ -28,19 +28,42 @@ export default function Navbar() {
   const currentTheme = theme;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 dark:border-white/5 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/75 dark:bg-slate-950/75 backdrop-blur-xl border-b border-slate-200/50 dark:border-white/10 transition-colors duration-300">
+      {/* Subtle brand grid pattern overlay */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.04] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center group">
-              <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                LokoAI
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-500 to-cyan-400 p-0.5 shadow-md shadow-sky-500/20 transition-transform group-hover:scale-105">
+                <Sparkles className="h-5 w-5 text-white animate-pulse" />
+              </div>
+              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">
+                Loko<span className="text-sky-500">AI</span>
               </span>
             </Link>
           </div>
 
-          {/* Desktop Nav Removed - Moved to Sidebar */}
-          <div className="hidden md:flex items-center gap-1">
+          {/* Desktop Nav - Beautiful Center Links */}
+          <div className="hidden md:flex items-center gap-1.5 mx-auto">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 group ${
+                    isActive 
+                      ? "text-sky-600 dark:text-sky-400 bg-sky-500/10 dark:bg-sky-500/10" 
+                      : "text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-white/5"
+                  }`}
+                >
+                  <item.icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${isActive ? "text-sky-500" : "text-slate-400 dark:text-gray-500"}`} />
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden md:flex items-center gap-4">
@@ -49,16 +72,12 @@ export default function Navbar() {
               type="button"
               aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} mode`}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={`p-2.5 rounded-xl border-2 transition-all duration-300 flex items-center justify-center group ${
-                currentTheme === "dark"
-                  ? "bg-black border-[#00BFFF] text-white shadow-[0_0_15px_rgba(0,191,255,0.3)]"
-                  : "bg-white border-[#00BFFF] text-black shadow-lg"
-              }`}
+              className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 hover:bg-slate-100 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 transition-all duration-300 flex items-center justify-center group shadow-sm hover:shadow"
             >
               {currentTheme === "dark" ? (
-                <Moon className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-500" />
+                <Moon className="w-4 h-4 group-hover:rotate-[360deg] transition-transform duration-500 text-sky-400" />
               ) : (
-                <Sun className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                <Sun className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500 text-amber-500" />
               )}
             </button>
 
@@ -66,7 +85,7 @@ export default function Navbar() {
               <div className="flex items-center gap-4">
                 <Link 
                   href="/dashboard" 
-                  className="hidden sm:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-sky-500/10 dark:text-gray-200"
+                  className="hidden sm:flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-sky-500/10 dark:text-gray-200"
                 >
                   <Gauge className="h-4 w-4 text-sky-500" />
                   Dashboard
@@ -78,14 +97,14 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsAuthOpen(true)}
-                  className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
+                  className="text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
                 >
                   Log in
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsAuthOpen(true)}
-                  className="rounded-full brand-btn px-5 py-2 text-sm font-semibold shadow-lg shadow-sky-500/20"
+                  className="relative rounded-full px-5 py-2.5 text-sm font-bold text-slate-950 dark:text-black bg-gradient-to-r from-sky-400 to-cyan-300 hover:from-sky-300 hover:to-cyan-200 transition-all duration-300 shadow-md shadow-sky-500/10 hover:shadow-lg hover:shadow-sky-500/20 active:scale-95"
                 >
                   Get Started
                 </button>
