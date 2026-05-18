@@ -137,7 +137,7 @@ export default function Home() {
 
       <div className="max-w-7xl w-full text-center z-10">
         {!generatedFiles.length ? (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,7 +166,7 @@ export default function Home() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Describe the app you want to create (e.g., 'A modern CRM dashboard with dark mode and analytics cards')"
-                    className="w-full bg-transparent !border-none focus:ring-0 focus:!outline-none text-lg md:text-xl text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 resize-none min-h-[120px]"
+                    className="w-full bg-transparent !border-none focus:ring-0 focus:!outline-none text-lg md:text-xl text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-gray-500 resize-none min-h-[72px]"
                   />
                 </div>
                 

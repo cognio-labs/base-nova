@@ -113,6 +113,22 @@ body {
   box-shadow: 0 0 20px rgba(135, 206, 235, 0.4);
 }
 
+.bg-grid-pattern {
+  background-size: 28px 28px;
+  background-image: 
+    linear-gradient(to right, rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at center, black 40%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+}
+
+.dark .bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+}
+
+
 @theme inline {
   --font-heading: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;

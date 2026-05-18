@@ -28,6 +28,7 @@ function LoginContent() {
 
   return (
     <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden px-4 py-20">
+      <div className="absolute inset-0 bg-grid-pattern opacity-80" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#7dd3fc22,transparent_35%),radial-gradient(circle_at_bottom,#ffffff14,transparent_35%)]" />
       <div className="relative max-w-2xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-sky-500">
@@ -55,6 +56,7 @@ function LoginContent() {
 function LoginShell() {
   return (
     <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center overflow-hidden px-4 py-20">
+      <div className="absolute inset-0 bg-grid-pattern opacity-80" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#7dd3fc22,transparent_35%),radial-gradient(circle_at_bottom,#ffffff14,transparent_35%)]" />
       <div className="relative max-w-2xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-sky-500">
