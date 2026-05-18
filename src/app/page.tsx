@@ -1,11 +1,10 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useState } from "react";\r\nimport { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
   Sparkles, Check, Star, ArrowRight
 } from "lucide-react";
-import AuthModal from "@/components/AuthModal";
 
 // Custom Brand SVG Icons (Since trademark brands are removed/unsupported in some lucide-react versions)
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -333,8 +332,7 @@ const pricingPlans = [
 ];
 
 export default function Home() {
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(false);\r\n  const router = useRouter();\r\n  const goToLogin = () => router.push("/login?next=/dashboard");
 
   return (
     <div className="relative min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
@@ -381,7 +379,7 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 max-w-md mx-auto sm:max-w-none">
             <button
-              onClick={() => setIsAuthOpen(true)}
+              onClick={goToLogin}
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-8 py-4 transition-all shadow-lg shadow-sky-500/20 active:scale-95 group text-sm md:text-base cursor-pointer"
             >
               <Sparkles className="w-5 h-5 animate-pulse text-sky-200" />
@@ -389,7 +387,7 @@ export default function Home() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button
-              onClick={() => setIsAuthOpen(true)}
+              onClick={goToLogin}
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold px-8 py-4 transition-all active:scale-95 text-sm md:text-base cursor-pointer"
             >
               Book a demo
@@ -472,7 +470,7 @@ export default function Home() {
               Connect your favorite apps with Loko AI and automate your workflow effortlessly. Sync data, streamline tasks, and work faster without switching tabs.
             </p>
             <button
-              onClick={() => setIsAuthOpen(true)}
+              onClick={goToLogin}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold px-7 py-3.5 transition-all shadow-md shadow-sky-500/10 active:scale-95 cursor-pointer text-sm group"
             >
               Get Started
@@ -724,7 +722,7 @@ export default function Home() {
 
                   {/* Call to action button */}
                   <button
-                    onClick={() => setIsAuthOpen(true)}
+                    onClick={goToLogin}
                     className={`w-full rounded-2xl py-3.5 text-xs font-extrabold transition-all cursor-pointer ${
                       plan.popular
                         ? "bg-[#0ea5ff] text-white shadow-md shadow-[#0ea5ff]/20 hover:opacity-90 active:scale-95"
@@ -739,9 +737,6 @@ export default function Home() {
           })}
         </div>
       </section>
-
-      {/* AuthModal component for logging/signing up */}
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-    </div>
+</div>
   );
 }
