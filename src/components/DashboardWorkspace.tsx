@@ -190,6 +190,7 @@ export default function DashboardWorkspace() {
     if (!nextPrompt.trim() || isGenerating) return;
     setPrompt(nextPrompt);
     setIsMoreOpen(false);
+    router.push("/create");
     await generateProject(nextPrompt);
     const state = useGeneratorStore.getState();
     if (state.previewHtml && !state.error) {
@@ -543,6 +544,7 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
 
 
 
