@@ -1,16 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
-  Sparkles, Check, Star, Moon, Sun, ArrowRight, ShieldCheck, Zap, 
-  Rocket, Gauge, Globe, Smartphone, Heart, Users2, Code, ShieldAlert,
-  ArrowUpRight, Mail, Phone, ExternalLink, Calendar, Slack, Github, Command,
-  ChevronRight
+  Sparkles, Check, Star, ArrowRight, ChevronRight
 } from "lucide-react";
-import Link from "next/link";
 import AuthModal from "@/components/AuthModal";
-import { useAuth } from "@/hooks/useAuth";
 
 // Brand Logo Details for Section 2 (Infinite Marquee)
 const clientBrands = [
@@ -178,7 +173,6 @@ const pricingPlans = [
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isYearly, setIsYearly] = useState(true);
-  const { user } = useAuth();
 
   return (
     <div className="relative min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
@@ -446,7 +440,7 @@ export default function Home() {
 
                 {/* Review Text */}
                 <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed">
-                  "{t.review}"
+                  &ldquo;{t.review}&rdquo;
                 </p>
               </div>
             </motion.div>
