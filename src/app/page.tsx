@@ -639,7 +639,7 @@ export default function Home() {
             Simple Pricing for Powerful AI
           </h2>
           <p className="mx-auto max-w-2xl text-slate-500 dark:text-gray-400 text-base sm:text-lg mb-8">
-            Choose a plan that scales with your AI ambitions. No hidden fees, cancel anytime.
+            Scale your AI workflow with flexible plans built for creators, teams, and growing businesses.
           </p>
 
           {/* Toggle billing plan */}
