@@ -1,13 +1,13 @@
 import { tool } from '@openrouter/agent';
-import * as z from 'zod/v4/core';
+import { z } from 'zod';
 
 export const timeTool = tool({
   name: 'get_current_time',
   description: 'Get the current date and time',
   inputSchema: z.object({
     timezone: z.string().optional().describe('Timezone (e.g., "UTC", "America/New_York")'),
-  }),
-  execute: async ({ timezone }) => {
+  }) as any,
+  execute: async ({ timezone }: any) => {
     return {
       time: new Date().toLocaleString('en-US', { timeZone: timezone || 'UTC' }),
       timezone: timezone || 'UTC',
@@ -20,8 +20,8 @@ export const calculatorTool = tool({
   description: 'Perform mathematical calculations',
   inputSchema: z.object({
     expression: z.string().describe('Math expression (e.g., "2 + 2", "sqrt(16)")'),
-  }),
-  execute: async ({ expression }) => {
+  }) as any,
+  execute: async ({ expression }: any) => {
     // Simple safe eval for basic math
     const sanitized = expression.replace(/[^0-9+\-*/().\s]/g, '');
     const result = Function(`"use strict"; return (${sanitized})`)();

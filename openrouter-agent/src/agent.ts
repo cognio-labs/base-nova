@@ -1,7 +1,7 @@
 import { OpenRouter, tool, stepCountIs } from '@openrouter/agent';
 import type { Tool, StopCondition, StreamableOutputItem } from '@openrouter/agent';
 import { EventEmitter } from 'eventemitter3';
-import * as z from 'zod/v4/core';
+import { z } from 'zod';
 
 // Message types
 export interface Message {
