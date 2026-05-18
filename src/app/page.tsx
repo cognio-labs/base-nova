@@ -659,11 +659,8 @@ export default function Home() {
             >
               Yearly
               <span className="bg-white/20 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full">Save 20%</span>
-            </button>
           </div>
         </div>
-
-        {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {pricingPlans.map((plan, idx) => {
             const finalPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
@@ -675,46 +672,47 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
                 whileHover={{ y: -4 }}
-                className={`flex flex-col overflow-hidden rounded-[2rem] border bg-white/95 dark:bg-slate-900/60 shadow-xl transition-all duration-300 relative ${
+                className={`flex flex-col overflow-hidden rounded-3xl border bg-white dark:bg-slate-900 shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 relative ${
                   plan.popular
-                    ? "border-sky-400 dark:border-sky-500 shadow-[0_18px_50px_rgba(14,165,233,0.14)]"
-                    : "border-slate-200 dark:border-white/5"
+                    ? "border-[#0ea5ff] shadow-[0_20px_50px_rgba(14,165,255,0.08)] ring-1 ring-[#0ea5ff]/10"
+                    : "border-slate-200/80 dark:border-white/5"
                 }`}
               >
                 {/* Popular label bar */}
                 {plan.popular && (
-                  <div className="absolute inset-x-0 top-0 bg-gradient-to-r from-sky-500 to-cyan-400 py-1.5 text-center text-[10px] font-black uppercase tracking-[0.2em] text-white">
-                    Most Popular
+                  <div className="absolute inset-x-0 top-0 bg-[#0ea5ff] py-2 text-center text-[10px] font-extrabold uppercase tracking-[0.2em] text-white">
+                    MOST POPULAR
                   </div>
                 )}
 
-                <div className={`p-6 flex flex-col justify-between h-full ${plan.popular ? "pt-10" : ""}`}>
+                <div className={`p-6 flex flex-col justify-between h-full ${plan.popular ? "pt-12" : "pt-8"}`}>
                   <div>
                     {/* Header */}
                     <div className="mb-4">
                       <h3 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{plan.name}</h3>
-                      <p className="mt-1.5 text-xs text-slate-500 dark:text-gray-400 font-semibold">{plan.highlight}</p>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-gray-400 font-semibold">{plan.highlight}</p>
                     </div>
 
                     {/* Price & Billing */}
-                    <div className="border-y border-slate-100 dark:border-white/5 py-4 mb-4">
-                      <div className="flex items-end gap-1 mb-2">
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-1 mb-4">
                         <span className="text-4xl font-extrabold text-slate-950 dark:text-white">${finalPrice}</span>
-                        <span className="text-sm text-slate-400 dark:text-gray-500 pb-0.5">/mo</span>
+                        <span className="text-xs text-slate-400 dark:text-gray-500">/mo</span>
                       </div>
                       
-                      <div className="rounded-2xl border border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 p-3 shadow-inner">
-                        <p className="text-[11px] font-bold text-slate-900 dark:text-white">{plan.credits}</p>
-                        <p className="text-[11px] font-bold text-slate-900 dark:text-white mt-1">{plan.integCredits}</p>
+                      {/* Credits Box */}
+                      <div className="rounded-2xl border border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50 py-3.5 px-4 text-left shadow-sm">
+                        <p className="text-xs font-bold text-slate-800 dark:text-gray-200">{plan.credits}</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-gray-200 mt-1">{plan.integCredits}</p>
                       </div>
                     </div>
 
                     {/* Features list */}
-                    <div className="space-y-3 mb-6">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Plan Benefits</p>
+                    <div className="space-y-3.5 mb-8">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">PLAN BENEFITS</p>
                       {plan.features.map((feature, fIdx) => (
-                        <div key={fIdx} className="flex items-start gap-2.5">
-                          <div className="h-4 w-4 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/20">
+                        <div key={fIdx} className="flex items-start gap-3">
+                          <div className="h-4.5 w-4.5 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/20">
                             <Check className="h-2.5 w-2.5 text-emerald-500" />
                           </div>
                           <span className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed font-medium">{feature}</span>
@@ -726,10 +724,10 @@ export default function Home() {
                   {/* Call to action button */}
                   <button
                     onClick={() => setIsAuthOpen(true)}
-                    className={`w-full rounded-2xl py-3 text-xs font-extrabold transition-all cursor-pointer ${
+                    className={`w-full rounded-2xl py-3.5 text-xs font-extrabold transition-all cursor-pointer ${
                       plan.popular
-                        ? "bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-md shadow-sky-500/20 hover:opacity-90 active:scale-95"
-                        : "border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 active:scale-95"
+                        ? "bg-[#0ea5ff] text-white shadow-md shadow-[#0ea5ff]/20 hover:opacity-90 active:scale-95"
+                        : "border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 active:scale-95"
                     }`}
                   >
                     {plan.cta}
@@ -737,7 +735,6 @@ export default function Home() {
                 </div>
               </motion.div>
             );
-          })}
         </div>
       </section>
 
