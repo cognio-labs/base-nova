@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -93,21 +93,21 @@ export default function Navbar() {
                 <UserMenu />
               </div>
             ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setIsAuthOpen(true)}
-                  className="text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Log in
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAuthOpen(true)}
-                  className="relative rounded-full px-5 py-2.5 text-sm font-bold text-slate-950 dark:text-black bg-gradient-to-r from-sky-400 to-cyan-300 hover:from-sky-300 hover:to-cyan-200 transition-all duration-300 shadow-md shadow-sky-500/10 hover:shadow-lg hover:shadow-sky-500/20 active:scale-95"
+              <>                {pathname === "/" ? null : (
+                  <button
+                    type="button"
+                    onClick={() => setIsAuthOpen(true)}
+                    className="text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950 dark:text-gray-400 dark:hover:text-white"
+                  >
+                    Log in
+                  </button>
+                )}
+                <Link
+                  href="/login?next=/dashboard"
+                  className="relative inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-slate-950 dark:text-black bg-gradient-to-r from-sky-400 to-cyan-300 hover:from-sky-300 hover:to-cyan-200 transition-all duration-300 shadow-md shadow-sky-500/10 hover:shadow-lg hover:shadow-sky-500/20 active:scale-95"
                 >
                   Get Started
-                </button>
+                </Link>
               </>
             )}
           </div>
@@ -187,26 +187,25 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setIsAuthOpen(true);
-                      }}
-                      className="w-full py-3 text-center font-medium text-slate-500 dark:text-gray-400"
-                    >
-                      Log in
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setIsAuthOpen(true);
-                      }}
-                      className="w-full rounded-xl brand-btn py-3 font-bold"
-                    >
-                      Get Started
-                    </button>
+                    {pathname === "/" ? null : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsAuthOpen(true);
+                        }}
+                        className="w-full py-3 text-center font-medium text-slate-500 dark:text-gray-400"
+                      >
+                        Log in
+                      </button>
+                    )}
+                    <Link
+                        href="/login?next=/dashboard"
+                        onClick={() => setIsOpen(false)}
+                        className="flex w-full items-center justify-center rounded-xl brand-btn py-3 font-bold"
+                      >
+                        Get Started
+                      </Link>
                   </>
                 )}
               </div>
