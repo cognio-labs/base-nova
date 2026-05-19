@@ -1,7 +1,7 @@
 ﻿
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
@@ -82,7 +82,7 @@ function safeJsonParse<T>(value: string | null): T | null {
   }
 }
 
-function useLocalStorageChat(): [ChatMessage[], (next: ChatMessage[]) => void] {
+function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (typeof window === "undefined") return [];
     const parsed = safeJsonParse<ChatMessage[]>(window.localStorage.getItem(CHAT_STORAGE_KEY));
@@ -315,7 +315,7 @@ export default function BuilderWorkspace() {
     void sendPrompt(pendingPrompt, buildMode);
   }, [buildMode, isGenerating]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -337,7 +337,7 @@ export default function BuilderWorkspace() {
     "bg-white/60 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 shadow-[0_20px_60px_-30px_rgba(2,6,23,0.35)]";
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] w-full bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:from-[#05050a] dark:via-[#05050a] dark:to-[#09111f]">
+    <div className="min-h-[calc(100vh-5rem)] w-full bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:bg-[#09111f]">
       <div className="mx-auto w-full max-w-[1700px] px-4 py-4 md:px-6 md:py-6">
         <div className="relative overflow-hidden rounded-[28px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
           <div className="pointer-events-none absolute inset-0 opacity-70">
@@ -837,6 +837,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
