@@ -486,6 +486,86 @@ export default function BuilderWorkspace() {
     shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
   };
 
+  const handleOpenExternalPreview = () => {
+    if (previewHtml) {
+      const blob = new Blob([previewHtml], { type: "text/html" });
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank", "noopener,noreferrer");
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+      return;
+    }
+
+    window.open(window.location.href, "_blank", "noopener,noreferrer");
+  };
+
+  const handleChatAction = () => {
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      setIsSidebarOpen((open) => !open);
+      return;
+    }
+
+    textareaRef.current?.focus();
+  };
+
+  const handleAiAction = () => {
+    const nextPrompt = `Create a premium ${promptHints[hintIndex].toLowerCase()} with modern SaaS layout and animations.`;
+    setDraft(nextPrompt);
+    textareaRef.current?.focus();
+  };
+
+  const handleGithubOpen = () => {
+    window.open("https://github.com", "_blank", "noopener,noreferrer");
+  };
+
+  const handleCreateInviteLink = async () => {
+    if (isCreatingInviteLink) return;
+
+    setIsCreatingInviteLink(true);
+    await new Promise((resolve) => window.setTimeout(resolve, 450));
+
+    const slug = projectLabel
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    const nextLink = `${window.location.origin}/share/${slug || "workspace"}`;
+
+    setInviteLink(nextLink);
+    setIsCreatingInviteLink(false);
+    setShareFeedback("Invite link created");
+
+    if (shareTimerRef.current) {
+      window.clearTimeout(shareTimerRef.current);
+    }
+
+    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
+  };
+
+  const handleCopyInviteLink = async () => {
+    if (!inviteLink) return;
+
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setShareFeedback("Invite link copied");
+    } catch {
+      window.prompt("Copy invite link", inviteLink);
+      setShareFeedback("Invite link ready to copy");
+    }
+
+    if (shareTimerRef.current) {
+      window.clearTimeout(shareTimerRef.current);
+    }
+
+    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
+  };
+
+  const handleInviteByEmail = () => {
+    if (!inviteEmail.trim()) return;
+
+    const inviteMessage = `Invite sent to ${inviteEmail.trim()} with ${inviteRole.toLowerCase()} access.`;
+    pushMessage({ role: "assistant", content: inviteMessage });
+    setInviteEmail("");
+  };
+
   const handleKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -898,6 +978,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
