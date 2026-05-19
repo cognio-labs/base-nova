@@ -83,6 +83,8 @@ body {
   width: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
 }
 
 *,
@@ -238,6 +240,7 @@ body {
 .animate-marquee-vertical-down {
   animation: marquee-vertical-down 16s linear infinite;
 }
+
 
 
 

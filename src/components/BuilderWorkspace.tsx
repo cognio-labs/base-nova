@@ -497,7 +497,7 @@ export default function BuilderWorkspace() {
 
         <main className="relative flex min-h-0 flex-1 overflow-hidden lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-16 left-0 z-50 flex h-[calc(100dvh-4rem)] w-[min(100vw,360px)] flex-col border-r border-slate-200/70 bg-white/88 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 lg:static lg:z-auto lg:h-full lg:w-[clamp(320px,26vw,400px)] lg:translate-x-0 lg:shadow-none",
+            "fixed inset-y-16 left-0 z-50 flex h-[calc(100dvh-4rem)] w-screen flex-col border-r border-slate-200/70 bg-white/88 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 sm:w-[320px] lg:static lg:z-auto lg:h-full lg:translate-x-0 lg:w-[320px] lg:shadow-none xl:w-[360px] 2xl:w-[400px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
@@ -838,6 +838,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
