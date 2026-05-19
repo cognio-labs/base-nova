@@ -103,6 +103,40 @@ let cachedChatMessages: ChatMessage[] = EMPTY_CHAT_MESSAGES;
 
 type DeviceMode = "desktop" | "mobile";
 type BuildMode = "App" | "Landing" | "Dashboard";
+type MemberRole = "Can edit" | "Can comment" | "Can view";
+
+type Collaborator = {
+  id: string;
+  name: string;
+  email: string;
+  role: MemberRole | "Owner";
+  avatar?: string;
+  initials: string;
+};
+
+const COLLABORATORS: Collaborator[] = [
+  {
+    id: "owner",
+    name: "Aryan Khan (you)",
+    email: "aryanthealgohype@gmail.com",
+    role: "Owner",
+    initials: "AK",
+  },
+  {
+    id: "designer",
+    name: "Ayan's Lovable",
+    email: "team@aryandigitalcanvas.com",
+    role: "Can edit",
+    initials: "AL",
+  },
+  {
+    id: "dev",
+    name: "People you invited",
+    email: "invites@workspace.local",
+    role: "Can comment",
+    initials: "PI",
+  },
+];
 
 function safeJsonParse<T>(value: string | null): T | null {
   if (!value) return null;
@@ -856,6 +890,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
