@@ -99,9 +99,7 @@ function useLocalStorageChat(): [ChatMessage[], (next: ChatMessage[]) => void] {
   return [messages, setMessages];
 }
 
-function formatShortcut(shortcut: string) {
-  return shortcut.replace("Cmd", "Cmd").replace("Ctrl", "Ctrl");
-}
+function formatShortcut(shortcut: string) {\n  return shortcut;\n}
 
 export default function BuilderWorkspace() {
   const {
@@ -655,3 +653,135 @@ export default function BuilderWorkspace() {
                   </button>
                 </div>
               </header>
+
+              <div className="flex-1 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  {view === "preview" ? (
+                    <motion.div
+                      key="preview"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="h-full w-full p-5"
+                    >
+                      <div className="h-full w-full">
+                        <div className="mx-auto flex h-full w-full justify-center">
+                          <div className={cn("h-full", previewWidthClass)}>
+                            <PreviewFrame iframeKey={refreshKey} className="h-full" />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="code"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      className="flex h-full flex-col"
+                    >
+                      <div className="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 dark:border-white/10">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="h-4 w-4 text-slate-500 dark:text-slate-300" />
+                          <p className="text-xs font-extrabold text-slate-700 dark:text-slate-200">Generated Code</p>
+                        </div>
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button
+                              type="button"
+                              disabled={!filesForEditor.length}
+                              className={cn(
+                                "flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                                panelBg,
+                                "text-slate-700 dark:text-slate-200 disabled:opacity-60"
+                              )}
+                            >
+                              <span className="truncate max-w-[240px]">{activePath ?? "No files"}</span>
+                              <ChevronDown className="h-4 w-4 opacity-70" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-[520px] max-w-[92vw]">
+                            {filesForEditor.map((f) => (
+                              <DropdownMenuItem
+                                key={f.path}
+                                onSelect={() => openFile(f.path)}
+                                className="flex items-center justify-between"
+                              >
+                                <span className="truncate max-w-[420px]">{f.path}</span>
+                                {activePath === f.path ? <Check className="h-4 w-4" /> : null}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+
+                      <div className="flex-1">
+                        <Editor
+                          theme="vs-dark"
+                          language={activeLanguage}
+                          value={activeEditorValue}
+                          onChange={(value) => {
+                            if (!activePath) return;
+                            updateFileContent(activePath, value ?? "");
+                          }}
+                          options={{
+                            minimap: { enabled: false },
+                            fontSize: 13,
+                            wordWrap: "on",
+                            scrollBeyondLastLine: false,
+                            automaticLayout: true,
+                          }}
+                        />
+                      </div>
+
+                      <div className="border-t border-slate-200/70 px-5 py-3 text-xs text-slate-500 dark:border-white/10 dark:text-slate-300">
+                        Tip: editing <span className="font-bold">preview.html</span> updates the live preview instantly.
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </Panel>
+          </PanelGroup>
+
+          {/* Fullscreen preview */}
+          <AnimatePresence>
+            {isFullscreen ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 backdrop-blur-xl"
+                onClick={() => setIsFullscreen(false)}
+              >
+                <motion.div
+                  initial={{ y: 10, opacity: 0, scale: 0.99 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 10, opacity: 0, scale: 0.99 }}
+                  className="h-[92vh] w-[96vw] max-w-[1400px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0b0b0f]/60 shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                    <p className="text-xs font-extrabold text-white">Fullscreen Preview</p>
+                    <button
+                      type="button"
+                      onClick={() => setIsFullscreen(false)}
+                      className="rounded-2xl bg-white/10 px-3 py-2 text-xs font-extrabold text-white hover:bg-white/15"
+                    >
+                      Close (Esc)
+                    </button>
+                  </div>
+                  <div className="h-[calc(92vh-64px)] p-5">
+                    <PreviewFrame iframeKey={`${refreshKey}-fs`} className="h-full" />
+                  </div>
+                </motion.div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
