@@ -14,7 +14,7 @@ import {
   RefreshCcw,
   Sparkles,
   Plus,
-  Github,
+
   Zap,
   HelpCircle,
   Monitor,
@@ -427,7 +427,7 @@ export default function BuilderWorkspace() {
                 <HelpCircle className="h-5 w-5" />
               </button>
               <button className="hidden h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 md:flex">
-                <Github className="h-5 w-5" />
+                <Code2 className="h-5 w-5" />
               </button>
               
               <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 shadow-sm dark:border-white/10 dark:bg-white/5">
@@ -778,3 +778,5 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
