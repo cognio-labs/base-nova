@@ -25,7 +25,7 @@ import {
   Upload,
   Users,
 } from "lucide-react";
-import { startTransition, useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 
 import AuthModal from "@/components/AuthModal";
 import UserMenu from "@/components/UserMenu";
@@ -182,7 +182,7 @@ export default function DashboardWorkspace() {
     recognition.start();
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files?.length) {
       return;
     }
@@ -210,7 +210,7 @@ export default function DashboardWorkspace() {
     startTransition(() => router.push("/create"));
   };
 
-  const handleTextareaKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleTextareaKeyDown = (event: ReactKeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void launchBuilder();
@@ -614,3 +614,4 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
