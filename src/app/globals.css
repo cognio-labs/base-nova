@@ -78,8 +78,21 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+html,
 body {
+  width: 100%;
+  min-height: 100dvh;
   overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  overscroll-behavior: none;
   background-color: var(--background);
 }
 
@@ -225,6 +238,8 @@ body {
 .animate-marquee-vertical-down {
   animation: marquee-vertical-down 16s linear infinite;
 }
+
+
 
 
 
