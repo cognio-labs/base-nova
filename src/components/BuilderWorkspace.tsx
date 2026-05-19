@@ -231,3 +231,84 @@ export default function BuilderWorkspace() {
 
     recognition.start();
   };
+
+  const pushMessage = (msg: Omit<ChatMessage, "id" | "createdAt"> & { id?: string; createdAt?: number }) => {
+    const id = msg.id ?? `${msg.role}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const createdAt = msg.createdAt ?? Date.now();
+    setMessages([...messages, { id, role: msg.role, content: msg.content, createdAt }]);
+    return id;
+  };
+
+  const updateMessage = (id: string, content: string) => {
+    setMessages(messages.map((m) => (m.id === id ? { ...m, content } : m)));
+  };
+
+  const streamMessage = (id: string, fullText: string) => {
+    if (streamTimerRef.current) {
+      window.clearInterval(streamTimerRef.current);
+      streamTimerRef.current = null;
+    }
+
+    let i = 0;
+    streamTimerRef.current = window.setInterval(() => {
+      i += Math.max(1, Math.floor(fullText.length / 120));
+      updateMessage(id, fullText.slice(0, i));
+      if (i >= fullText.length) {
+        if (streamTimerRef.current) window.clearInterval(streamTimerRef.current);
+        streamTimerRef.current = null;
+      }
+    }, 18);
+  };
+
+  const handleSend = async () => {
+    const prompt = draft.trim();
+    if (!prompt || isGenerating) return;
+
+    setDraft("");
+    setView("preview");
+
+    pushMessage({ role: "user", content: prompt });
+
+    const assistantId = pushMessage({
+      role: "assistant",
+      content: "Thinking…",
+    });
+
+    await generateProject(`${prompt}\n\nBuild mode: ${buildMode}.`);
+
+    const nextError = useGeneratorStore.getState().error;
+    if (nextError) {
+      updateMessage(assistantId, `I hit an error while generating:\n\n${nextError}`);
+      return;
+    }
+
+    const title = useGeneratorStore.getState().projectTitle || "your project";
+    const fileCount = useGeneratorStore.getState().generatedFiles?.length ?? 0;
+
+    const responseText =
+      `Done. I generated ${fileCount} file${fileCount === 1 ? "" : "s"} for ${title}.\n` +
+      `The live preview is updated on the right. Use Preview/Code to inspect or edit, and hit Refresh if the iframe needs a hard reload.`;
+
+    streamMessage(assistantId, responseText);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleUpload = (file: File | null) => {
+    if (!file) return;
+    pushMessage({ role: "assistant", content: `Attached: ${file.name} (upload pipeline not wired yet).` });
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+  };
+
+  const activeEditorValue = activePath ? getFileContent(activePath) : "";
+
+  const panelBg =
+    "bg-white/60 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 shadow-[0_20px_60px_-30px_rgba(2,6,23,0.35)]";
