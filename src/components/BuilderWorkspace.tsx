@@ -38,6 +38,7 @@ import {
   X,
 } from "lucide-react";
 
+import { usePathname } from "next/navigation";
 import PreviewFrame from "@/components/PreviewFrame";
 import {
   DropdownMenu,
@@ -45,6 +46,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useGeneratorStore } from "@/lib/store";
 import { clearPendingBuilderPrompt, readPendingBuilderPrompt } from "@/lib/builder-session";
 import { cn } from "@/lib/utils";
@@ -845,6 +856,8 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
 
 
 
