@@ -403,3 +403,255 @@ export default function BuilderWorkspace() {
                   </div>
                 </div>
               </div>
+
+              <div
+                ref={listRef}
+                className="flex-1 overflow-auto px-5 pb-5 [scrollbar-width:thin]"
+              >
+                <div className="space-y-3">
+                  {messages.length === 0 ? (
+                    <div className={cn("rounded-3xl p-6", panelBg)}>
+                      <p className="text-sm font-extrabold text-slate-900 dark:text-white">Describe what you want to build.</p>
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                        I’ll generate a live preview and editable code in realtime. Tip: press <span className="font-semibold">Enter</span> to send,
+                        <span className="font-semibold"> Shift+Enter</span> for a new line.
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {messages.map((m) => (
+                    <motion.div
+                      key={m.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={cn(
+                        "max-w-[92%] rounded-3xl border px-4 py-3 text-sm leading-relaxed shadow-sm",
+                        m.role === "user"
+                          ? "ml-auto border-slate-200/70 bg-white/80 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-purple-500/10 to-sky-500/10 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                      )}
+                    >
+                      <div className="whitespace-pre-wrap">{m.content}</div>
+                    </motion.div>
+                  ))}
+
+                  {isGenerating ? (
+                    <div className={cn("rounded-3xl p-4", panelBg)}>
+                      <div className="flex items-center gap-2 text-xs font-extrabold text-slate-700 dark:text-slate-200">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Generating…
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        {workflowLogs.map((log, idx) => {
+                          const active = idx === activeAgentIndex;
+                          const done = activeAgentIndex > idx;
+                          return (
+                            <div
+                              key={`${log.agent}-${idx}`}
+                              className={cn(
+                                "flex items-center justify-between rounded-2xl border px-3 py-2 text-xs",
+                                done
+                                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                                  : active
+                                    ? "border-sky-500/30 bg-sky-500/10 text-slate-900 dark:text-white"
+                                    : "border-slate-200/70 bg-white/60 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+                              )}
+                            >
+                              <span className="font-bold truncate max-w-[55%]">{log.agent}</span>
+                              <span className="truncate max-w-[40%] opacity-90">{log.action}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {error ? (
+                    <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
+                      {error}
+                    </div>
+                  ) : null}
+
+                  <div ref={bottomRef} />
+                </div>
+              </div>
+
+              {/* Composer */}
+              <div className="border-t border-slate-200/70 bg-white/60 px-5 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+                <div className={cn("rounded-3xl p-3", panelBg)}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsVisualMode((v) => !v);
+                        setView("code");
+                      }}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                        isVisualMode
+                          ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
+                          : "bg-transparent text-slate-700 dark:text-slate-200",
+                        "hover:bg-slate-900/5 dark:hover:bg-white/10"
+                      )}
+                    >
+                      <Upload className="h-4 w-4" />
+                      Visual Edits
+                    </button>
+
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
+                      <FileUp className="h-4 w-4" />
+                      Upload Files
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => handleUpload(e.target.files?.[0] ?? null)}
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      aria-label={isListening ? "Listening" : "Voice input"}
+                      onClick={startVoiceInput}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                        isListening
+                          ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
+                          : "text-slate-700 dark:text-slate-200",
+                        "hover:bg-slate-900/5 dark:hover:bg-white/10"
+                      )}
+                    >
+                      <Mic className={cn("h-4 w-4", isListening ? "animate-pulse" : "")} />
+                      Voice
+                    </button>
+
+                    <div className="ml-auto flex items-center gap-2">
+                      <span className="hidden sm:inline text-[11px] font-bold text-slate-400 dark:text-slate-400">
+                        Enter to send • Shift+Enter newline
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex items-end gap-3">
+                    <textarea
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Describe the app you want to build…"
+                      className="min-h-[54px] max-h-40 w-full resize-none rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-sky-300 focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSend}
+                      disabled={isGenerating || !draft.trim()}
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-sky-500 text-white shadow-lg shadow-sky-500/10 transition hover:brightness-110 disabled:opacity-60"
+                      aria-label="Send"
+                    >
+                      {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Panel>
+
+            <PanelResizeHandle className="w-2 bg-transparent">
+              <div className="mx-auto h-full w-[2px] rounded-full bg-slate-200/70 dark:bg-white/10" />
+            </PanelResizeHandle>
+
+            {/* Right: Preview/Code */}
+            <Panel defaultSize={62} minSize={38} className="flex flex-col">
+              <header className="flex items-center justify-between border-b border-slate-200/70 px-5 py-4 dark:border-white/10">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setView("preview")}
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                      view === "preview"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                        : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                    )}
+                  >
+                    <Eye className="h-4 w-4" />
+                    Preview
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setView("code")}
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                      view === "code"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                        : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                    )}
+                  >
+                    <Code2 className="h-4 w-4" />
+                    Code
+                  </button>
+
+                  <div className="mx-2 h-6 w-px bg-slate-200/70 dark:bg-white/10" />
+
+                  <button
+                    type="button"
+                    onClick={() => setRefreshKey((k) => k + 1)}
+                    className="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                  >
+                    <RefreshCcw className="h-4 w-4" />
+                    Refresh
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => alert("Publish is not wired yet. Hook this up to your hosting workflow.")}
+                    className="hidden md:inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                  >
+                    Publish
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => alert("Share is not wired yet. Hook this up to your project links.")}
+                    className="hidden md:inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className={cn("hidden sm:flex items-center gap-1 rounded-2xl p-1", panelBg)}>
+                    {(
+                      [
+                        { id: "desktop" as const, label: "Desktop" },
+                        { id: "tablet" as const, label: "Tablet" },
+                        { id: "mobile" as const, label: "Mobile" },
+                      ]
+                    ).map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setDeviceMode(m.id)}
+                        className={cn(
+                          "rounded-2xl px-3 py-2 text-xs font-extrabold",
+                          deviceMode === m.id
+                            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                            : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                        )}
+                      >
+                        {m.label}</n                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsFullscreen(true)}
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700",
+                      panelBg,
+                      "hover:bg-white/80 dark:hover:bg-white/10"
+                    )}
+                  >
+                    <Expand className="h-4 w-4" />
+                    Fullscreen
+                  </button>
+                </div>
+              </header>
