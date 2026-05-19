@@ -20,7 +20,7 @@ import {
   Sparkles,
   Upload,
 } from "lucide-react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Group, Panel, Separator } from "react-resizable-panels";
 
 import PreviewFrame from "@/components/PreviewFrame";
 import {
@@ -322,7 +322,7 @@ export default function BuilderWorkspace() {
             <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-sky-500/20 to-purple-500/25 blur-3xl" />
           </div>
 
-          <PanelGroup direction="horizontal" className="relative z-10 h-[calc(100vh-8rem)] min-h-[720px]">
+          <Group orientation="horizontal" className="relative z-10 h-[calc(100vh-8rem)] min-h-[720px]">
             {/* Left: Chat */}
             <Panel defaultSize={38} minSize={28} className="flex flex-col">
               <header className="flex items-center justify-between px-5 py-4">
@@ -569,9 +569,9 @@ export default function BuilderWorkspace() {
               </div>
             </Panel>
 
-            <PanelResizeHandle className="w-2 bg-transparent">
+            <Separator className="w-2 bg-transparent">
               <div className="mx-auto h-full w-[2px] rounded-full bg-slate-200/70 dark:bg-white/10" />
-            </PanelResizeHandle>
+            </Separator>
 
             {/* Right: Preview/Code */}
             <Panel defaultSize={62} minSize={38} className="flex flex-col">
@@ -762,7 +762,7 @@ export default function BuilderWorkspace() {
                 </AnimatePresence>
               </div>
             </Panel>
-          </PanelGroup>
+          </Group>
 
           {/* Fullscreen preview */}
           <AnimatePresence>
@@ -803,6 +803,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
