@@ -594,7 +594,7 @@ export default function BuilderWorkspace() {
                           className="h-[72px] w-full resize-none bg-transparent px-3.5 py-3 text-[13px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                         />
                         <div className="flex items-center justify-end px-3 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-                          Enter to send • Shift+Enter newline
+                          Enter to send â€¢ Shift+Enter newline
                         </div>
                       </div>
                       <button
