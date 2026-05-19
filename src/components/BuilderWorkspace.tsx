@@ -194,7 +194,9 @@ export default function BuilderWorkspace() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
-  const [shareFeedback, setShareFeedback] = useState<string | null>(null);`r`n  const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];`r`n  const [hintIndex, setHintIndex] = useState(0);
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null);
+  const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];
+  const [hintIndex, setHintIndex] = useState(0);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamTimerRef = useRef<number | null>(null);
@@ -245,6 +247,14 @@ export default function BuilderWorkspace() {
   useEffect(() => {
     syncComposerHeight();
   }, [draft, syncComposerHeight]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setHintIndex((current) => (current + 1) % promptHints.length);
+    }, 2400);
+
+    return () => window.clearInterval(timer);
+  }, [promptHints.length]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -765,5 +775,6 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
