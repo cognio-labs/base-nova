@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
@@ -68,6 +68,10 @@ type SpeechRecognitionWindow = Window &
 
 const CHAT_STORAGE_KEY = "lokoai.builder.chat.v1";
 const CHAT_STORAGE_EVENT = "lokoai.builder.chat.sync";
+const EMPTY_CHAT_MESSAGES: ChatMessage[] = [];
+
+let cachedChatStorageValue: string | null | undefined;
+let cachedChatMessages: ChatMessage[] = EMPTY_CHAT_MESSAGES;
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -84,16 +88,30 @@ function safeJsonParse<T>(value: string | null): T | null {
 
 function readStoredChatMessages(): ChatMessage[] {
   if (typeof window === "undefined") {
-    return [];
+    return EMPTY_CHAT_MESSAGES;
   }
 
-  const parsed = safeJsonParse<ChatMessage[]>(window.localStorage.getItem(CHAT_STORAGE_KEY));
-  return Array.isArray(parsed) ? parsed : [];
+  const storedValue = window.localStorage.getItem(CHAT_STORAGE_KEY);
+  if (storedValue === cachedChatStorageValue) {
+    return cachedChatMessages;
+  }
+
+  cachedChatStorageValue = storedValue;
+  const parsed = safeJsonParse<ChatMessage[]>(storedValue);
+  cachedChatMessages = Array.isArray(parsed) ? parsed : EMPTY_CHAT_MESSAGES;
+  return cachedChatMessages;
+}
+
+function getServerStoredChatMessages(): ChatMessage[] {
+  return EMPTY_CHAT_MESSAGES;
 }
 
 function writeStoredChatMessages(messages: ChatMessage[]) {
+  cachedChatMessages = messages;
+  cachedChatStorageValue = JSON.stringify(messages);
+
   try {
-    window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    window.localStorage.setItem(CHAT_STORAGE_KEY, cachedChatStorageValue);
   } catch {
     // ignore quota errors
   }
@@ -101,37 +119,48 @@ function writeStoredChatMessages(messages: ChatMessage[]) {
   window.dispatchEvent(new Event(CHAT_STORAGE_EVENT));
 }
 
+function subscribeToStoredChatMessages(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === CHAT_STORAGE_KEY) {
+      cachedChatStorageValue = undefined;
+      onStoreChange();
+    }
+  };
+
+  const handleCustomEvent = () => {
+    cachedChatStorageValue = undefined;
+    onStoreChange();
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(CHAT_STORAGE_EVENT, handleCustomEvent);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(CHAT_STORAGE_EVENT, handleCustomEvent);
+  };
+}
+
 function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [hasHydrated, setHasHydrated] = useState(false);
+  const messages = useSyncExternalStore(
+    subscribeToStoredChatMessages,
+    readStoredChatMessages,
+    getServerStoredChatMessages
+  );
 
-  useEffect(() => {
-    setMessages(readStoredChatMessages());
-    setHasHydrated(true);
-  }, []);
+  const setMessages: Dispatch<SetStateAction<ChatMessage[]>> = (value) => {
+    const currentMessages = readStoredChatMessages();
+    const nextMessages =
+      typeof value === "function"
+        ? (value as (current: ChatMessage[]) => ChatMessage[])(currentMessages)
+        : value;
 
-  useEffect(() => {
-    if (!hasHydrated) {
-      return;
-    }
-
-    writeStoredChatMessages(messages);
-  }, [hasHydrated, messages]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === CHAT_STORAGE_KEY) {
-        setMessages(readStoredChatMessages());
-      }
-    };
-
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+    writeStoredChatMessages(nextMessages);
+  };
 
   return [messages, setMessages];
 }
@@ -631,7 +660,7 @@ export default function BuilderWorkspace() {
                           className="h-[72px] w-full resize-none bg-transparent px-3.5 py-3 text-[13px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                         />
                         <div className="flex items-center justify-end px-3 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-                          Enter to send â€¢ Shift+Enter newline
+                          Enter to send Ã¢â‚¬Â¢ Shift+Enter newline
                         </div>
                       </div>
                       <button
