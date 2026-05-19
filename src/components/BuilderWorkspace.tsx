@@ -18,9 +18,22 @@ import {
   Share2,
   Sparkles,
   Upload,
+  Plus,
+  Github,
+  Zap,
+  HelpCircle,
+  Monitor,
+  Smartphone,
+  Tablet,
+  PenSquare,
+  History,
+  Info,
+  ExternalLink,
+  Menu,
 } from "lucide-react";
 
 import PreviewFrame from "@/components/PreviewFrame";
+import UserMenu from "@/components/UserMenu";
 import {
   DropdownMenu,
   DropdownMenuContent,
