@@ -421,9 +421,9 @@ export default function BuilderWorkspace() {
 
           <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0 overflow-hidden">
             {/* Left: Chat */}
-            <Panel defaultSize={31} minSize={24} className="min-h-0 min-w-0 overflow-hidden bg-white/82 dark:bg-[#09111a]/72">
-              <div className="mx-auto flex h-full w-full max-w-[460px] min-h-0 flex-col">
-                <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+            <Panel defaultSize={28} minSize={22} className="min-h-0 min-w-0 overflow-hidden border-r border-slate-200/80 bg-white/88 shadow-[inset_-1px_0_0_rgba(148,163,184,0.12)] dark:border-white/10 dark:bg-[#09111a]/82">
+              <div className="mx-auto flex h-full w-full max-w-[400px] min-h-0 flex-col">
+                <header className="shrink-0 border-b border-slate-200/70 px-3 py-3 dark:border-white/10">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-[18px] bg-gradient-to-br from-sky-200/80 to-blue-100/80 text-slate-900 dark:text-white">
@@ -480,8 +480,8 @@ export default function BuilderWorkspace() {
                   </div>
                 </header>
 
-                <div className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
-                  <div className={cn("rounded-[20px] p-3", panelBg, "shadow-[0_18px_40px_-30px_rgba(15,23,42,0.28)]")}>
+                <div className="shrink-0 border-b border-slate-200/70 px-3 py-2.5 dark:border-white/10">
+                  <div className={cn("rounded-[18px] p-2.5", panelBg, "shadow-[0_18px_40px_-30px_rgba(15,23,42,0.22)]")}>
                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-500">
                       Suggestions
                     </p>
@@ -492,9 +492,9 @@ export default function BuilderWorkspace() {
                           type="button"
                           disabled={isGenerating}
                           onClick={() => setDraft(s.text)}
-                          className="group inline-flex items-center gap-2 rounded-xl border border-slate-200/70 bg-white/86 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
+                          className="group inline-flex items-center gap-1.5 rounded-xl border border-slate-200/70 bg-white/86 px-2.5 py-1.5 text-[10px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
                         >
-                          <span className="truncate max-w-[128px]">{s.label}</span>
+                          <span className="truncate max-w-[112px]">{s.label}</span>
                           <span className="rounded-lg bg-slate-900/5 px-1.5 py-0.5 text-[10px] font-black text-slate-500 dark:bg-white/10 dark:text-slate-300">
                             {formatShortcut(s.shortcut)}
                           </span>
@@ -506,13 +506,13 @@ export default function BuilderWorkspace() {
 
                 <div
                   ref={listRef}
-                  className="min-h-0 flex-1 overflow-y-auto px-4 py-3 [scrollbar-width:thin]"
+                  className="min-h-0 flex-1 overflow-y-auto px-3 py-3 [scrollbar-width:thin]"
                 >
-                  <div className="space-y-2.5 pr-1">
+                  <div className="space-y-2 pr-1">
                     {messages.length === 0 ? (
-                      <div className={cn("rounded-[20px] p-4", panelBg)}>
-                        <p className="text-[13px] font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
-                        <p className="mt-1.5 text-[12px] leading-5 text-slate-600 dark:text-slate-300">
+                      <div className={cn("rounded-[18px] p-3.5", panelBg)}>
+                        <p className="text-[12px] font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
+                        <p className="mt-1 text-[11px] leading-5 text-slate-600 dark:text-slate-300">
                           I&apos;ll generate the preview and code on the right. Press <span className="font-semibold">Enter</span> to send and
                           <span className="font-semibold"> Shift+Enter</span> for a new line.
                         </p>
@@ -525,7 +525,7 @@ export default function BuilderWorkspace() {
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={cn(
-                          "max-w-[92%] rounded-[20px] border px-3.5 py-3 text-[12.5px] leading-5 shadow-sm",
+                          "max-w-[88%] rounded-[18px] border px-3 py-2.5 text-[12px] leading-5 shadow-sm",
                           m.role === "user"
                             ? "ml-auto border-slate-200/70 bg-white/90 text-slate-900 dark:border-white/10 dark:bg-white/6 dark:text-white"
                             : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/85 to-blue-50/90 text-slate-900 dark:border-white/10 dark:from-sky-500/10 dark:to-blue-500/10 dark:text-white"
@@ -537,7 +537,7 @@ export default function BuilderWorkspace() {
                             <button
                               type="button"
                               onClick={() => setDraft(m.content)}
-                              className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"
+                              className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.14em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"
                             >
                               Edit
                             </button>
@@ -547,7 +547,7 @@ export default function BuilderWorkspace() {
                     ))}
 
                     {isGenerating ? (
-                      <div className={cn("rounded-[20px] p-4", panelBg)}>
+                      <div className={cn("rounded-[18px] p-3.5", panelBg)}>
                         <div className="flex items-center gap-2 text-[11px] font-extrabold text-slate-700 dark:text-slate-200">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Generating...
@@ -568,7 +568,7 @@ export default function BuilderWorkspace() {
                                       : "border-slate-200/70 bg-white/60 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
                                 )}
                               >
-                                <span className="max-w-[52%] truncate font-bold">{log.agent}</span>
+                                <span className="max-w-[48%] truncate font-bold">{log.agent}</span>
                                 <span className="max-w-[42%] truncate opacity-90">{log.action}</span>
                               </div>
                             );
@@ -587,10 +587,10 @@ export default function BuilderWorkspace() {
                   </div>
                 </div>
 
-                <div className="shrink-0 border-t border-slate-200/70 bg-white/72 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-[#09111a]/85">
+                <div className="shrink-0 border-t border-slate-200/70 bg-white/80 px-3 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-[#09111a]/88">
                   <div
                     className={cn(
-                      "rounded-[22px] border border-white/70 bg-white/92 p-2.5 shadow-[0_22px_50px_-34px_rgba(15,23,42,0.28)] backdrop-blur-xl transition dark:border-white/10 dark:bg-[#0d1522]/92",
+                      "rounded-[20px] border border-white/80 bg-white/95 p-2 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.22)] backdrop-blur-xl transition dark:border-white/10 dark:bg-[#0d1522]/94",
                       isDropActive ? "ring-2 ring-sky-500/30" : ""
                     )}
                     onDragOver={(e) => {
@@ -612,7 +612,7 @@ export default function BuilderWorkspace() {
                           setView("code");
                         }}
                         className={cn(
-                          "inline-flex h-8 items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold",
+                          "inline-flex h-8 items-center gap-1.5 rounded-[12px] px-2 text-[10px] font-bold",
                           isVisualMode
                             ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
                             : "bg-transparent text-slate-700 dark:text-slate-200",
@@ -623,7 +623,7 @@ export default function BuilderWorkspace() {
                         Visual Edits
                       </button>
 
-                      <label className="inline-flex h-8 cursor-pointer items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
+                      <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[12px] px-2 text-[10px] font-bold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
                         <FileUp className="h-3.5 w-3.5" />
                         Upload Files
                         <input
@@ -638,7 +638,7 @@ export default function BuilderWorkspace() {
                         aria-label={isListening ? "Listening" : "Voice input"}
                         onClick={startVoiceInput}
                         className={cn(
-                          "inline-flex h-8 items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold",
+                          "inline-flex h-8 items-center gap-1.5 rounded-[12px] px-2 text-[10px] font-bold",
                           isListening
                             ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
                             : "text-slate-700 dark:text-slate-200",
@@ -650,24 +650,24 @@ export default function BuilderWorkspace() {
                       </button>
                     </div>
 
-                    <div className="mt-2.5 flex items-end gap-2">
-                      <div className="flex-1 rounded-[18px] border border-slate-200/70 bg-slate-50/90 dark:border-white/10 dark:bg-white/5">
+                    <div className="mt-2 flex items-end gap-2">
+                      <div className="flex-1 rounded-[16px] border border-slate-200/70 bg-slate-50/90 dark:border-white/10 dark:bg-white/5">
                         <textarea
                           value={draft}
                           onChange={(e) => setDraft(e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="Describe the app you want to build..."
-                          className="h-[72px] w-full resize-none bg-transparent px-3.5 py-3 text-[13px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
+                          className="h-[60px] w-full resize-none bg-transparent px-3 py-2.5 text-[12px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                         />
-                        <div className="flex items-center justify-end px-3 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-                          Enter to send Ã¢â‚¬Â¢ Shift+Enter newline
+                        <div className="flex items-center justify-end px-3 pb-2 text-[9px] font-semibold text-slate-400 dark:text-slate-500">
+                          Enter to send / Shift+Enter newline
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => void handleSend()}
                         disabled={isGenerating || !draft.trim()}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-[0_16px_32px_-18px_rgba(14,116,144,0.7)] transition hover:brightness-110 disabled:opacity-60"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-[14px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-[0_16px_28px_-18px_rgba(14,116,144,0.65)] transition hover:brightness-110 disabled:opacity-60"
                         aria-label="Send"
                       >
                         {isGenerating ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <ArrowUp className="h-[18px] w-[18px]" />}
@@ -678,10 +678,10 @@ export default function BuilderWorkspace() {
               </div>
             </Panel>
 
-            <Separator className="relative w-2 bg-transparent before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-slate-200/80 dark:before:bg-white/10" />
+            <Separator className="relative w-3 bg-gradient-to-b from-sky-100/10 via-slate-200/40 to-blue-100/10 before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-slate-300/70 before:shadow-[0_0_24px_rgba(148,163,184,0.28)] dark:via-white/5 dark:before:bg-white/12" />
 
             {/* Right: Preview/Code */}
-            <Panel defaultSize={69} minSize={38} className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-white/72 dark:bg-[#0b111c]/68">
+            <Panel defaultSize={72} minSize={40} className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-white/76 dark:bg-[#0b111c]/74">
               <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto [scrollbar-width:none]">
