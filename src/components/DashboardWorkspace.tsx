@@ -445,7 +445,7 @@ export default function DashboardWorkspace() {
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                          className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/60 bg-white/65 px-4 text-sm font-semibold text-slate-700 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.38)] transition duration-300 hover:-translate-y-0.5 hover:border-white/80 hover:bg-white/80 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/8 dark:text-slate-200 dark:hover:bg-white/15"
                         >
                           <Upload className="h-4 w-4" />
                           Upload
@@ -457,7 +457,7 @@ export default function DashboardWorkspace() {
                             aria-expanded={showModelSelect}
                             onClick={() => setShowModelSelect((open) => !open)}
                             className={cn(
-                              "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
+                              "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-[0_8px_24px_-20px_rgba(15,23,42,0.38)] transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                               showModelSelect
                                 ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
                                 : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
@@ -508,7 +508,7 @@ export default function DashboardWorkspace() {
                           aria-pressed={isAgentMode}
                           onClick={() => setIsAgentMode((value) => !value)}
                           className={cn(
-                            "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
+                            "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-[0_8px_24px_-20px_rgba(15,23,42,0.38)] transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                             isAgentMode
                               ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
                               : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
@@ -523,7 +523,7 @@ export default function DashboardWorkspace() {
                             type="button"
                             aria-expanded={showMorePrompts}
                             onClick={() => setShowMorePrompts((open) => !open)}
-                            className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                            className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/60 bg-white/65 px-4 text-sm font-semibold text-slate-700 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.38)] transition duration-300 hover:-translate-y-0.5 hover:border-white/80 hover:bg-white/80 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/8 dark:text-slate-200 dark:hover:bg-white/15"
                           >
                             <Grid2X2 className="h-4 w-4" />
                             More
@@ -567,8 +567,8 @@ export default function DashboardWorkspace() {
                           aria-label={isListening ? "Listening" : "Start voice input"}
                           onClick={startVoiceInput}
                           className={cn(
-                            "inline-flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
-                            isListening ? "animate-pulse border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
+                            "inline-flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-white/60 bg-white/65 text-slate-700 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.38)] transition duration-300 hover:-translate-y-0.5 hover:border-white/80 hover:bg-white/80 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/8 dark:text-slate-200 dark:hover:bg-white/15",
+                            isListening ? "animate-pulse border-slate-200 bg-white/80 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
                           )}
                         >
                           <Mic className="h-4 w-4" />
@@ -578,7 +578,7 @@ export default function DashboardWorkspace() {
                           type="button"
                           onClick={() => void launchBuilder()}
                           disabled={!prompt.trim() || isLaunchingBuilder}
-                          className="inline-flex h-[52px] w-[220px] items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex h-[52px] w-[220px] items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_12px_28px_-18px_rgba(15,23,42,0.55)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-18px_rgba(15,23,42,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                           <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
@@ -664,6 +664,7 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
 
 
 
