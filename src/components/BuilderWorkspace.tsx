@@ -194,7 +194,7 @@ export default function BuilderWorkspace() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
-  const [shareFeedback, setShareFeedback] = useState<string | null>(null);
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null);`r`n  const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];`r`n  const [hintIndex, setHintIndex] = useState(0);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamTimerRef = useRef<number | null>(null);
@@ -765,4 +765,5 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
