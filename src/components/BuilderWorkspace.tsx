@@ -30,7 +30,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGeneratorStore } from "@/lib/store";
-import { clearPendingBuilderPrompt, readPendingBuilderPrompt } from "@/lib/builder-session";`r`nimport { cn } from "@/lib/utils";
+import { clearPendingBuilderPrompt, readPendingBuilderPrompt } from "@/lib/builder-session";
+import { cn } from "@/lib/utils";
 
 type ChatRole = "user" | "assistant";
 
@@ -131,7 +132,8 @@ export default function BuilderWorkspace() {
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const streamTimerRef = useRef<number | null>(null);`r`n  const pendingPromptRef = useRef(false);
+  const streamTimerRef = useRef<number | null>(null);
+  const pendingPromptRef = useRef(false);
 
   const suggestions = useMemo(
     () => [
@@ -452,7 +454,18 @@ export default function BuilderWorkspace() {
                           : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/90 to-blue-50/90 dark:from-sky-500/10 dark:to-blue-500/10 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
                       )}
                     >
-                      <div className="flex items-start justify-between gap-3">`r`n                        <div className="whitespace-pre-wrap">{m.content}</div>`r`n                        {m.role === "user" ? (`r`n                          <button`r`n                            type="button"`r`n                            onClick={() => setDraft(m.content)}`r`n                            className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"`r`n                          >`r`n                            Edit`r`n                          </button>`r`n                        ) : null}`r`n                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="whitespace-pre-wrap">{m.content}</div>
+                        {m.role === "user" ? (
+                          <button
+                            type="button"
+                            onClick={() => setDraft(m.content)}
+                            className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"
+                          >
+                            Edit
+                          </button>
+                        ) : null}
+                      </div>
                     </motion.div>
                   ))}
 
@@ -824,6 +837,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
