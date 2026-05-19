@@ -591,7 +591,7 @@ export default function BuilderWorkspace() {
                     />
                     <button
                       type="button"
-                      onClick={handleSend}
+                      onClick={() => void handleSend()}
                       disabled={isGenerating || !draft.trim()}
                       className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/20 transition hover:brightness-110 disabled:opacity-60"
                       aria-label="Send"
@@ -837,6 +837,8 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
 
 
 
