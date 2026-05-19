@@ -433,7 +433,7 @@ export default function BuilderWorkspace() {
 
   return (
     <div
-      className="h-[calc(100dvh-5rem)] w-full overflow-hidden bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_100%)] text-slate-950 dark:bg-[radial-gradient(circle_at_top,#0d1b33_0%,#08111f_58%,#050914_100%)] dark:text-white"
+      className="h-dvh w-full overflow-hidden bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_100%)] text-slate-950 dark:bg-[radial-gradient(circle_at_top,#0d1b33_0%,#08111f_58%,#050914_100%)] dark:text-white"
       style={shellStyle}
     >
       <div className="mx-auto flex h-full w-full max-w-[1700px] flex-col px-3 py-3 md:px-5 md:py-5">
