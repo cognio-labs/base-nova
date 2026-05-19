@@ -361,7 +361,7 @@ export default function BuilderWorkspace() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-[18px] bg-gradient-to-br from-sky-200/80 to-blue-100/80 text-slate-900 dark:text-white">
-                        <Sparkles className="h-4.5 w-4.5" />
+                        <Sparkles className="h-[18px] w-[18px]" />
                       </div>
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">AI Builder</p>
@@ -604,7 +604,7 @@ export default function BuilderWorkspace() {
                         className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-[0_16px_32px_-18px_rgba(14,116,144,0.7)] transition hover:brightness-110 disabled:opacity-60"
                         aria-label="Send"
                       >
-                        {isGenerating ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <ArrowUp className="h-4.5 w-4.5" />}
+                        {isGenerating ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <ArrowUp className="h-[18px] w-[18px]" />}
                       </button>
                     </div>
                   </div>
@@ -844,4 +844,5 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
