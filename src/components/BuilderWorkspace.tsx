@@ -5,30 +5,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
   ArrowUp,
-  Braces,
-  Check,
   ChevronDown,
   Code2,
   Expand,
   Eye,
-  FileUp,
   Loader2,
   Mic,
   RefreshCcw,
-  Share2,
   Sparkles,
-  Upload,
   Plus,
   Github,
   Zap,
   HelpCircle,
   Monitor,
   Smartphone,
-  Tablet,
-  PenSquare,
-  History,
-  Info,
-  ExternalLink,
   Menu,
 } from "lucide-react";
 
@@ -205,9 +195,7 @@ export default function BuilderWorkspace() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
   const [isVisualMode, setIsVisualMode] = useState(false);
-  const [isDropActive, setIsDropActive] = useState(false);
 
-  const listRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamTimerRef = useRef<number | null>(null);
@@ -218,22 +206,18 @@ export default function BuilderWorkspace() {
       {
         label: "Apps",
         text: "Browse app ideas and starter concepts for the AI builder.",
-        shortcut: "Ctrl+1",
       },
       {
         label: "Start blank",
         text: "Start a blank workspace with a clean app shell and no preset content.",
-        shortcut: "Ctrl+2",
       },
       {
         label: "Templates",
         text: "Show template starter ideas for common app layouts and flows.",
-        shortcut: "Ctrl+3",
       },
       {
         label: "Recent",
         text: "Continue from the most recent builder idea and refine the workspace.",
-        shortcut: "Ctrl+4",
       },
     ],
     []
