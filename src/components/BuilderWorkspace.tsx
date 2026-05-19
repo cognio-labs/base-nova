@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGeneratorStore } from "@/lib/store";
-import { cn } from "@/lib/utils";
+import { clearPendingBuilderPrompt, readPendingBuilderPrompt } from "@/lib/builder-session";`r`nimport { cn } from "@/lib/utils";
 
 type ChatRole = "user" | "assistant";
 
@@ -131,13 +131,13 @@ export default function BuilderWorkspace() {
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const streamTimerRef = useRef<number | null>(null);
+  const streamTimerRef = useRef<number | null>(null);`r`n  const pendingPromptRef = useRef(false);
 
   const suggestions = useMemo(
     () => [
       {
         label: "Landing page",
-        text: "Build a premium landing page with hero, features, testimonials, pricing, FAQ, and a conversion-focused CTA. Use glassmorphism with purple/blue accents.",
+        text: "Build a premium landing page with hero, features, testimonials, pricing, FAQ, and a conversion-focused CTA. Use a clean white and soft-blue product aesthetic.",
         shortcut: "Ctrl+1",
       },
       {
@@ -235,12 +235,12 @@ export default function BuilderWorkspace() {
   const pushMessage = (msg: Omit<ChatMessage, "id" | "createdAt"> & { id?: string; createdAt?: number }) => {
     const id = msg.id ?? `${msg.role}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const createdAt = msg.createdAt ?? Date.now();
-    setMessages([...messages, { id, role: msg.role, content: msg.content, createdAt }]);
+    setMessages((current) => [...current, { id, role: msg.role, content: msg.content, createdAt }]);
     return id;
   };
 
   const updateMessage = (id: string, content: string) => {
-    setMessages(messages.map((m) => (m.id === id ? { ...m, content } : m)));
+    setMessages((current) => current.map((message) => (message.id === id ? { ...message, content } : message)));
   };
 
   const streamMessage = (id: string, fullText: string) => {
@@ -260,21 +260,23 @@ export default function BuilderWorkspace() {
     }, 18);
   };
 
-  const handleSend = async () => {
-    const prompt = draft.trim();
-    if (!prompt || isGenerating) return;
+  const sendPrompt = async (promptText: string, nextBuildMode: BuildMode = buildMode) => {
+    const trimmedPrompt = promptText.trim();
+    if (!trimmedPrompt || isGenerating) {
+      return;
+    }
 
     setDraft("");
     setView("preview");
 
-    pushMessage({ role: "user", content: prompt });
+    pushMessage({ role: "user", content: trimmedPrompt });
 
     const assistantId = pushMessage({
       role: "assistant",
-      content: "Thinking…",
+      content: "Thinking...",
     });
 
-    await generateProject(`${prompt}\n\nBuild mode: ${buildMode}.`);
+    await generateProject(`${trimmedPrompt}\n\nBuild mode: ${nextBuildMode}.`);
 
     const nextError = useGeneratorStore.getState().error;
     if (nextError) {
@@ -291,6 +293,25 @@ export default function BuilderWorkspace() {
 
     streamMessage(assistantId, responseText);
   };
+
+  const handleSend = async (nextPrompt = draft) => {
+    await sendPrompt(nextPrompt, buildMode);
+  };
+
+  useEffect(() => {
+    if (pendingPromptRef.current || isGenerating) {
+      return;
+    }
+
+    const pendingPrompt = readPendingBuilderPrompt();
+    if (!pendingPrompt) {
+      return;
+    }
+
+    pendingPromptRef.current = true;
+    clearPendingBuilderPrompt();
+    void sendPrompt(pendingPrompt, buildMode);
+  }, [buildMode, isGenerating]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -314,12 +335,12 @@ export default function BuilderWorkspace() {
     "bg-white/60 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 shadow-[0_20px_60px_-30px_rgba(2,6,23,0.35)]";
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] w-full bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-[#05050a] dark:via-[#05050a] dark:to-[#090218]">
+    <div className="min-h-[calc(100vh-5rem)] w-full bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:from-[#05050a] dark:via-[#05050a] dark:to-[#09111f]">
       <div className="mx-auto w-full max-w-[1700px] px-4 py-4 md:px-6 md:py-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/70 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#07070c]/60">
+        <div className="relative overflow-hidden rounded-[28px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
           <div className="pointer-events-none absolute inset-0 opacity-70">
-            <div className="absolute -top-48 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-purple-500/30 to-sky-500/20 blur-3xl" />
-            <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-sky-500/20 to-purple-500/25 blur-3xl" />
+            <div className="absolute -top-48 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-sky-300/45 to-blue-300/25 blur-3xl" />
+            <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200/25 to-cyan-200/20 blur-3xl" />
           </div>
 
           <Group orientation="horizontal" className="relative z-10 h-[calc(100vh-8rem)] min-h-[720px]">
@@ -327,7 +348,7 @@ export default function BuilderWorkspace() {
             <Panel defaultSize={38} minSize={28} className="flex flex-col">
               <header className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/25 to-sky-500/20 text-slate-900 dark:text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200/70 to-blue-200/70 text-slate-900 dark:text-white">
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div>
@@ -428,10 +449,10 @@ export default function BuilderWorkspace() {
                         "max-w-[92%] rounded-3xl border px-4 py-3 text-sm leading-relaxed shadow-sm",
                         m.role === "user"
                           ? "ml-auto border-slate-200/70 bg-white/80 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-purple-500/10 to-sky-500/10 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/90 to-blue-50/90 dark:from-sky-500/10 dark:to-blue-500/10 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
                       )}
                     >
-                      <div className="whitespace-pre-wrap">{m.content}</div>
+                      <div className="flex items-start justify-between gap-3">`r`n                        <div className="whitespace-pre-wrap">{m.content}</div>`r`n                        {m.role === "user" ? (`r`n                          <button`r`n                            type="button"`r`n                            onClick={() => setDraft(m.content)}`r`n                            className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"`r`n                          >`r`n                            Edit`r`n                          </button>`r`n                        ) : null}`r`n                      </div>
                     </motion.div>
                   ))}
 
@@ -559,7 +580,7 @@ export default function BuilderWorkspace() {
                       type="button"
                       onClick={handleSend}
                       disabled={isGenerating || !draft.trim()}
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-sky-500 text-white shadow-lg shadow-sky-500/10 transition hover:brightness-110 disabled:opacity-60"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/20 transition hover:brightness-110 disabled:opacity-60"
                       aria-label="Send"
                     >
                       {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
@@ -803,6 +824,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
