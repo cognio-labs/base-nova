@@ -463,9 +463,6 @@ export default function BuilderWorkspace() {
                     </div>
                     <div>
                       <h1 className="text-[20px] font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">Workspace</h1>
-                      <p className="text-[12px] leading-5 text-slate-500 dark:text-slate-300">
-                        Prompt, iterate, and push live changes into the builder.
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -507,14 +504,14 @@ export default function BuilderWorkspace() {
               </div>
 
               <div className="px-4 pb-4">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
+                <div className="grid grid-cols-1 gap-2.5">
                   {suggestions.map((s) => (
                     <button
                       key={s.label}
                       type="button"
                       disabled={isGenerating}
                       onClick={() => setDraft(s.text)}
-                      className="group rounded-[20px] border border-white/65 bg-white/78 p-3 text-left shadow-[0_18px_40px_-32px_rgba(15,23,42,0.28)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-200/80 hover:bg-white dark:border-white/10 dark:bg-white/[0.05] dark:hover:bg-white/[0.08] disabled:opacity-60"
+                      className="group rounded-[18px] border border-white/65 bg-white/78 p-3 text-left shadow-[0_18px_40px_-32px_rgba(15,23,42,0.22)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-200/80 hover:bg-white dark:border-white/10 dark:bg-white/[0.05] dark:hover:bg-white/[0.08] disabled:opacity-60"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-[13px] font-semibold tracking-[-0.02em] text-slate-900 dark:text-white">{s.label}</span>
@@ -522,13 +519,6 @@ export default function BuilderWorkspace() {
                           {formatShortcut(s.shortcut)}
                         </span>
                       </div>
-                      <p className="mt-2 text-[11px] leading-5 text-slate-500 dark:text-slate-300">
-                        {s.label === "Landing page"
-                          ? "Hero, sections, pricing, and conversion flow."
-                          : s.label === "Dashboard app"
-                            ? "Analytics, navigation, settings, and tables."
-                            : "Catalog, product flow, and checkout experience."}
-                      </p>
                     </button>
                   ))}
                 </div>
@@ -547,9 +537,6 @@ export default function BuilderWorkspace() {
                     >
                       <p className="text-[14px] font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">
                         Describe what you want to build...
-                      </p>
-                      <p className="mt-2 text-[12px] leading-6 text-slate-500 dark:text-slate-300">
-                        Start with structure, design direction, and the screens you need. Preview and code update on the right.
                       </p>
                     </motion.div>
                   ) : null}
@@ -626,8 +613,8 @@ export default function BuilderWorkspace() {
                 </div>
               </div>
 
-              <div className="border-t border-white/55 px-4 pb-4 pt-3 dark:border-white/10">
-                <div className="flex items-center gap-2 pb-3">
+              <div className="border-t border-white/55 px-4 pb-4 pt-2.5 dark:border-white/10">
+                <div className="flex items-center gap-2 pb-2.5">
                   <button
                     type="button"
                     onClick={() => {
@@ -684,7 +671,7 @@ export default function BuilderWorkspace() {
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Describe what you want to build..."
-                    className="min-h-[112px] w-full resize-none bg-transparent pr-14 text-[14px] leading-7 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
+                    className="min-h-[96px] w-full resize-none bg-transparent pr-14 text-[13px] leading-6 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                   />
 
                   <div className="mt-3 flex items-end justify-between gap-3">
