@@ -377,7 +377,7 @@ export default function DashboardWorkspace() {
             )}
           </div>
 
-          <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-[820px] flex-col items-center justify-center px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+          <div className="relative z-10 mx-auto flex min-h-[calc(100vh-7rem)] w-full max-w-[820px] flex-col items-center justify-start px-4 pb-10 pt-6 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: isLaunchingBuilder ? 0.72 : 1, y: 0, scale: isLaunchingBuilder ? 0.985 : 1 }}
@@ -389,26 +389,26 @@ export default function DashboardWorkspace() {
                   <AudioLines className="h-3.5 w-3.5" />
                   AI Builder Workspace
                 </div>
-                <h1 className="mt-6 text-3xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
+                <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.6rem] lg:text-5xl dark:text-white">
                   Build apps from prompts in a 
                   <span className="bg-gradient-to-r from-slate-950 via-slate-700 to-sky-700 bg-clip-text text-transparent dark:from-white dark:via-slate-200 dark:to-cyan-200">
                     single operating surface
                   </span>
                   .
                 </h1>
-                <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
+                <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
                   Start with a prompt, then move straight into a full AI builder with chat, live preview, code inspection, and responsive app generation.
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-[820px]">
+              <div className="mx-auto mt-6 max-w-[820px]">
                 <div className="relative">
                   <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-violet-300 opacity-75 blur-sm" />
                   <motion.div
                     animate={{ y: isFocused ? -2 : 0 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
                     className={cn(
-                      "relative min-h-[300px] rounded-[28px] border border-white/70 bg-white/66 p-3 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.42)] ring-1 ring-white/70 backdrop-blur-3xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/72 dark:ring-white/5",
+                      "relative min-h-[250px] rounded-[28px] border border-white/70 bg-white/66 p-3 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.42)] ring-1 ring-white/70 backdrop-blur-3xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/72 dark:ring-white/5",
                       isFocused ? "ring-2 ring-sky-400/30" : ""
                     )}
                   >
@@ -429,10 +429,10 @@ export default function DashboardWorkspace() {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                       placeholder="Describe the app you want to create..."
-                      className="min-h-[140px] w-full resize-none border-0 bg-transparent px-3.5 py-2 text-[15px] leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[144px] dark:text-white dark:placeholder:text-slate-500"
+                      className="min-h-[112px] w-full resize-none border-0 bg-transparent px-3.5 py-2 text-[15px] leading-6 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[120px] dark:text-white dark:placeholder:text-slate-500"
                     />
 
-                    <div className="mt-3 flex flex-col gap-3.5 rounded-[24px] border border-slate-200/70 bg-white/72 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_12px_30px_-22px_rgba(15,23,42,0.34)] transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+                    <div className="mt-2.5 flex flex-col gap-3 rounded-[24px] border border-slate-200/70 bg-white/72 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_12px_30px_-22px_rgba(15,23,42,0.34)] transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
                       <div className="flex flex-wrap items-center gap-2">
                         <input
                           type="file"
@@ -587,7 +587,7 @@ export default function DashboardWorkspace() {
                   </motion.div>
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                   {primaryPromptPrompts.map((item) => (
                     <button
                       key={item.label}
@@ -601,7 +601,7 @@ export default function DashboardWorkspace() {
                   ))}
                 </div>
 
-                <div className="mt-8 grid gap-4 md:grid-cols-3">
+                <div className="mt-6 grid gap-4 md:grid-cols-3">
                   {[
                     {
                       title: "Chat-first creation",
@@ -664,6 +664,7 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
 
 
 
