@@ -102,6 +102,10 @@ const quickActionPrompts = [
   },
 ];
 
+
+const primaryPromptPrompts = quickActionPrompts.slice(0, 4);
+const morePromptPrompts = quickActionPrompts.slice(4);
+
 const sidebarItems = [
   { label: "My Dashboard", icon: Home, href: "/dashboard" },
   { label: "Connections", icon: Plug, href: "/integrations" },
