@@ -419,9 +419,9 @@ export default function BuilderWorkspace() {
             <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200/25 to-cyan-200/20 blur-3xl" />
           </div>
 
-          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0 gap-3 p-3">
+          <div className="relative z-10 flex h-full min-h-0 gap-4 p-4">
             {/* Left: Chat */}
-            <Panel defaultSize={24} minSize={20} maxSize={30} className="min-h-0 min-w-0 overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-[#0d1522]/96">
+            <div className="flex h-full min-h-0 w-[380px] shrink-0 flex-col overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.22)] dark:border-white/10 dark:bg-[#0d1522]/96">
               <div className="mx-auto flex h-full w-full max-w-[360px] min-h-0 flex-col">
                 <header className="shrink-0 border-b border-slate-200/70 px-3 py-3 dark:border-white/10">
                   <div className="flex items-start justify-between gap-3">
@@ -676,12 +676,12 @@ export default function BuilderWorkspace() {
                   </div>
                 </div>
               </div>
-            </Panel>
+            </div>
 
-            <Separator className="relative w-1.5 rounded-full bg-slate-200/80 shadow-[0_0_18px_rgba(148,163,184,0.25)] dark:bg-white/10" />
+            <div className="w-px shrink-0 bg-slate-200/80 dark:bg-white/10" />
 
             {/* Right: Preview/Code */}
-            <Panel defaultSize={76} minSize={44} className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-[#0b111c]/90">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.22)] dark:border-white/10 dark:bg-[#0b111c]/90">
               <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto [scrollbar-width:none]">
@@ -868,8 +868,8 @@ export default function BuilderWorkspace() {
                   )}
                 </AnimatePresence>
               </div>
-            </Panel>
-          </Group>
+            </div>
+          </div>
 
           {/* Fullscreen preview */}
           <AnimatePresence>
