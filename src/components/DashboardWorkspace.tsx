@@ -124,6 +124,7 @@ export default function DashboardWorkspace() {
   const [prompt, setPrompt] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [showModelSelect, setShowModelSelect] = useState(false);
+  const [showMorePrompts, setShowMorePrompts] = useState(false);
   const [isAgentMode, setIsAgentMode] = useState(true);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -333,7 +334,7 @@ export default function DashboardWorkspace() {
           </div>
         </aside>
 
-        <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.18),_transparent_38%),linear-gradient(180deg,_#f8fbff_0%,_#f6f9fc_52%,_#ffffff_100%)] transition-colors duration-300 dark:bg-[#050505]">
+        <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(191,219,254,0.42),_transparent_34%),radial-gradient(circle_at_right,_rgba(221,214,254,0.34),_transparent_28%),linear-gradient(180deg,_#fbfcff_0%,_#f4f7ff_52%,_#ffffff_100%)] transition-colors duration-300 dark:bg-[#050505]">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-sky-200/40 blur-3xl" />
             <div className="absolute bottom-0 right-16 h-80 w-80 rounded-full bg-blue-100/40 blur-3xl" />
@@ -372,7 +373,7 @@ export default function DashboardWorkspace() {
             )}
           </div>
 
-          <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-6xl flex-col items-center justify-center px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+          <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-[820px] flex-col items-center justify-center px-4 pb-20 pt-10 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: isLaunchingBuilder ? 0.72 : 1, y: 0, scale: isLaunchingBuilder ? 0.985 : 1 }}
@@ -396,22 +397,22 @@ export default function DashboardWorkspace() {
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-3xl">
+              <div className="mx-auto mt-10 max-w-[820px]">
                 <div className="relative">
-                  <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 opacity-80 blur-sm" />
+                  <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-violet-300 opacity-75 blur-sm" />
                   <motion.div
                     animate={{ y: isFocused ? -2 : 0 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
                     className={cn(
-                      "relative rounded-[30px] border border-white/70 bg-white/70 p-3 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.45)] ring-1 ring-white/70 backdrop-blur-3xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/72 dark:ring-white/5",
+                      "relative min-h-[300px] rounded-[28px] border border-white/70 bg-white/66 p-3 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.42)] ring-1 ring-white/70 backdrop-blur-3xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/72 dark:ring-white/5",
                       isFocused ? "ring-2 ring-sky-400/30" : ""
                     )}
                   >
                     <div className="flex items-center justify-between gap-3 px-2 pb-3">
                       <div>
-                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Prompt Studio</p>
+                        <p className="text-[11px] font-black uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">Prompt Studio</p>
                       </div>
-                      <div className="hidden rounded-full border border-slate-200/80 bg-white/70 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm shadow-slate-200/60 sm:block dark:border-slate-700/60 dark:bg-white/5 dark:text-slate-200">
+                      <div className="hidden rounded-full border border-white/75 bg-white/80 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm shadow-slate-200/50 sm:block dark:border-slate-700/60 dark:bg-white/5 dark:text-slate-200">
                         Live preview + code
                       </div>
                     </div>
@@ -424,10 +425,10 @@ export default function DashboardWorkspace() {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                       placeholder="Describe the app you want to create..."
-                      className="min-h-[122px] w-full resize-none border-0 bg-transparent px-3.5 py-2 text-[15px] leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[132px] dark:text-white dark:placeholder:text-slate-500"
+                      className="min-h-[140px] w-full resize-none border-0 bg-transparent px-3.5 py-2 text-[15px] leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[144px] dark:text-white dark:placeholder:text-slate-500"
                     />
 
-                    <div className="mt-3 flex flex-col gap-3.5 rounded-[24px] border border-slate-200/70 bg-white/72 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_12px_30px_-22px_rgba(15,23,42,0.35)] transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+                    <div className="mt-3 flex flex-col gap-3.5 rounded-[24px] border border-slate-200/70 bg-white/72 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_12px_30px_-22px_rgba(15,23,42,0.34)] transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
                       <div className="flex flex-wrap items-center gap-2">
                         <input
                           type="file"
@@ -439,7 +440,7 @@ export default function DashboardWorkspace() {
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                          className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                         >
                           <Upload className="h-4 w-4" />
                           Upload
@@ -451,7 +452,7 @@ export default function DashboardWorkspace() {
                             aria-expanded={showModelSelect}
                             onClick={() => setShowModelSelect((open) => !open)}
                             className={cn(
-                              "inline-flex h-10 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
+                              "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                               showModelSelect
                                 ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
                                 : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
@@ -502,7 +503,7 @@ export default function DashboardWorkspace() {
                           aria-pressed={isAgentMode}
                           onClick={() => setIsAgentMode((value) => !value)}
                           className={cn(
-                            "inline-flex h-10 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
+                            "inline-flex h-[42px] items-center gap-2 rounded-[14px] border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                             isAgentMode
                               ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
                               : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
@@ -517,7 +518,7 @@ export default function DashboardWorkspace() {
                           aria-label={isListening ? "Listening" : "Start voice input"}
                           onClick={startVoiceInput}
                           className={cn(
-                            "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
+                            "inline-flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
                             isListening ? "animate-pulse border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
                           )}
                         >
@@ -529,7 +530,7 @@ export default function DashboardWorkspace() {
                         type="button"
                         onClick={() => void launchBuilder()}
                         disabled={!prompt.trim() || isLaunchingBuilder}
-                        className="inline-flex h-13 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[162px]"
+                        className="inline-flex h-[52px] w-[220px] items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                         <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
@@ -539,7 +540,7 @@ export default function DashboardWorkspace() {
                 </div>
 
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
-                  {quickActionPrompts.map((item) => (
+                  {primaryPromptPrompts.map((item) => (
                     <button
                       key={item.label}
                       type="button"
@@ -615,4 +616,6 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
+
 
