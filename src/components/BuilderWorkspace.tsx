@@ -754,7 +754,7 @@ export default function BuilderWorkspace() {
 
         <main className="relative flex min-h-0 flex-1 overflow-hidden lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-16 left-0 z-50 flex h-[calc(100dvh-4rem)] w-screen flex-col border-r border-slate-200/70 bg-white/88 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 sm:w-[340px] lg:static lg:z-auto lg:h-full lg:translate-x-0 lg:w-[360px] lg:shadow-none xl:w-[400px] 2xl:w-[440px]",
+            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden border-r border-slate-200/70 bg-white/88 pt-16 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 md:w-[320px] lg:static lg:z-auto lg:h-full lg:w-[360px] lg:shrink-0 lg:basis-[360px] lg:translate-x-0 lg:pt-0 lg:shadow-none xl:w-[400px] xl:basis-[400px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
@@ -770,7 +770,7 @@ export default function BuilderWorkspace() {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4">
               <div className="space-y-3">
                 {messages.length ? (
                   messages.map((message) => (
@@ -803,7 +803,7 @@ export default function BuilderWorkspace() {
               </div>
             </div>
 
-            <div className="shrink-0 border-t border-slate-200/70 p-4 dark:border-white/5">
+            <div className="sticky bottom-0 z-10 shrink-0 border-t border-slate-200/70 bg-white/88 p-4 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/80">
               <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
                 <textarea
                   ref={textareaRef}
@@ -1186,6 +1186,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
