@@ -888,78 +888,21 @@ export default function BuilderWorkspace() {
           </aside>
 
           <section className="flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden lg:border-l lg:border-slate-200/70">
-            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/65 px-3 py-3 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
-              <div className="flex items-center gap-1 rounded-2xl bg-slate-100/80 p-1 dark:bg-white/5">
-                <button
-                  onClick={() => setView("preview")}
-                  className={cn(
-                    "flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all",
-                    view === "preview"
-                      ? "bg-white text-slate-900 shadow-sm dark:bg-white dark:text-slate-900"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                  )}
-                >
-                  <Eye className="h-4 w-4" />
-                  Preview
-                </button>
-                <button
-                  onClick={() => setView("code")}
-                  className={cn(
-                    "flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all",
-                    view === "code"
-                      ? "bg-white text-slate-900 shadow-sm dark:bg-white dark:text-slate-900"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                  )}
-                >
-                  <Code2 className="h-4 w-4" />
-                  Code
-                </button>
-              </div>
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/60 px-3 py-2 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
+  <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+    <Globe className="h-3.5 w-3.5" />
+    <span className="truncate">Live route: {pathname || "/workspace"}</span>
+  </div>
+  <button
+    onClick={() => setIsFullscreen(true)}
+    className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+  >
+    <Expand className="h-3.5 w-3.5" />
+    Fullscreen
+  </button>
+</div>
 
-              <div className="flex items-center gap-1 rounded-2xl bg-slate-100/80 p-1 dark:bg-white/5">
-                <button
-                  onClick={() => setDeviceMode("desktop")}
-                  className={cn(
-                    "rounded-xl p-2 transition-all",
-                    deviceMode === "desktop"
-                      ? "bg-white text-slate-900 shadow-sm dark:bg-white/10 dark:text-white"
-                      : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  )}
-                  aria-label="Desktop preview"
-                >
-                  <Monitor className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setDeviceMode("mobile")}
-                  className={cn(
-                    "rounded-xl p-2 transition-all",
-                    deviceMode === "mobile"
-                      ? "bg-white text-slate-900 shadow-sm dark:bg-white/10 dark:text-white"
-                      : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  )}
-                  aria-label="Mobile preview"
-                >
-                  <Smartphone className="h-4 w-4" />
-                </button>
-                <div className="mx-1 h-6 w-px bg-slate-200 dark:bg-white/10" />
-                <button
-                  onClick={() => setRefreshKey((key) => key + 1)}
-                  className="rounded-xl p-2 text-slate-500 transition-all hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
-                  aria-label="Refresh preview"
-                >
-                  <RefreshCcw className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setIsFullscreen(true)}
-                  className="rounded-xl p-2 text-slate-500 transition-all hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
-                  aria-label="Fullscreen preview"
-                >
-                  <Expand className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-hidden p-3 sm:p-4">
+            <div className="min-h-0 flex-1 overflow-hidden p-3 sm:p-4"> 
               <AnimatePresence mode="wait">
                 {view === "preview" ? (
                   <motion.div
@@ -1090,6 +1033,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
