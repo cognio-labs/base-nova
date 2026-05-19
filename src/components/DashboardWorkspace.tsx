@@ -514,19 +514,6 @@ export default function DashboardWorkspace() {
                         </button>
 
                         <button
-                          type="button"
-                          aria-label={isListening ? "Listening" : "Start voice input"}
-                          onClick={startVoiceInput}
-                          className={cn(
-                            "inline-flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
-                            isListening ? "animate-pulse border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
-                          )}
-                        >
-                          <Mic className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      <button
                         type="button"
                         onClick={() => void launchBuilder()}
                         disabled={!prompt.trim() || isLaunchingBuilder}
