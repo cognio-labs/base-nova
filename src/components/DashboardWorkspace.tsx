@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -376,7 +376,7 @@ export default function DashboardWorkspace() {
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: isLaunchingBuilder ? 0.72 : 1, y: 0, scale: isLaunchingBuilder ? 0.985 : 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
               className="w-full"
             >
               <div className="mx-auto max-w-4xl text-center">
@@ -384,31 +384,25 @@ export default function DashboardWorkspace() {
                   <AudioLines className="h-3.5 w-3.5" />
                   AI Builder Workspace
                 </div>
-                <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl dark:text-white">
-                  Build apps from prompts in a single operating surface.
-                </h1>
+                <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">`r`n                  Build apps from prompts in a `{\"}`r`n                  <span className="bg-gradient-to-r from-sky-300 via-cyan-200 to-indigo-200 bg-clip-text text-transparent dark:from-sky-200 dark:via-cyan-100 dark:to-indigo-100">`r`n                    single operating surface`r`n                  </span>`r`n                  .`r`n                </h1>
                 <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
                   Start with a prompt, then move straight into a full AI builder with chat, live preview, code inspection, and responsive app generation.
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-4xl">
-                <div className="relative">
+              <div className="mx-auto mt-10 max-w-3xl">`r`n                <div className="relative">
                   <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 opacity-80 blur-sm" />
                   <motion.div
                     animate={{ y: isFocused ? -2 : 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
                     className={cn(
-                      "relative rounded-[28px] border border-white/80 bg-white/78 p-4 shadow-[0_30px_80px_-30px_rgba(59,130,246,0.38)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#0b0f16]/70",
+                      "relative rounded-[26px] border border-white/80 bg-white/78 p-3.5 shadow-[0_30px_80px_-30px_rgba(59,130,246,0.38)] backdrop-blur-2xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/70",
                       isFocused ? "ring-2 ring-sky-400/30" : ""
                     )}
                   >
                     <div className="flex items-center justify-between gap-3 px-2 pb-3">
                       <div>
                         <p className="text-xs font-black uppercase tracking-[0.26em] text-slate-400">Prompt Studio</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                          Launch directly into the AI builder workspace.
-                        </p>
                       </div>
                       <div className="hidden rounded-full border border-sky-100 bg-sky-50/80 px-3 py-1.5 text-[11px] font-bold text-sky-700 shadow-sm sm:block dark:border-sky-400/20 dark:bg-sky-500/10 dark:text-sky-200">
                         Live preview + code
@@ -423,10 +417,10 @@ export default function DashboardWorkspace() {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                       placeholder="Describe the app you want to create..."
-                      className="min-h-[160px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base leading-7 text-slate-950 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+                      className="min-h-[138px] w-full resize-none border-0 bg-transparent px-4 py-2.5 text-base leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[148px] dark:text-white dark:placeholder:text-slate-500"
                     />
 
-                    <div className="mt-4 flex flex-col gap-4 rounded-[22px] border border-sky-100/80 bg-slate-50/70 px-3 py-3 shadow-inner shadow-sky-100/40 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+                    <div className="mt-3.5 flex flex-col gap-4 rounded-[22px] border border-sky-100/80 bg-slate-50/70 px-3 py-3 shadow-inner shadow-sky-100/40 transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
                       <div className="flex flex-wrap items-center gap-2">
                         <input
                           type="file"
@@ -528,7 +522,7 @@ export default function DashboardWorkspace() {
                         type="button"
                         onClick={() => void launchBuilder()}
                         disabled={!prompt.trim() || isLaunchingBuilder}
-                        className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(59,130,246,0.9)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(37,99,235,0.95)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[168px]"
+                        className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(59,130,246,0.9)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(37,99,235,0.95)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[168px]"
                       >
                         {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                         <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
@@ -614,4 +608,5 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
+
 
