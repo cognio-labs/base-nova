@@ -754,7 +754,7 @@ export default function BuilderWorkspace() {
 
         <main className="relative flex min-h-0 flex-1 overflow-hidden lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-16 left-0 z-50 flex h-[calc(100dvh-4rem)] w-screen flex-col border-r border-slate-200/70 bg-white/88 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 sm:w-[320px] lg:static lg:z-auto lg:h-full lg:translate-x-0 lg:w-[320px] lg:shadow-none xl:w-[360px] 2xl:w-[400px]",
+            "fixed inset-y-16 left-0 z-50 flex h-[calc(100dvh-4rem)] w-screen flex-col border-r border-slate-200/70 bg-white/88 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/78 sm:w-[340px] lg:static lg:z-auto lg:h-full lg:translate-x-0 lg:w-[360px] lg:shadow-none xl:w-[400px] 2xl:w-[440px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
@@ -780,7 +780,7 @@ export default function BuilderWorkspace() {
                     >
                       <div
                         className={cn(
-                          "max-w-[85%] rounded-3xl px-4 py-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
+                          "max-w-[85%] rounded-3xl px-4 py-3 text-[14px] font-normal leading-relaxed shadow-sm whitespace-pre-wrap",
                           message.role === "user"
                             ? "bg-sky-500 text-white"
                             : "bg-slate-100 text-slate-900 dark:bg-white/5 dark:text-white"
@@ -804,13 +804,14 @@ export default function BuilderWorkspace() {
             </div>
 
             <div className="shrink-0 border-t border-slate-200/70 p-4 dark:border-white/5">
-              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">`n`n                <textarea
+              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
+                <textarea
                   ref={textareaRef}
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Describe what you want to build..."
-                  className="w-full resize-none rounded-[22px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="w-full resize-none rounded-[22px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-[15px] font-normal leading-6 text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   style={{ minHeight: 140 }}
                 />
 
@@ -1185,6 +1186,8 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
 
 
 
