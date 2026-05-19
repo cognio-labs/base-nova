@@ -455,506 +455,379 @@ export default function BuilderWorkspace() {
 
   return (
     <div
-      className="h-dvh w-full overflow-hidden bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_100%)] text-slate-950 dark:bg-[radial-gradient(circle_at_top,#0d1b33_0%,#08111f_58%,#050914_100%)] dark:text-white"
+      className="h-screen w-full overflow-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-white"
       style={shellStyle}
     >
-      <div className="mx-auto flex h-full w-full max-w-[1700px] flex-col px-3 py-3 md:px-5 md:py-5">
-        <div className="relative flex h-full min-h-0 overflow-hidden rounded-[28px] border border-white/60 bg-white/52 shadow-[0_36px_120px_-52px_rgba(37,99,235,0.26)] backdrop-blur-3xl dark:border-white/10 dark:bg-white/[0.04]">
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.35),transparent_72%)]" />
-            <div className="absolute -left-20 top-10 h-56 w-56 rounded-full bg-sky-200/35 blur-3xl dark:bg-sky-500/10" />
-            <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-indigo-100/55 blur-3xl dark:bg-blue-500/10" />
+      {/* Background Mesh/Grid */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
+      
+      <div className="relative z-10 flex h-full w-full flex-col">
+        {/* ========================================================================= */}
+        {/* TOP HEADER */}
+        {/* ========================================================================= */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200/60 bg-white/70 px-4 backdrop-blur-xl dark:border-white/5 dark:bg-slate-900/50">
+          <div className="flex items-center gap-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500 text-white shadow-lg shadow-sky-500/20">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
+                  {useGeneratorStore.getState().projectTitle || "Aryan's Digital Canvas"}
+                </h2>
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              </div>
+              <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
+                Previewing last saved version
+              </p>
+            </div>
           </div>
 
-          <div className="relative z-10 flex h-full min-h-0 w-full flex-col gap-4 p-4 xl:flex-row xl:gap-5 xl:p-5">
-            <section
-              className={cn(
-                "flex w-full min-h-[360px] shrink-0 flex-col overflow-hidden rounded-[24px] xl:min-h-0 xl:w-[360px] xl:min-w-[360px]",
-                glassPanel
-              )}
-            >
-              <div className="flex items-start justify-between gap-3 px-4 pb-4 pt-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-[18px] border border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(232,244,255,0.92))] text-slate-900 shadow-[0_18px_40px_-24px_rgba(56,189,248,0.55)] dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(15,23,42,0.92),rgba(12,18,32,0.88))] dark:text-white">
-                    <Sparkles className="h-[18px] w-[18px]" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-100/80 bg-white/72 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-sky-700 shadow-[0_10px_24px_-20px_rgba(14,165,233,0.65)] dark:border-white/10 dark:bg-white/[0.06] dark:text-sky-200">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      AI Builder
-                    </div>
-                    <div>
-                      <h1 className="text-[20px] font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">Workspace</h1>
-                    </div>
-                  </div>
-                </div>
+          <div className="flex items-center gap-1.5 md:gap-3">
+            <div className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 p-1 dark:border-white/10 dark:bg-white/5 md:flex">
+               <button className="rounded-full p-1.5 text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white transition-colors">
+                 <History className="h-4 w-4" />
+               </button>
+               <button className="rounded-full p-1.5 text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white transition-colors">
+                 <Menu className="h-4 w-4" />
+               </button>
+            </div>
 
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className={softPill}
-                      >
-                        <Braces className="h-3.5 w-3.5" />
-                        {buildMode}
-                        <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-44">
-                      {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                        <DropdownMenuItem
-                          key={mode}
-                          onSelect={() => setBuildMode(mode)}
-                          className="flex items-center justify-between"
-                        >
-                          <span>{mode}</span>
-                          {buildMode === mode ? <Check className="h-4 w-4" /> : null}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <button
-                    type="button"
-                    onClick={clearChat}
-                    className={softPill}
-                  >
-                    Clear
-                  </button>
-                </div>
+            <div className="flex items-center gap-2">
+              <button className="hidden h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 md:flex">
+                <HelpCircle className="h-5 w-5" />
+              </button>
+              <button className="hidden h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 md:flex">
+                <Github className="h-5 w-5" />
+              </button>
+              
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 shadow-sm dark:border-white/10 dark:bg-white/5">
+                <Zap className="h-4 w-4 fill-amber-400 text-amber-400" />
+                <span className="text-[12px] font-bold">120</span>
+                <Plus className="h-3.5 w-3.5 text-slate-400" />
               </div>
 
-              <div className="px-4 pb-4">
-                <div className="grid grid-cols-1 gap-2.5">
-                  {suggestions.map((s) => (
-                    <button
-                      key={s.label}
-                      type="button"
-                      disabled={isGenerating}
-                      onClick={() => setDraft(s.text)}
-                      className="group rounded-[18px] border border-white/65 bg-white/78 p-3 text-left shadow-[0_18px_40px_-32px_rgba(15,23,42,0.22)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-200/80 hover:bg-white dark:border-white/10 dark:bg-white/[0.05] dark:hover:bg-white/[0.08] disabled:opacity-60"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[13px] font-semibold tracking-[-0.02em] text-slate-900 dark:text-white">{s.label}</span>
-                        <span className="rounded-full border border-slate-200/80 bg-white/80 px-2 py-1 text-[10px] font-semibold text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300">
-                          {formatShortcut(s.shortcut)}
-                        </span>
-                      </div>
+              <UserMenu />
+
+              <button className="rounded-full bg-sky-500 px-4 py-2 text-[12px] font-bold text-white shadow-lg shadow-sky-500/20 hover:bg-sky-600 transition-all active:scale-95">
+                Share
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* ========================================================================= */}
+        {/* MAIN CONTENT AREA */}
+        {/* ========================================================================= */}
+        <main className="flex min-h-0 flex-1 overflow-hidden">
+          
+          {/* LEFT SIDEBAR (CHATS) */}
+          <aside className="hidden w-[400px] flex-shrink-0 flex-col border-r border-slate-200/60 bg-slate-50/30 backdrop-blur-sm dark:border-white/5 dark:bg-slate-900/20 lg:flex">
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center opacity-40">
+               <Sparkles className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-4" />
+               <p className="text-sm font-medium text-slate-400 dark:text-slate-600 text-center">
+                 Your AI assistant is ready.<br/>Start by describing your vision.
+               </p>
+            </div>
+
+            {/* Input Panel */}
+            <div className="p-4">
+              <div className="relative rounded-3xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+                <textarea
+                  ref={textareaRef}
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask Lovable..."
+                  className="w-full resize-none bg-transparent text-sm leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:text-white"
+                  style={{ minHeight: '80px' }}
+                />
+
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <button className="h-9 w-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5">
+                      <Plus className="h-5 w-5" />
                     </button>
-                  ))}
-                </div>
-              </div>
-
-              <div
-                ref={listRef}
-                className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 [scrollbar-width:thin]"
-              >
-                <div className="space-y-3 pr-1">
-                  {messages.length === 0 ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-[22px] border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(243,248,255,0.84))] p-4 shadow-[0_24px_56px_-38px_rgba(37,99,235,0.24)] dark:border-white/10 dark:bg-white/[0.04]"
-                    >
-                      <p className="text-[14px] font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">
-                        Describe what you want to build...
-                      </p>
-                    </motion.div>
-                  ) : null}
-
-                  {messages.map((m) => (
-                    <motion.div
-                      key={m.id}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
+                    <button 
+                      onClick={() => setIsVisualMode(v => !v)}
                       className={cn(
-                        "max-w-[86%] rounded-[22px] px-4 py-3 shadow-[0_22px_50px_-34px_rgba(15,23,42,0.22)]",
-                        m.role === "user"
-                          ? "ml-auto border border-sky-200/80 bg-[linear-gradient(135deg,rgba(223,242,255,0.95),rgba(234,244,255,0.95))] text-slate-900"
-                          : "mr-auto border border-white/70 bg-white/84 text-slate-700 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-100"
+                        "flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-bold transition-all",
+                        isVisualMode ? "bg-sky-500 text-white border-sky-500" : "bg-white text-slate-600 hover:bg-slate-50 dark:bg-white/5 dark:text-slate-400"
                       )}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="whitespace-pre-wrap text-[13px] leading-6">{m.content}</div>
-                        {m.role === "user" ? (
-                          <button
-                            type="button"
-                            onClick={() => setDraft(m.content)}
-                            className="rounded-full border border-sky-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold text-sky-700 transition hover:bg-sky-50"
-                          >
-                            Edit
-                          </button>
-                        ) : null}
-                      </div>
-                    </motion.div>
-                  ))}
-
-                  {isGenerating ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-[22px] border border-sky-100/80 bg-[linear-gradient(180deg,rgba(240,248,255,0.92),rgba(232,244,255,0.86))] p-4 shadow-[0_24px_56px_-38px_rgba(56,189,248,0.28)] dark:border-white/10 dark:bg-white/[0.05]"
-                    >
-                      <div className="flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-100">
-                        <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
-                        Builder is generating
-                      </div>
-                      <div className="mt-3 space-y-2">
-                        {workflowLogs.map((log, idx) => {
-                          const active = idx === activeAgentIndex;
-                          const done = activeAgentIndex > idx;
-                          return (
-                            <div
-                              key={log.agent + "-" + idx}
-                              className={cn(
-                                "flex items-center justify-between rounded-full px-3 py-2 text-[11px] font-medium",
-                                done
-                                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                                  : active
-                                    ? "bg-sky-500/12 text-sky-700 dark:text-sky-200"
-                                    : "bg-white/74 text-slate-500 dark:bg-white/[0.06] dark:text-slate-300"
-                              )}
-                            >
-                              <span className="truncate">{log.agent}</span>
-                              <span className="truncate text-right opacity-80">{log.action}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  ) : null}
-
-                  {error ? (
-                    <div className="rounded-[20px] border border-red-200/80 bg-red-50/90 px-4 py-3 text-[12px] font-medium text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
-                      {error}
-                    </div>
-                  ) : null}
-
-                  <div ref={bottomRef} />
-                </div>
-              </div>
-
-              <div className="border-t border-white/55 px-4 pb-4 pt-2.5 dark:border-white/10">
-                <div className="flex items-center gap-2 pb-2.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsVisualMode((v) => !v);
-                      setView("code");
-                    }}
-                    className={cn(toolbarPill, isVisualMode ? "border-sky-200/90 bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200" : "")}
-                  >
-                    <Upload className="h-3.5 w-3.5" />
-                    Visual
-                  </button>
-
-                  <label className={cn(toolbarPill, "cursor-pointer")}>
-                    <FileUp className="h-3.5 w-3.5" />
-                    Upload
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={(e) => handleUpload(e.target.files?.[0] ?? null)}
-                    />
-                  </label>
-
-                  <button
-                    type="button"
-                    aria-label={isListening ? "Listening" : "Voice input"}
-                    onClick={startVoiceInput}
-                    className={cn(toolbarPill, isListening ? "border-sky-200/90 bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200" : "")}
-                  >
-                    <Mic className={cn("h-3.5 w-3.5", isListening ? "animate-pulse" : "")}/>
-                    Voice
-                  </button>
-                </div>
-
-                <div
-                  className="relative overflow-hidden rounded-[22px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(245,249,255,0.9))] p-3 shadow-[0_24px_56px_-36px_rgba(37,99,235,0.22)] dark:border-white/10 dark:bg-white/[0.05]"
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDropActive(true);
-                  }}
-                  onDragLeave={() => setIsDropActive(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setIsDropActive(false);
-                    handleUpload(e.dataTransfer.files?.[0] ?? null);
-                  }}
-                >
-                  {isDropActive ? (
-                    <div className="pointer-events-none absolute inset-0 rounded-[22px] border-2 border-dashed border-sky-300/80 bg-sky-50/70" />
-                  ) : null}
-
-                  <textarea
-                    ref={textareaRef}
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Describe what you want to build..."
-                    className="min-h-[96px] w-full resize-none bg-transparent pr-14 text-[13px] leading-6 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
-                  />
-
-                  <div className="mt-3 flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[11px] font-medium text-slate-400 dark:text-slate-400">Enter to send / Shift+Enter newline</p>
-                      <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-300">Mode: {buildMode}</p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => void handleSend()}
-                      disabled={isGenerating || !draft.trim()}
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#0f172a_0%,#2563eb_100%)] text-white shadow-[0_20px_40px_-20px_rgba(37,99,235,0.7)] transition duration-200 hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-60"
-                      aria-label="Send"
-                    >
-                      {isGenerating ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <ArrowUp className="h-[18px] w-[18px]" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-              <div className={cn("rounded-[24px] p-3", glassPanel)}>
-                <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-                  <div className="flex min-w-0 flex-wrap items-center gap-2">
-                    <div className="inline-flex items-center rounded-full border border-white/65 bg-white/78 p-1 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.28)] dark:border-white/10 dark:bg-white/[0.05]">
-                      <button
-                        type="button"
-                        onClick={() => setView("preview")}
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold transition",
-                          view === "preview"
-                            ? "bg-slate-950 text-white shadow-[0_12px_28px_-18px_rgba(15,23,42,0.7)] dark:bg-white dark:text-slate-950"
-                            : "text-slate-500 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
-                        )}
-                      >
-                        <Eye className="h-4 w-4" />
-                        Preview
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setView("code")}
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold transition",
-                          view === "code"
-                            ? "bg-slate-950 text-white shadow-[0_12px_28px_-18px_rgba(15,23,42,0.7)] dark:bg-white dark:text-slate-950"
-                            : "text-slate-500 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
-                        )}
-                      >
-                        <Code2 className="h-4 w-4" />
-                        Code
-                      </button>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setRefreshKey((k) => k + 1)}
-                      className={softPill}
-                    >
-                      <RefreshCcw className="h-3.5 w-3.5" />
-                      Refresh
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => alert("Publish is not wired yet. Hook this up to your hosting workflow.")}
-                      className={cn(softPill, "hidden md:inline-flex")}
-                    >
-                      Publish
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => alert("Share is not wired yet. Hook this up to your project links.")}
-                      className={cn(softPill, "hidden md:inline-flex")}
-                    >
-                      <Share2 className="h-3.5 w-3.5" />
-                      Share
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Visual edits
                     </button>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="inline-flex items-center rounded-full border border-white/65 bg-white/78 p-1 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.28)] dark:border-white/10 dark:bg-white/[0.05]">
-                      {(
-                        [
-                          { id: "desktop" as const, label: "Desktop" },
-                          { id: "tablet" as const, label: "Tablet" },
-                          { id: "mobile" as const, label: "Mobile" },
-                        ]
-                      ).map((m) => (
-                        <button
-                          key={m.id}
-                          type="button"
-                          onClick={() => setDeviceMode(m.id)}
-                          className={cn(
-                            "rounded-full px-4 py-2 text-[12px] font-semibold transition",
-                            deviceMode === m.id
-                              ? "bg-slate-950 text-white shadow-[0_12px_28px_-18px_rgba(15,23,42,0.7)] dark:bg-white dark:text-slate-950"
-                              : "text-slate-500 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
-                          )}
-                        >
-                          {m.label}
+                  <div className="flex items-center gap-1.5">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
+                          {buildMode}
+                          <ChevronDown className="h-3 w-3" />
                         </button>
-                      ))}
-                    </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
+                          <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
+                            {mode}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <button 
+                      onClick={startVoiceInput}
+                      className={cn(
+                        "h-9 w-9 flex items-center justify-center rounded-xl transition-all",
+                        isListening ? "bg-red-500 text-white animate-pulse" : "text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                      )}
+                    >
+                      <Mic className="h-5 w-5" />
+                    </button>
 
                     <button
-                      type="button"
-                      onClick={() => setIsFullscreen(true)}
-                      className={softPill}
+                      onClick={() => handleSend()}
+                      disabled={isGenerating || !draft.trim()}
+                      className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition-all active:scale-95 disabled:opacity-50 dark:bg-white dark:text-slate-900"
                     >
-                      <Expand className="h-3.5 w-3.5" />
-                      Fullscreen
+                      {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
                     </button>
                   </div>
                 </div>
               </div>
-
-              <div className={cn("flex-1 min-h-0 rounded-[24px] p-3", glassPanel)}>
-                <AnimatePresence mode="wait">
-                  {view === "preview" ? (
-                    <motion.div
-                      key="preview"
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      className="flex h-full min-h-0 flex-col gap-3"
-                    >
-                      <div className="flex items-center justify-between px-1">
-                        <div>
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 dark:text-slate-400">Live canvas</p>
-                          <p className="mt-1 text-[15px] font-semibold tracking-[-0.02em] text-slate-900 dark:text-white">Preview workspace</p>
-                        </div>
-                        <div className="rounded-full border border-white/60 bg-white/72 px-3 py-1.5 text-[11px] font-medium text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300">
-                          Responsive preview
-                        </div>
-                      </div>
-
-                      <div className="flex-1 min-h-0 rounded-[24px] border border-white/65 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),rgba(240,246,255,0.9))] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]">
-                        <div className="mx-auto flex h-full w-full justify-center">
-                          <div className={cn("h-full min-h-0 overflow-hidden rounded-[20px] border border-sky-100/80 bg-white shadow-[0_24px_60px_-40px_rgba(37,99,235,0.22)] dark:border-white/10 dark:bg-[#08101d]", previewWidthClass)}>
-                            <PreviewFrame iframeKey={refreshKey} className="h-full" />
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="code"
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      className="flex h-full min-h-0 flex-col gap-3"
-                    >
-                      <div className="flex flex-col gap-3 rounded-[22px] border border-white/65 bg-white/76 px-4 py-3 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.2)] dark:border-white/10 dark:bg-white/[0.04] md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 dark:text-slate-400">Code editor</p>
-                          <p className="mt-1 text-[15px] font-semibold tracking-[-0.02em] text-slate-900 dark:text-white">Generated code</p>
-                        </div>
-
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button
-                              type="button"
-                              disabled={!filesForEditor.length}
-                              className={cn(softPill, "min-w-0 justify-between")}
-                            >
-                              <span className="truncate max-w-[220px] sm:max-w-[320px]">{activePath ?? "No files"}</span>
-                              <ChevronDown className="h-4 w-4 opacity-70" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-[520px] max-w-[92vw]">
-                            {filesForEditor.map((f) => (
-                              <DropdownMenuItem
-                                key={f.path}
-                                onSelect={() => openFile(f.path)}
-                                className="flex items-center justify-between"
-                              >
-                                <span className="truncate max-w-[420px]">{f.path}</span>
-                                {activePath === f.path ? <Check className="h-4 w-4" /> : null}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-
-                      <div className="flex-1 min-h-0 overflow-hidden rounded-[24px] border border-white/65 bg-white/88 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.18)] dark:border-white/10 dark:bg-[#08101d]">
-                        <Editor
-                          theme="vs-light"
-                          language={activeLanguage}
-                          value={activeEditorValue}
-                          onChange={(value) => {
-                            if (!activePath) return;
-                            updateFileContent(activePath, value ?? "");
-                          }}
-                          options={{
-                            minimap: { enabled: false },
-                            fontSize: 13,
-                            fontFamily: '"Inter", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                            fontLigatures: true,
-                            wordWrap: "on",
-                            scrollBeyondLastLine: false,
-                            automaticLayout: true,
-                            lineNumbersMinChars: 3,
-                            smoothScrolling: true,
-                            padding: { top: 18, bottom: 18 },
-                          }}
-                        />
-                      </div>
-
-                      <div className="rounded-[20px] border border-white/60 bg-white/72 px-4 py-3 text-[12px] text-slate-500 shadow-[0_14px_30px_-28px_rgba(15,23,42,0.2)] dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300">
-                        Tip: editing <span className="font-semibold text-slate-700 dark:text-white">preview.html</span> updates the live preview instantly.
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              
+              <div className="mt-3 flex flex-wrap gap-2 justify-center">
+                 {["Enable backend features", "Add AI Chat Assistant", "Create Python skills page"].map(tag => (
+                   <button 
+                     key={tag}
+                     onClick={() => setDraft(tag)}
+                     className="rounded-full border border-slate-200 bg-white/50 px-3 py-1 text-[11px] font-semibold text-slate-500 hover:bg-white hover:text-slate-900 dark:border-white/5 dark:bg-white/5 dark:text-slate-400 transition-all"
+                   >
+                     {tag}
+                   </button>
+                 ))}
               </div>
-            </section>
-          </div>
+            </div>
+          </aside>
 
-          <AnimatePresence>
-            {isFullscreen ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-2xl"
-                onClick={() => setIsFullscreen(false)}
-              >
-                <motion.div
-                  initial={{ y: 14, opacity: 0, scale: 0.99 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: 14, opacity: 0, scale: 0.99 }}
-                  className="flex h-[92dvh] w-[96vw] max-w-[1480px] flex-col overflow-hidden rounded-[28px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.08))] shadow-[0_40px_120px_-48px_rgba(15,23,42,0.7)] backdrop-blur-3xl"
-                  onClick={(e) => e.stopPropagation()}
+          {/* RIGHT PREVIEW/CODE AREA */}
+          <section className="flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-50/50 dark:bg-slate-950/20">
+            {/* Toolbar */}
+            <div className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200/60 bg-white/40 px-4 backdrop-blur-md dark:border-white/5 dark:bg-slate-900/20">
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100/50 dark:bg-white/5">
+                <button
+                  onClick={() => setView("preview")}
+                  className={cn(
+                    "flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold transition-all",
+                    view === "preview" ? "bg-white text-slate-900 shadow-sm dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  )}
                 >
-                  <div className="flex items-center justify-between border-b border-white/15 px-5 py-4 text-white">
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">Fullscreen</p>
-                      <p className="mt-1 text-sm font-semibold">Preview workspace</p>
+                  <Eye className="h-4 w-4" />
+                  Preview
+                </button>
+                <button
+                  onClick={() => setView("code")}
+                  className={cn(
+                    "flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold transition-all",
+                    view === "code" ? "bg-white text-slate-900 shadow-sm dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  )}
+                >
+                  <Code2 className="h-4 w-4" />
+                  Code
+                </button>
+              </div>
+
+              {/* URL bar style */}
+              <div className="hidden max-w-md flex-1 px-8 md:block">
+                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-1.5 dark:border-white/10 dark:bg-slate-900/50">
+                   <div className="flex gap-1.5">
+                     <span className="w-2.5 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700" />
+                     <span className="w-2.5 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700" />
+                   </div>
+                   <div className="h-3 w-px bg-slate-200 dark:bg-slate-700" />
+                   <p className="text-[11px] font-medium text-slate-400 truncate tracking-wide">
+                     {activePath || "https:// AryanDigitalCanvas.lovable.app /"}
+                   </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 rounded-xl bg-slate-100/50 p-1 dark:bg-white/5">
+                  <button 
+                    onClick={() => setDeviceMode("desktop")}
+                    className={cn("p-1.5 rounded-lg transition-all", deviceMode === "desktop" ? "bg-white text-slate-900 shadow-sm dark:bg-white/10 dark:text-white" : "text-slate-400 hover:text-slate-600")}
+                  >
+                    <Monitor className="h-4 w-4" />
+                  </button>
+                  <button 
+                    onClick={() => setDeviceMode("mobile")}
+                    className={cn("p-1.5 rounded-lg transition-all", deviceMode === "mobile" ? "bg-white text-slate-900 shadow-sm dark:bg-white/10 dark:text-white" : "text-slate-400 hover:text-slate-600")}
+                  >
+                    <Smartphone className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <div className="h-6 w-px bg-slate-200 dark:bg-white/10" />
+
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => setRefreshKey(k => k + 1)}
+                    className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  >
+                    <RefreshCcw className="h-4.5 w-4.5" />
+                  </button>
+                  <button 
+                    onClick={() => setIsFullscreen(true)}
+                    className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  >
+                    <Expand className="h-4.5 w-4.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 overflow-hidden p-4">
+              <AnimatePresence mode="wait">
+                {view === "preview" ? (
+                  <motion.div
+                    key="preview"
+                    initial={{ opacity: 0, scale: 0.995 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.995 }}
+                    className="h-full w-full"
+                  >
+                    <div className="mx-auto h-full w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-950">
+                       <div className={cn("mx-auto h-full transition-all duration-300 ease-in-out", previewWidthClass)}>
+                         <PreviewFrame iframeKey={refreshKey} className="h-full" />
+                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsFullscreen(false)}
-                      className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[12px] font-semibold text-white transition hover:bg-white/15"
-                    >
-                      Close (Esc)
-                    </button>
-                  </div>
-                  <div className="min-h-0 flex-1 p-5">
-                    <div className="h-full overflow-hidden rounded-[22px] border border-white/10 bg-white/95 shadow-[0_28px_70px_-44px_rgba(15,23,42,0.45)]">
-                      <PreviewFrame iframeKey={refreshKey + "-fs"} className="h-full" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="code"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="flex h-full flex-col gap-4"
+                  >
+                    <div className="flex shrink-0 items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-slate-900">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-slate-400">
+                           <Code2 className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">Generated code</p>
+                          <p className="text-[10px] font-medium text-slate-400">Editing updates preview instantly</p>
+                        </div>
+                      </div>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
+                            <span className="max-w-[120px] truncate">{activePath || "No files selected"}</span>
+                            <ChevronDown className="h-3.5 w-3.5" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-64">
+                          {filesForEditor.map((f) => (
+                            <DropdownMenuItem key={f.path} onSelect={() => openFile(f.path)}>
+                              {f.path}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-        </div>
+
+                    <div className="flex-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-inner dark:border-white/10 dark:bg-[#0d1117]">
+                      <Editor
+                        theme="vs-light"
+                        language={activeLanguage}
+                        value={activeEditorValue}
+                        onChange={(value) => {
+                          if (!activePath) return;
+                          updateFileContent(activePath, value ?? "");
+                        }}
+                        options={{
+                          minimap: { enabled: false },
+                          fontSize: 13,
+                          fontFamily: '"Geist Mono", "Fira Code", monospace',
+                          wordWrap: "on",
+                          scrollBeyondLastLine: false,
+                          automaticLayout: true,
+                          padding: { top: 20, bottom: 20 },
+                          smoothScrolling: true,
+                        }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </section>
+        </main>
       </div>
+
+      {/* Fullscreen Modal */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-950/20 backdrop-blur-3xl"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="flex h-full w-full flex-col p-4 md:p-8"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                   <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-white/10 text-white border border-white/10">
+                     <Expand className="h-5 w-5" />
+                   </div>
+                   <h3 className="text-lg font-bold text-white tracking-tight">Fullscreen Preview</h3>
+                </div>
+                <button 
+                  onClick={() => setIsFullscreen(false)}
+                  className="rounded-full bg-white px-6 py-2 text-sm font-bold text-slate-900 shadow-xl transition-all active:scale-95"
+                >
+                  Close Preview
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden rounded-3xl bg-white shadow-2xl">
+                <PreviewFrame iframeKey={refreshKey + "-fs"} className="h-full" />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Generating Overlay */}
+      <AnimatePresence>
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed bottom-8 right-8 z-50 flex flex-col gap-3"
+          >
+             <div className="flex items-center gap-4 rounded-3xl border border-sky-500/30 bg-white p-4 shadow-2xl dark:bg-slate-900">
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-lg shadow-sky-500/20">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+                <div>
+                   <p className="text-sm font-bold text-slate-900 dark:text-white">Builder is working...</p>
+                   <p className="text-xs font-medium text-slate-400">Generating your project files</p>
+                </div>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
