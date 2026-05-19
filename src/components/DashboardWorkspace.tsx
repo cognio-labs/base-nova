@@ -384,9 +384,9 @@ export default function DashboardWorkspace() {
                   <AudioLines className="h-3.5 w-3.5" />
                   AI Builder Workspace
                 </div>
-                <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
+                <h1 className="mt-6 text-3xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
                   Build apps from prompts in a 
-                  <span className="bg-gradient-to-r from-sky-300 via-cyan-200 to-indigo-200 bg-clip-text text-transparent dark:from-sky-200 dark:via-cyan-100 dark:to-indigo-100">
+                  <span className="bg-gradient-to-r from-slate-950 via-slate-700 to-sky-700 bg-clip-text text-transparent dark:from-white dark:via-slate-200 dark:to-cyan-200">
                     single operating surface
                   </span>
                   .
@@ -403,15 +403,15 @@ export default function DashboardWorkspace() {
                     animate={{ y: isFocused ? -2 : 0 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
                     className={cn(
-                      "relative rounded-[26px] border border-white/80 bg-white/78 p-3.5 shadow-[0_30px_80px_-30px_rgba(59,130,246,0.38)] backdrop-blur-2xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/70",
+                      "relative rounded-[30px] border border-white/70 bg-white/70 p-3 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.45)] ring-1 ring-white/70 backdrop-blur-3xl transition-all duration-300 ease-out dark:border-white/10 dark:bg-[#0b0f16]/72 dark:ring-white/5",
                       isFocused ? "ring-2 ring-sky-400/30" : ""
                     )}
                   >
                     <div className="flex items-center justify-between gap-3 px-2 pb-3">
                       <div>
-                        <p className="text-xs font-black uppercase tracking-[0.26em] text-slate-400">Prompt Studio</p>
+                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Prompt Studio</p>
                       </div>
-                      <div className="hidden rounded-full border border-sky-100 bg-sky-50/80 px-3 py-1.5 text-[11px] font-bold text-sky-700 shadow-sm sm:block dark:border-sky-400/20 dark:bg-sky-500/10 dark:text-sky-200">
+                      <div className="hidden rounded-full border border-slate-200/80 bg-white/70 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm shadow-slate-200/60 sm:block dark:border-slate-700/60 dark:bg-white/5 dark:text-slate-200">
                         Live preview + code
                       </div>
                     </div>
@@ -424,10 +424,10 @@ export default function DashboardWorkspace() {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                       placeholder="Describe the app you want to create..."
-                      className="min-h-[138px] w-full resize-none border-0 bg-transparent px-4 py-2.5 text-base leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[148px] dark:text-white dark:placeholder:text-slate-500"
+                      className="min-h-[122px] w-full resize-none border-0 bg-transparent px-3.5 py-2 text-[15px] leading-7 text-slate-950 outline-none placeholder:text-slate-400 sm:min-h-[132px] dark:text-white dark:placeholder:text-slate-500"
                     />
 
-                    <div className="mt-3.5 flex flex-col gap-4 rounded-[22px] border border-sky-100/80 bg-slate-50/70 px-3 py-3 shadow-inner shadow-sky-100/40 transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+                    <div className="mt-3 flex flex-col gap-3.5 rounded-[24px] border border-slate-200/70 bg-white/72 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_12px_30px_-22px_rgba(15,23,42,0.35)] transition-colors duration-300 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
                       <div className="flex flex-wrap items-center gap-2">
                         <input
                           type="file"
@@ -439,7 +439,7 @@ export default function DashboardWorkspace() {
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white bg-white/90 px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                          className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                         >
                           <Upload className="h-4 w-4" />
                           Upload
@@ -451,10 +451,10 @@ export default function DashboardWorkspace() {
                             aria-expanded={showModelSelect}
                             onClick={() => setShowModelSelect((open) => !open)}
                             className={cn(
-                              "inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30",
+                              "inline-flex h-10 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                               showModelSelect
-                                ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200"
-                                : "border-white bg-white/90 text-slate-700 hover:border-sky-200 hover:text-sky-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                                ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
+                                : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                             )}
                           >
                             <SlidersHorizontal className="h-4 w-4" />
@@ -502,10 +502,10 @@ export default function DashboardWorkspace() {
                           aria-pressed={isAgentMode}
                           onClick={() => setIsAgentMode((value) => !value)}
                           className={cn(
-                            "inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30",
+                            "inline-flex h-10 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20",
                             isAgentMode
-                              ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200"
-                              : "border-white bg-white/90 text-slate-700 hover:border-sky-200 hover:text-sky-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                              ? "border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100"
+                              : "border-white/70 bg-white/80 text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                           )}
                         >
                           <Bot className="h-4 w-4" />
@@ -517,8 +517,8 @@ export default function DashboardWorkspace() {
                           aria-label={isListening ? "Listening" : "Start voice input"}
                           onClick={startVoiceInput}
                           className={cn(
-                            "inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white bg-white/90 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
-                            isListening ? "animate-pulse border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200" : ""
+                            "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
+                            isListening ? "animate-pulse border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
                           )}
                         >
                           <Mic className="h-4 w-4" />
@@ -529,7 +529,7 @@ export default function DashboardWorkspace() {
                         type="button"
                         onClick={() => void launchBuilder()}
                         disabled={!prompt.trim() || isLaunchingBuilder}
-                        className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(59,130,246,0.9)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(37,99,235,0.95)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[168px]"
+                        className="inline-flex h-13 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[162px]"
                       >
                         {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
                         <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
@@ -615,5 +615,4 @@ export default function DashboardWorkspace() {
     </div>
   );
 }
-
 
