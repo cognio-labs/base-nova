@@ -20,6 +20,8 @@ import {
   Monitor,
   Smartphone,
   Menu,
+  History,
+  Info,
 } from "lucide-react";
 
 import PreviewFrame from "@/components/PreviewFrame";
@@ -75,7 +77,7 @@ const EMPTY_CHAT_MESSAGES: ChatMessage[] = [];
 let cachedChatStorageValue: string | null | undefined;
 let cachedChatMessages: ChatMessage[] = EMPTY_CHAT_MESSAGES;
 
-type DeviceMode = "desktop" | "tablet" | "mobile";
+type DeviceMode = "desktop" | "mobile";
 
 type BuildMode = "App" | "Landing" | "Dashboard";
 
@@ -167,17 +169,11 @@ function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMess
   return [messages, setMessages];
 }
 
-function formatShortcut(shortcut: string) {
-  return shortcut;
-}
-
 export default function BuilderWorkspace() {
   const {
     generateProject,
     isGenerating,
     error,
-    workflowLogs,
-    activeAgentIndex,
     view,
     setView,
     generatedFiles,
@@ -187,7 +183,7 @@ export default function BuilderWorkspace() {
     getFileContent,
   } = useGeneratorStore();
 
-  const [messages, setMessages] = useLocalStorageChat();
+  const [, setMessages] = useLocalStorageChat();
   const [draft, setDraft] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
@@ -196,29 +192,15 @@ export default function BuilderWorkspace() {
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
   const [isVisualMode, setIsVisualMode] = useState(false);
 
-  const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamTimerRef = useRef<number | null>(null);
   const pendingPromptRef = useRef(false);
 
   const suggestions = useMemo(
     () => [
-      {
-        label: "Apps",
-        text: "Browse app ideas and starter concepts for the AI builder.",
-      },
-      {
-        label: "Start blank",
-        text: "Start a blank workspace with a clean app shell and no preset content.",
-      },
-      {
-        label: "Templates",
-        text: "Show template starter ideas for common app layouts and flows.",
-      },
-      {
-        label: "Recent",
-        text: "Continue from the most recent builder idea and refine the workspace.",
-      },
+      "Enable backend features", 
+      "Add AI Chat Assistant", 
+      "Create Python skills page"
     ],
     []
   );
@@ -242,20 +224,15 @@ export default function BuilderWorkspace() {
 
   const previewWidthClass = useMemo(() => {
     if (deviceMode === "mobile") return "w-[420px] max-w-[90vw]";
-    if (deviceMode === "tablet") return "w-[820px] max-w-[92vw]";
     return "w-full";
   }, [deviceMode]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages.length, isGenerating]);
 
   const syncComposerHeight = useEffectEvent(() => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     textarea.style.height = "0px";
-    const nextHeight = Math.min(Math.max(textarea.scrollHeight, 112), 188);
+    const nextHeight = Math.min(Math.max(textarea.scrollHeight, 80), 180);
     textarea.style.height = `${nextHeight}px`;
   });
 
@@ -265,22 +242,6 @@ export default function BuilderWorkspace() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "1") {
-        e.preventDefault();
-        setDraft(suggestions[0]?.text ?? "");
-      }
-      if (e.ctrlKey && e.key === "2") {
-        e.preventDefault();
-        setDraft(suggestions[1]?.text ?? "");
-      }
-      if (e.ctrlKey && e.key === "3") {
-        e.preventDefault();
-        setDraft(suggestions[2]?.text ?? "");
-      }
-      if (e.ctrlKey && e.key === "4") {
-        e.preventDefault();
-        setDraft(suggestions[3]?.text ?? "");
-      }
       if (e.key === "Escape" && isFullscreen) {
         setIsFullscreen(false);
       }
@@ -288,7 +249,7 @@ export default function BuilderWorkspace() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isFullscreen, suggestions]);
+  }, [isFullscreen]);
 
   useEffect(() => {
     return () => {
@@ -415,27 +376,11 @@ export default function BuilderWorkspace() {
     }
   };
 
-  const handleUpload = (file: File | null) => {
-    if (!file) return;
-    pushMessage({ role: "assistant", content: `Attached: ${file.name} (upload pipeline not wired yet).` });
-  };
-
-  const clearChat = () => {
-    setMessages([]);
-  };
-
   const activeEditorValue = activePath ? getFileContent(activePath) : "";
 
   const shellStyle = {
     fontFamily: '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif',
   };
-
-  const glassPanel =
-    "border border-white/55 bg-white/72 backdrop-blur-2xl shadow-[0_28px_90px_-46px_rgba(37,99,235,0.26)]";
-  const softPill =
-    "inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/72 px-3.5 py-2 text-[11px] font-semibold text-slate-600 transition duration-200 hover:border-sky-200/80 hover:bg-white/90 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-200 dark:hover:bg-white/[0.08]";
-  const toolbarPill =
-    "inline-flex items-center gap-2 rounded-full border border-white/65 bg-white/82 px-4 py-2 text-[11px] font-semibold text-slate-600 shadow-[0_12px_28px_-22px_rgba(15,23,42,0.4)] transition duration-200 hover:-translate-y-0.5 hover:border-sky-200/80 hover:bg-white hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-200 dark:hover:bg-white/[0.08]";
 
   return (
     <div
@@ -583,7 +528,7 @@ export default function BuilderWorkspace() {
               </div>
               
               <div className="mt-3 flex flex-wrap gap-2 justify-center">
-                 {["Enable backend features", "Add AI Chat Assistant", "Create Python skills page"].map(tag => (
+                 {suggestions.map(tag => (
                    <button 
                      key={tag}
                      onClick={() => setDraft(tag)}
@@ -791,23 +736,41 @@ export default function BuilderWorkspace() {
         )}
       </AnimatePresence>
 
-      {/* Generating Overlay */}
+      {/* Generating Overlay or Error */}
       <AnimatePresence>
-        {isGenerating && (
+        {(isGenerating || error) && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-8 right-8 z-50 flex flex-col gap-3"
           >
-             <div className="flex items-center gap-4 rounded-3xl border border-sky-500/30 bg-white p-4 shadow-2xl dark:bg-slate-900">
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-lg shadow-sky-500/20">
-                  <Loader2 className="h-6 w-6 animate-spin" />
+             <div className={cn(
+               "flex items-center gap-4 rounded-3xl border p-4 shadow-2xl backdrop-blur-xl",
+               error ? "border-red-500/30 bg-white/90 dark:bg-red-950/20" : "border-sky-500/30 bg-white/90 dark:bg-slate-900/80"
+             )}>
+                <div className={cn(
+                  "relative flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg",
+                  error ? "bg-red-500 text-white shadow-red-500/20" : "bg-sky-500 text-white shadow-sky-500/20"
+                )}>
+                  {error ? <Info className="h-6 w-6" /> : <Loader2 className="h-6 w-6 animate-spin" />}
                 </div>
                 <div>
-                   <p className="text-sm font-bold text-slate-900 dark:text-white">Builder is working...</p>
-                   <p className="text-xs font-medium text-slate-400">Generating your project files</p>
+                   <p className="text-sm font-bold text-slate-900 dark:text-white">
+                     {error ? "Generation Error" : "Builder is working..."}
+                   </p>
+                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 max-w-[240px] truncate">
+                     {error || "Generating your project files"}
+                   </p>
                 </div>
+                {error && (
+                  <button 
+                    onClick={() => useGeneratorStore.setState({ error: null })}
+                    className="ml-2 rounded-full p-1 hover:bg-slate-100 dark:hover:bg-white/10"
+                  >
+                    <Plus className="h-4 w-4 rotate-45" />
+                  </button>
+                )}
              </div>
           </motion.div>
         )}
