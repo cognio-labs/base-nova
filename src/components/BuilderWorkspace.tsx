@@ -804,57 +804,12 @@ export default function BuilderWorkspace() {
             </div>
 
             <div className="shrink-0 border-t border-slate-200/70 p-4 dark:border-white/5">
-              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
-                <div className="mb-3 space-y-2 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center justify-between gap-3">
-                    <span>
-                      {error
-                        ? error
-                        : isGenerating
-                          ? "Generating files and preview..."
-                          : `Build a ${promptHints[hintIndex].toLowerCase()}.`}
-                    </span>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-bold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                          {buildMode}
-                          <ChevronDown className="h-3 w-3" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-32">
-                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                          <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
-                            {mode}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {promptHints.map((hint) => (
-                      <button
-                        key={hint}
-                        onClick={() => setDraft(hint)}
-                        className={cn(
-                          "rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all",
-                          draft === hint
-                            ? "border-sky-500 bg-sky-500 text-white"
-                            : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:text-white"
-                        )}
-                      >
-                        {hint}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <textarea
+              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">`n`n                <textarea
                   ref={textareaRef}
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={`Describe the ${promptHints[hintIndex].toLowerCase()} you want to build...`}
+                  placeholder="Describe what you want to build..."
                   className="w-full resize-none rounded-[22px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   style={{ minHeight: 140 }}
                 />
@@ -1230,6 +1185,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
