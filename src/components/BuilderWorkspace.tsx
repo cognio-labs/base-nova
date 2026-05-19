@@ -99,7 +99,9 @@ function useLocalStorageChat(): [ChatMessage[], (next: ChatMessage[]) => void] {
   return [messages, setMessages];
 }
 
-function formatShortcut(shortcut: string) {\n  return shortcut;\n}
+function formatShortcut(shortcut: string) {
+  return shortcut;
+}
 
 export default function BuilderWorkspace() {
   const {
@@ -115,7 +117,6 @@ export default function BuilderWorkspace() {
     openFile,
     updateFileContent,
     getFileContent,
-    projectTitle,
   } = useGeneratorStore();
 
   const [messages, setMessages] = useLocalStorageChat();
@@ -126,6 +127,7 @@ export default function BuilderWorkspace() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
   const [isVisualMode, setIsVisualMode] = useState(false);
+  const [isDropActive, setIsDropActive] = useState(false);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -476,7 +478,23 @@ export default function BuilderWorkspace() {
 
               {/* Composer */}
               <div className="border-t border-slate-200/70 bg-white/60 px-5 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-                <div className={cn("rounded-3xl p-3", panelBg)}>
+                <div
+                  className={cn(
+                    "rounded-3xl p-3 transition",
+                    panelBg,
+                    isDropActive ? "ring-2 ring-sky-500/30" : ""
+                  )}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDropActive(true);
+                  }}
+                  onDragLeave={() => setIsDropActive(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDropActive(false);
+                    handleUpload(e.dataTransfer.files?.[0] ?? null);
+                  }}
+                >
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
@@ -635,7 +653,8 @@ export default function BuilderWorkspace() {
                             : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
                         )}
                       >
-                        {m.label}</n                      </button>
+                        {m.label}
+                      </button>
                     ))}
                   </div>
 
@@ -784,4 +803,12 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
 
