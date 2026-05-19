@@ -1,4 +1,4 @@
-﻿import { getGeminiResponse } from "@/lib/gemini";
+import { getGeminiResponse } from "@/lib/gemini";
 import { getOpenRouterResponse } from "@/lib/openrouter";
 import { getOpenRouterAgentResponse } from "@/lib/openrouterAgent";
 
@@ -11,9 +11,16 @@ function getAIProvider(): AIProvider {
     return provider;
   }
 
-  // Default to agent when OpenRouter is configured (gives us tools + better format handling),
-  // and fall back internally if the key/model is invalid.
-  return process.env.OPENROUTER_API_KEY ? "openrouter_agent" : "gemini";
+  // Prefer OpenRouter when available because it has a built-in offline JSON fallback.
+  if (process.env.OPENROUTER_API_KEY) {
+    return "openrouter_agent";
+  }
+
+  if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    return "gemini";
+  }
+
+  return "openrouter";
 }
 
 export async function getAIResponse(
@@ -35,5 +42,14 @@ export async function getAIResponse(
     return getOpenRouterResponse(systemPrompt, userPrompt, isJson);
   }
 
-  return getGeminiResponse(systemPrompt, userPrompt, isJson);
+  try {
+    return await getGeminiResponse(systemPrompt, userPrompt, isJson);
+  } catch (error) {
+    if (isJson) {
+      return getOpenRouterResponse(systemPrompt, userPrompt, isJson);
+    }
+
+    throw error;
+  }
 }
+
