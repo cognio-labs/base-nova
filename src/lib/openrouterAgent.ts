@@ -1,4 +1,4 @@
-﻿import OpenRouter from "@openrouter/sdk";
+﻿import { OpenRouter } from "@openrouter/sdk";
 import { callModel, tool } from "@openrouter/agent";
 import { z } from "zod";
 
@@ -72,3 +72,4 @@ export async function getOpenRouterAgentResponse(
 
   return text;
 }
+
