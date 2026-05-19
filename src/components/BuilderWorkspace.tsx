@@ -419,10 +419,10 @@ export default function BuilderWorkspace() {
             <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200/25 to-cyan-200/20 blur-3xl" />
           </div>
 
-          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0 overflow-hidden">
+          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0 gap-3 p-3">
             {/* Left: Chat */}
-            <Panel defaultSize={28} minSize={22} className="min-h-0 min-w-0 overflow-hidden border-r border-slate-200/80 bg-white/88 shadow-[inset_-1px_0_0_rgba(148,163,184,0.12)] dark:border-white/10 dark:bg-[#09111a]/82">
-              <div className="mx-auto flex h-full w-full max-w-[400px] min-h-0 flex-col">
+            <Panel defaultSize={24} minSize={20} maxSize={30} className="min-h-0 min-w-0 overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-[#0d1522]/96">
+              <div className="mx-auto flex h-full w-full max-w-[360px] min-h-0 flex-col">
                 <header className="shrink-0 border-b border-slate-200/70 px-3 py-3 dark:border-white/10">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -480,21 +480,21 @@ export default function BuilderWorkspace() {
                   </div>
                 </header>
 
-                <div className="shrink-0 border-b border-slate-200/70 px-3 py-2.5 dark:border-white/10">
-                  <div className={cn("rounded-[18px] p-2.5", panelBg, "shadow-[0_18px_40px_-30px_rgba(15,23,42,0.22)]")}>
+                <div className="shrink-0 border-b border-slate-200/70 px-3 py-2 dark:border-white/10">
+                  <div className={cn("rounded-[16px] p-2", panelBg, "shadow-[0_14px_32px_-28px_rgba(15,23,42,0.18)]")}>
                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-500">
                       Suggestions
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {suggestions.map((s) => (
                         <button
                           key={s.label}
                           type="button"
                           disabled={isGenerating}
                           onClick={() => setDraft(s.text)}
-                          className="group inline-flex items-center gap-1.5 rounded-xl border border-slate-200/70 bg-white/86 px-2.5 py-1.5 text-[10px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
+                          className="group inline-flex items-center gap-1.5 rounded-xl border border-slate-200/70 bg-white/86 px-2 py-1 text-[10px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
                         >
-                          <span className="truncate max-w-[112px]">{s.label}</span>
+                          <span className="truncate max-w-[96px]">{s.label}</span>
                           <span className="rounded-lg bg-slate-900/5 px-1.5 py-0.5 text-[10px] font-black text-slate-500 dark:bg-white/10 dark:text-slate-300">
                             {formatShortcut(s.shortcut)}
                           </span>
@@ -508,9 +508,9 @@ export default function BuilderWorkspace() {
                   ref={listRef}
                   className="min-h-0 flex-1 overflow-y-auto px-3 py-3 [scrollbar-width:thin]"
                 >
-                  <div className="space-y-2 pr-1">
+                  <div className="space-y-1.5 pr-1">
                     {messages.length === 0 ? (
-                      <div className={cn("rounded-[18px] p-3.5", panelBg)}>
+                      <div className={cn("rounded-[16px] p-3", panelBg)}>
                         <p className="text-[12px] font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
                         <p className="mt-1 text-[11px] leading-5 text-slate-600 dark:text-slate-300">
                           I&apos;ll generate the preview and code on the right. Press <span className="font-semibold">Enter</span> to send and
@@ -525,7 +525,7 @@ export default function BuilderWorkspace() {
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={cn(
-                          "max-w-[88%] rounded-[18px] border px-3 py-2.5 text-[12px] leading-5 shadow-sm",
+                          "max-w-[86%] rounded-[16px] border px-2.5 py-2 text-[11px] leading-5 shadow-sm",
                           m.role === "user"
                             ? "ml-auto border-slate-200/70 bg-white/90 text-slate-900 dark:border-white/10 dark:bg-white/6 dark:text-white"
                             : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/85 to-blue-50/90 text-slate-900 dark:border-white/10 dark:from-sky-500/10 dark:to-blue-500/10 dark:text-white"
@@ -547,7 +547,7 @@ export default function BuilderWorkspace() {
                     ))}
 
                     {isGenerating ? (
-                      <div className={cn("rounded-[18px] p-3.5", panelBg)}>
+                      <div className={cn("rounded-[16px] p-3", panelBg)}>
                         <div className="flex items-center gap-2 text-[11px] font-extrabold text-slate-700 dark:text-slate-200">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Generating...
@@ -587,10 +587,10 @@ export default function BuilderWorkspace() {
                   </div>
                 </div>
 
-                <div className="shrink-0 border-t border-slate-200/70 bg-white/80 px-3 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-[#09111a]/88">
+                <div className="shrink-0 border-t border-slate-200/70 bg-white/92 px-3 py-2.5 backdrop-blur-xl dark:border-white/10 dark:bg-[#09111a]/92">
                   <div
                     className={cn(
-                      "rounded-[20px] border border-white/80 bg-white/95 p-2 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.22)] backdrop-blur-xl transition dark:border-white/10 dark:bg-[#0d1522]/94",
+                      "rounded-[18px] border border-white/80 bg-white/98 p-2 shadow-[0_14px_32px_-28px_rgba(15,23,42,0.18)] backdrop-blur-xl transition dark:border-white/10 dark:bg-[#101826]/96",
                       isDropActive ? "ring-2 ring-sky-500/30" : ""
                     )}
                     onDragOver={(e) => {
@@ -650,14 +650,14 @@ export default function BuilderWorkspace() {
                       </button>
                     </div>
 
-                    <div className="mt-2 flex items-end gap-2">
-                      <div className="flex-1 rounded-[16px] border border-slate-200/70 bg-slate-50/90 dark:border-white/10 dark:bg-white/5">
+                    <div className="mt-1.5 flex items-end gap-2">
+                      <div className="flex-1 rounded-[14px] border border-slate-200/70 bg-slate-50/90 dark:border-white/10 dark:bg-white/5">
                         <textarea
                           value={draft}
                           onChange={(e) => setDraft(e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="Describe the app you want to build..."
-                          className="h-[60px] w-full resize-none bg-transparent px-3 py-2.5 text-[12px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
+                          className="h-[52px] w-full resize-none bg-transparent px-3 py-2 text-[11px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                         />
                         <div className="flex items-center justify-end px-3 pb-2 text-[9px] font-semibold text-slate-400 dark:text-slate-500">
                           Enter to send / Shift+Enter newline
@@ -678,10 +678,10 @@ export default function BuilderWorkspace() {
               </div>
             </Panel>
 
-            <Separator className="relative w-3 bg-gradient-to-b from-sky-100/10 via-slate-200/40 to-blue-100/10 before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-slate-300/70 before:shadow-[0_0_24px_rgba(148,163,184,0.28)] dark:via-white/5 dark:before:bg-white/12" />
+            <Separator className="relative w-1.5 rounded-full bg-slate-200/80 shadow-[0_0_18px_rgba(148,163,184,0.25)] dark:bg-white/10" />
 
             {/* Right: Preview/Code */}
-            <Panel defaultSize={72} minSize={40} className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-white/76 dark:bg-[#0b111c]/74">
+            <Panel defaultSize={76} minSize={44} className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/96 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.32)] dark:border-white/10 dark:bg-[#0b111c]/90">
               <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto [scrollbar-width:none]">
@@ -792,7 +792,7 @@ export default function BuilderWorkspace() {
                       exit={{ opacity: 0, y: -8 }}
                       className="h-full w-full min-h-0 p-4"
                     >
-                      <div className="mx-auto flex h-full w-full justify-center rounded-[24px] border border-slate-200/70 bg-white/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] dark:border-white/10 dark:bg-white/[0.03]">
+                      <div className="mx-auto flex h-full w-full justify-center rounded-[22px] border border-slate-200/70 bg-slate-50/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] dark:border-white/10 dark:bg-white/[0.03]">
                         <div className={cn("h-full min-h-0", previewWidthClass)}>
                           <PreviewFrame iframeKey={refreshKey} className="h-full" />
                         </div>
