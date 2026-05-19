@@ -9,48 +9,50 @@ type PreviewFrameProps = {
   iframeClassName?: string;
 };
 
+function PreviewSkeleton() {
+  return (
+    <div className="flex h-full min-h-0 items-center justify-center rounded-[inherit] bg-gradient-to-br from-sky-50 via-white to-slate-50 p-6 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+      <div className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+        <div className="mb-4 flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-sky-500" />
+          <div className="h-3 w-36 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+        </div>
+        <div className="space-y-3">
+          <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+          <div className="h-5 w-5/6 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+          <div className="h-28 rounded-[22px] border border-dashed border-slate-200 bg-slate-50/80 dark:border-white/10 dark:bg-white/5" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function PreviewFrame({ iframeKey, className, iframeClassName }: PreviewFrameProps) {
   const { previewHtml, isGenerating } = useGeneratorStore();
 
-  if (isGenerating) {
+  if (isGenerating && !previewHtml) {
     return (
-      <div
-        className={
-          "w-full h-full min-h-[500px] flex flex-col items-center justify-center glass rounded-2xl border-white/5 " +
-          (className ?? "")
-        }
-      >
-        <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-4" />
-        <p className="text-gray-400 font-medium">Preparing Live Sandbox...</p>
+      <div className={"h-full min-h-0 rounded-[inherit] overflow-hidden " + (className ?? "")}>
+        <PreviewSkeleton />
       </div>
     );
   }
 
   if (!previewHtml) {
     return (
-      <div
-        className={
-          "w-full h-full min-h-[500px] flex flex-col items-center justify-center glass rounded-2xl border-white/5 text-center p-8 " +
-          (className ?? "")
-        }
-      >
-        <p className="text-gray-500">Preview is not available for this project yet.</p>
+      <div className={"flex h-full min-h-0 items-center justify-center rounded-[inherit] border border-dashed border-slate-200 bg-white/90 p-8 text-center text-slate-500 shadow-inner dark:border-white/10 dark:bg-slate-950/90 " + (className ?? "") }>
+        <p className="max-w-sm text-sm">Preview is not available yet. Generate a project to see the live sandbox here.</p>
       </div>
     );
   }
 
   return (
-    <div
-      className={
-        "w-full h-full min-h-[500px] glass rounded-2xl border-white/5 overflow-hidden bg-white shadow-2xl " +
-        (className ?? "")
-      }
-    >
+    <div className={"h-full min-h-0 overflow-hidden rounded-[inherit] bg-white shadow-2xl " + (className ?? "") }>
       <iframe
         title="LokoAI Sandbox"
         key={iframeKey}
         srcDoc={previewHtml}
-        className={"w-full h-full border-none " + (iframeClassName ?? "")}
+        className={"h-full w-full border-none " + (iframeClassName ?? "")}
         sandbox="allow-scripts allow-modals"
       />
     </div>
