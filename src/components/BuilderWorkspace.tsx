@@ -994,6 +994,170 @@ export default function BuilderWorkspace() {
           </section>
         </main>
       </div>
+      <Dialog open={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
+        <DialogContent className="max-w-3xl p-0 sm:max-h-[88dvh]" showCloseButton={false}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="overflow-hidden rounded-3xl"
+          >
+            <div className="border-b border-slate-200/70 bg-gradient-to-r from-white via-slate-50 to-sky-50 px-5 py-4 dark:border-white/10 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 sm:px-6">
+              <DialogHeader>
+                <DialogTitle>Share Project</DialogTitle>
+                <DialogDescription>
+                  Invite teammates, configure access, and share your live preview.
+                </DialogDescription>
+              </DialogHeader>
+            </div>
+
+            <div className="space-y-5 p-5 sm:p-6">
+              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Add People
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Input
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="Invite by email"
+                    className="h-10 rounded-full"
+                  />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="inline-flex h-10 items-center justify-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                        {inviteRole}
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-36">
+                      {(["Can edit", "Can comment", "Can view"] as MemberRole[]).map((role) => (
+                        <DropdownMenuItem key={role} onSelect={() => setInviteRole(role)}>
+                          {role}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <button
+                    onClick={handleInviteByEmail}
+                    disabled={!inviteEmail.trim()}
+                    className="inline-flex h-10 items-center justify-center gap-1 rounded-full bg-slate-900 px-4 text-xs font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900"
+                  >
+                    <UserPlus className="h-3.5 w-3.5" />
+                    Invite
+                  </button>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Project Access</h4>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{COLLABORATORS.length} members</span>
+                </div>
+                <div className="space-y-3">
+                  {COLLABORATORS.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200/70 bg-white/85 px-3 py-2 dark:border-white/10 dark:bg-slate-950/50">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Avatar className="size-8">
+                          {member.avatar ? <AvatarImage src={member.avatar} alt={member.name} /> : null}
+                          <AvatarFallback>{member.initials}</AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-slate-900 dark:text-white">{member.name}</p>
+                          <p className="truncate text-xs text-slate-500 dark:text-slate-400">{member.email}</p>
+                        </div>
+                      </div>
+
+                      {member.role === "Owner" ? (
+                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-200">
+                          Owner
+                        </span>
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                              {member.role}
+                              <ChevronDown className="h-3 w-3" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-36">
+                            {(["Can edit", "Can comment", "Can view"] as MemberRole[]).map((role) => (
+                              <DropdownMenuItem key={`${member.id}-${role}`}>
+                                {role}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Invite Link</h4>
+                  <button
+                    onClick={() => setIsInvitePublic((value) => !value)}
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all",
+                      isInvitePublic
+                        ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/25 dark:bg-sky-500/10 dark:text-sky-200"
+                        : "border-slate-200 bg-white text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+                    )}
+                  >
+                    {isInvitePublic ? "Public" : "Private"}
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <button
+                    onClick={() => void handleCreateInviteLink()}
+                    disabled={isCreatingInviteLink}
+                    className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-slate-900 px-4 text-xs font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900"
+                  >
+                    {isCreatingInviteLink ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Link2 className="h-3.5 w-3.5" />}
+                    {inviteLink ? "Regenerate link" : "Create invite link"}
+                  </button>
+                  <button
+                    onClick={() => void handleCopyInviteLink()}
+                    disabled={!inviteLink}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                    Copy invite link
+                  </button>
+                </div>
+
+                <p className="mt-2 truncate text-xs text-slate-500 dark:text-slate-400">{inviteLink || "No link created yet."}</p>
+              </div>
+            </div>
+
+            <DialogFooter className="border-t border-slate-200/70 bg-white/70 px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:px-6">
+              <button
+                onClick={() => setIsShareModalOpen(false)}
+                className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+              >
+                Close
+              </button>
+              <button
+                onClick={handleAiAction}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Publish project
+              </button>
+              <button
+                onClick={handleShare}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-sky-500 px-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:bg-sky-600"
+              >
+                <Share2 className="h-3.5 w-3.5" />
+                Share preview
+              </button>
+            </DialogFooter>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
 
       <AnimatePresence>
         {isFullscreen && (
@@ -1033,6 +1197,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
