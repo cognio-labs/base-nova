@@ -203,19 +203,24 @@ export default function BuilderWorkspace() {
   const suggestions = useMemo(
     () => [
       {
-        label: "Landing page",
-        text: "Build a premium landing page with hero, features, testimonials, pricing, FAQ, and a conversion-focused CTA. Use a clean white and soft-blue product aesthetic.",
+        label: "Apps",
+        text: "Browse app ideas and starter concepts for the AI builder.",
         shortcut: "Ctrl+1",
       },
       {
-        label: "Dashboard app",
-        text: "Create a modern SaaS dashboard with sidebar navigation, analytics cards, charts, table views, filters, and settings. Use shadcn/ui + Tailwind + Framer Motion.",
+        label: "Start blank",
+        text: "Start a blank workspace with a clean app shell and no preset content.",
         shortcut: "Ctrl+2",
       },
       {
-        label: "E-commerce",
-        text: "Design an e-commerce storefront with product grid, filters, product page, cart drawer, and checkout CTA. Keep it responsive and fast.",
+        label: "Templates",
+        text: "Show template starter ideas for common app layouts and flows.",
         shortcut: "Ctrl+3",
+      },
+      {
+        label: "Recent",
+        text: "Continue from the most recent builder idea and refine the workspace.",
+        shortcut: "Ctrl+4",
       },
     ],
     []
@@ -274,6 +279,10 @@ export default function BuilderWorkspace() {
       if (e.ctrlKey && e.key === "3") {
         e.preventDefault();
         setDraft(suggestions[2]?.text ?? "");
+      }
+      if (e.ctrlKey && e.key === "4") {
+        e.preventDefault();
+        setDraft(suggestions[3]?.text ?? "");
       }
       if (e.key === "Escape" && isFullscreen) {
         setIsFullscreen(false);
