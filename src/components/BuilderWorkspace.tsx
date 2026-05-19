@@ -20,6 +20,7 @@ import {
   Expand,
   Eye,
   Loader2,
+  Menu,
   Mic,
   Monitor,
   Plus,
@@ -27,6 +28,7 @@ import {
   Share2,
   Smartphone,
   Sparkles,
+  X,
 } from "lucide-react";
 
 import PreviewFrame from "@/components/PreviewFrame";
@@ -182,6 +184,7 @@ export default function BuilderWorkspace() {
     generatedFiles,
     activeFilePath,
     openFile,
+    previewHtml,
     updateFileContent,
     getFileContent,
     projectTitle,
@@ -192,6 +195,7 @@ export default function BuilderWorkspace() {
   const [isListening, setIsListening] = useState(false);
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
@@ -258,8 +262,9 @@ export default function BuilderWorkspace() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isFullscreen) {
-        setIsFullscreen(false);
+      if (e.key === "Escape") {
+        if (isFullscreen) setIsFullscreen(false);
+        if (isSidebarOpen) setIsSidebarOpen(false);
       }
     };
 
@@ -334,6 +339,10 @@ export default function BuilderWorkspace() {
 
     setDraft("");
     setView("preview");
+
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+      setIsSidebarOpen(false);
+    }
 
     pushMessage({ role: "user", content: trimmedPrompt });
 
@@ -425,6 +434,7 @@ export default function BuilderWorkspace() {
   };
 
   const activeEditorValue = activePath ? getFileContent(activePath) : "";
+  const showPreviewSkeleton = isGenerating && !previewHtml;
 
   const shellStyle = {
     fontFamily: '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif',
@@ -800,6 +810,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
