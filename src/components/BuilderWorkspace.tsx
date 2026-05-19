@@ -15,12 +15,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
   ArrowUp,
+  Bot,
   ChevronDown,
   Code2,
   Expand,
+  ExternalLink,
   Eye,
+  Globe,
+  Link2,
   Loader2,
   Menu,
+  MessageSquare,
   Mic,
   Monitor,
   Plus,
@@ -28,6 +33,8 @@ import {
   Share2,
   Smartphone,
   Sparkles,
+  Upload,
+  UserPlus,
   X,
 } from "lucide-react";
 
@@ -838,6 +845,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
