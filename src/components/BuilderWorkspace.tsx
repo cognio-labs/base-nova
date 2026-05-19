@@ -19,7 +19,6 @@ import {
   Sparkles,
   Upload,
 } from "lucide-react";
-import { Group, Panel, Separator } from "react-resizable-panels";
 
 import PreviewFrame from "@/components/PreviewFrame";
 import {
