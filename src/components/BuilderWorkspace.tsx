@@ -24,7 +24,6 @@ import {
   Globe,
   Link2,
   Loader2,
-  Menu,
   MessageSquare,
   Mic,
   Monitor,
@@ -744,6 +743,12 @@ export default function BuilderWorkspace() {
       <Upload className="h-3.5 w-3.5" />
       <span className="hidden md:inline">Share</span>
     </button>
+
+    {shareFeedback ? (
+      <div className="hidden rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold text-sky-700 dark:border-sky-500/25 dark:bg-sky-500/10 dark:text-sky-200 xl:block">
+        {shareFeedback}
+      </div>
+    ) : null}
   </div>
 </header>
 
@@ -888,19 +893,47 @@ export default function BuilderWorkspace() {
           </aside>
 
           <section className="flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden lg:border-l lg:border-slate-200/70">
-            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/60 px-3 py-2 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
-  <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-    <Globe className="h-3.5 w-3.5" />
-    <span className="truncate">Live route: {pathname || "/workspace"}</span>
-  </div>
-  <button
-    onClick={() => setIsFullscreen(true)}
-    className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
-  >
-    <Expand className="h-3.5 w-3.5" />
-    Fullscreen
-  </button>
-</div>
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200/70 bg-white/60 px-3 py-2 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
+              <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                <Globe className="h-3.5 w-3.5" />
+                <span className="truncate">Live route: {pathname || "/workspace"}</span>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5 lg:hidden">
+                  <button
+                    onClick={() => setView("preview")}
+                    className={cn(
+                      "rounded-full px-2 py-1 text-[11px] font-semibold transition-all",
+                      view === "preview"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+                        : "text-slate-500 dark:text-slate-300"
+                    )}
+                  >
+                    Preview
+                  </button>
+                  <button
+                    onClick={() => setView("code")}
+                    className={cn(
+                      "rounded-full px-2 py-1 text-[11px] font-semibold transition-all",
+                      view === "code"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+                        : "text-slate-500 dark:text-slate-300"
+                    )}
+                  >
+                    Code
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                >
+                  <Expand className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Fullscreen</span>
+                </button>
+              </div>
+            </div>
 
             <div className="min-h-0 flex-1 overflow-hidden p-3 sm:p-4"> 
               <AnimatePresence mode="wait">
@@ -1197,6 +1230,9 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
+
 
 
 
