@@ -1,7 +1,7 @@
 ﻿
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
@@ -300,6 +300,10 @@ export default function BuilderWorkspace() {
     await sendPrompt(nextPrompt, buildMode);
   };
 
+  const sendPendingPrompt = useEffectEvent((pendingPrompt: string, nextBuildMode: BuildMode) => {
+    void sendPrompt(pendingPrompt, nextBuildMode);
+  });
+
   useEffect(() => {
     if (pendingPromptRef.current || isGenerating) {
       return;
@@ -312,7 +316,12 @@ export default function BuilderWorkspace() {
 
     pendingPromptRef.current = true;
     clearPendingBuilderPrompt();
-    void sendPrompt(pendingPrompt, buildMode);
+
+    const timeoutId = window.setTimeout(() => {
+      sendPendingPrompt(pendingPrompt, buildMode);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [buildMode, isGenerating]);
 
   const handleKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
@@ -337,74 +346,76 @@ export default function BuilderWorkspace() {
     "bg-white/60 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 shadow-[0_20px_60px_-30px_rgba(2,6,23,0.35)]";
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] w-full bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:bg-[#09111f]">
-      <div className="mx-auto w-full max-w-[1700px] px-4 py-4 md:px-6 md:py-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
+    <div className="h-[calc(100dvh-5rem)] w-full overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:bg-[#09111f]">
+      <div className="mx-auto flex h-full w-full max-w-[1700px] flex-col px-4 py-4 md:px-6 md:py-6">
+        <div className="relative flex h-full min-h-0 overflow-hidden rounded-[28px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
           <div className="pointer-events-none absolute inset-0 opacity-70">
             <div className="absolute -top-48 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-sky-300/45 to-blue-300/25 blur-3xl" />
             <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200/25 to-cyan-200/20 blur-3xl" />
           </div>
 
-          <Group orientation="horizontal" className="relative z-10 h-[calc(100vh-8rem)] min-h-[720px]">
+          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0">
             {/* Left: Chat */}
-            <Panel defaultSize={38} minSize={28} className="flex flex-col">
-              <header className="flex items-center justify-between px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200/70 to-blue-200/70 text-slate-900 dark:text-white">
-                    <Sparkles className="h-5 w-5" />
+            <Panel defaultSize={34} minSize={26} className="flex min-h-0 flex-col bg-white/24 dark:bg-white/[0.03]">
+              <header className="border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200/70 to-blue-200/70 text-slate-900 dark:text-white">
+                      <Sparkles className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-400">AI Builder</p>
+                      <p className="text-sm font-extrabold leading-5 text-slate-900 dark:text-white">Workspace</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-400">AI Builder</p>
-                    <p className="text-sm font-extrabold text-slate-900 dark:text-white">Workspace</p>
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className={cn(
-                          "flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
-                          panelBg,
-                          "hover:bg-white/80 dark:hover:bg-white/10"
-                        )}
-                      >
-                        <Braces className="h-4 w-4 text-slate-500 dark:text-slate-300" />
-                        <span>{buildMode}</span>
-                        <ChevronDown className="h-4 w-4 opacity-70" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-44">
-                      {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                        <DropdownMenuItem
-                          key={mode}
-                          onSelect={() => setBuildMode(mode)}
-                          className="flex items-center justify-between"
+                  <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className={cn(
+                            "flex h-10 items-center gap-2 rounded-2xl px-3 text-xs font-extrabold",
+                            panelBg,
+                            "hover:bg-white/80 dark:hover:bg-white/10"
+                          )}
                         >
-                          <span>{mode}</span>
-                          {buildMode === mode ? <Check className="h-4 w-4" /> : null}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                          <Braces className="h-4 w-4 text-slate-500 dark:text-slate-300" />
+                          <span>{buildMode}</span>
+                          <ChevronDown className="h-4 w-4 opacity-70" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-44">
+                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
+                          <DropdownMenuItem
+                            key={mode}
+                            onSelect={() => setBuildMode(mode)}
+                            className="flex items-center justify-between"
+                          >
+                            <span>{mode}</span>
+                            {buildMode === mode ? <Check className="h-4 w-4" /> : null}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
-                  <button
-                    type="button"
-                    onClick={clearChat}
-                    className={cn(
-                      "rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-600 dark:text-slate-200",
-                      panelBg,
-                      "hover:bg-white/80 dark:hover:bg-white/10"
-                    )}
-                  >
-                    Clear
-                  </button>
+                    <button
+                      type="button"
+                      onClick={clearChat}
+                      className={cn(
+                        "h-10 rounded-2xl px-3 text-xs font-extrabold text-slate-600 dark:text-slate-200",
+                        panelBg,
+                        "hover:bg-white/80 dark:hover:bg-white/10"
+                      )}
+                    >
+                      Clear
+                    </button>
+                  </div>
                 </div>
               </header>
 
-              <div className="px-5 pb-3">
-                <div className={cn("rounded-3xl p-4", panelBg)}>
+              <div className="border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                <div className={cn("rounded-[24px] p-3", panelBg)}>
                   <p className="text-[11px] font-black uppercase tracking-[0.26em] text-slate-400 dark:text-slate-400">
                     Suggestions
                   </p>
@@ -415,9 +426,9 @@ export default function BuilderWorkspace() {
                         type="button"
                         disabled={isGenerating}
                         onClick={() => setDraft(s.text)}
-                        className="group inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/70 px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
+                        className="group inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/78 px-3 py-2 text-[11px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
                       >
-                        <span className="truncate max-w-[180px]">{s.label}</span>
+                        <span className="truncate max-w-[150px]">{s.label}</span>
                         <span className="rounded-xl bg-slate-900/5 px-2 py-0.5 text-[10px] font-black text-slate-500 dark:bg-white/10 dark:text-slate-300">
                           {formatShortcut(s.shortcut)}
                         </span>
@@ -429,14 +440,14 @@ export default function BuilderWorkspace() {
 
               <div
                 ref={listRef}
-                className="flex-1 overflow-auto px-5 pb-5 [scrollbar-width:thin]"
+                className="flex-1 min-h-0 overflow-auto px-4 py-4 [scrollbar-width:thin]"
               >
                 <div className="space-y-3">
                   {messages.length === 0 ? (
-                    <div className={cn("rounded-3xl p-6", panelBg)}>
-                      <p className="text-sm font-extrabold text-slate-900 dark:text-white">Describe what you want to build.</p>
-                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                        I’ll generate a live preview and editable code in realtime. Tip: press <span className="font-semibold">Enter</span> to send,
+                    <div className={cn("rounded-[24px] p-4", panelBg)}>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
+                      <p className="mt-2 text-[13px] leading-6 text-slate-600 dark:text-slate-300">
+                        I&apos;ll generate a live preview and editable code in realtime. Press <span className="font-semibold">Enter</span> to send and
                         <span className="font-semibold"> Shift+Enter</span> for a new line.
                       </p>
                     </div>
@@ -448,10 +459,10 @@ export default function BuilderWorkspace() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className={cn(
-                        "max-w-[92%] rounded-3xl border px-4 py-3 text-sm leading-relaxed shadow-sm",
+                        "max-w-[90%] rounded-[22px] border px-4 py-3 text-[13px] leading-6 shadow-sm",
                         m.role === "user"
-                          ? "ml-auto border-slate-200/70 bg-white/80 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/90 to-blue-50/90 dark:from-sky-500/10 dark:to-blue-500/10 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                          ? "ml-auto border-slate-200/70 bg-white/85 text-slate-900 dark:border-white/10 dark:bg-white/6 dark:text-white"
+                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/85 to-blue-50/90 text-slate-900 dark:border-white/10 dark:from-sky-500/10 dark:to-blue-500/10 dark:text-white"
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -470,10 +481,10 @@ export default function BuilderWorkspace() {
                   ))}
 
                   {isGenerating ? (
-                    <div className={cn("rounded-3xl p-4", panelBg)}>
+                    <div className={cn("rounded-[24px] p-4", panelBg)}>
                       <div className="flex items-center gap-2 text-xs font-extrabold text-slate-700 dark:text-slate-200">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Generating…
+                        Generating...
                       </div>
                       <div className="mt-3 space-y-2">
                         {workflowLogs.map((log, idx) => {
@@ -491,8 +502,8 @@ export default function BuilderWorkspace() {
                                     : "border-slate-200/70 bg-white/60 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
                               )}
                             >
-                              <span className="font-bold truncate max-w-[55%]">{log.agent}</span>
-                              <span className="truncate max-w-[40%] opacity-90">{log.action}</span>
+                              <span className="max-w-[55%] truncate font-bold">{log.agent}</span>
+                              <span className="max-w-[40%] truncate opacity-90">{log.action}</span>
                             </div>
                           );
                         })}
@@ -501,7 +512,7 @@ export default function BuilderWorkspace() {
                   ) : null}
 
                   {error ? (
-                    <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
+                    <div className="rounded-[22px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
                       {error}
                     </div>
                   ) : null}
@@ -510,11 +521,10 @@ export default function BuilderWorkspace() {
                 </div>
               </div>
 
-              {/* Composer */}
-              <div className="border-t border-slate-200/70 bg-white/60 px-5 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+              <div className="border-t border-slate-200/70 bg-white/55 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03]">
                 <div
                   className={cn(
-                    "rounded-3xl p-3 transition",
+                    "rounded-[24px] p-2.5 transition",
                     panelBg,
                     isDropActive ? "ring-2 ring-sky-500/30" : ""
                   )}
@@ -529,7 +539,7 @@ export default function BuilderWorkspace() {
                     handleUpload(e.dataTransfer.files?.[0] ?? null);
                   }}
                 >
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => {
@@ -537,7 +547,7 @@ export default function BuilderWorkspace() {
                         setView("code");
                       }}
                       className={cn(
-                        "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                        "inline-flex items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold",
                         isVisualMode
                           ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
                           : "bg-transparent text-slate-700 dark:text-slate-200",
@@ -548,7 +558,7 @@ export default function BuilderWorkspace() {
                       Visual Edits
                     </button>
 
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
                       <FileUp className="h-4 w-4" />
                       Upload Files
                       <input
@@ -563,7 +573,7 @@ export default function BuilderWorkspace() {
                       aria-label={isListening ? "Listening" : "Voice input"}
                       onClick={startVoiceInput}
                       className={cn(
-                        "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                        "inline-flex items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold",
                         isListening
                           ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
                           : "text-slate-700 dark:text-slate-200",
@@ -574,26 +584,24 @@ export default function BuilderWorkspace() {
                       Voice
                     </button>
 
-                    <div className="ml-auto flex items-center gap-2">
-                      <span className="hidden sm:inline text-[11px] font-bold text-slate-400 dark:text-slate-400">
-                        Enter to send • Shift+Enter newline
-                      </span>
-                    </div>
+                    <span className="ml-auto hidden text-[10px] font-bold text-slate-400 dark:text-slate-400 sm:inline">
+                      Enter to send • Shift+Enter newline
+                    </span>
                   </div>
 
-                  <div className="mt-3 flex items-end gap-3">
+                  <div className="mt-2.5 flex items-end gap-2.5">
                     <textarea
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="Describe the app you want to build…"
-                      className="min-h-[54px] max-h-40 w-full resize-none rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-sky-300 focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400"
+                      placeholder="Describe the app you want to build..."
+                      className="min-h-[54px] max-h-32 w-full resize-none rounded-[18px] border border-slate-200/70 bg-white/78 px-4 py-3 text-[14px] font-medium leading-6 text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-sky-300 focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-slate-400"
                     />
                     <button
                       type="button"
                       onClick={() => void handleSend()}
                       disabled={isGenerating || !draft.trim()}
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/20 transition hover:brightness-110 disabled:opacity-60"
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-lg shadow-sky-500/15 transition hover:brightness-110 disabled:opacity-60"
                       aria-label="Send"
                     >
                       {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
@@ -603,12 +611,10 @@ export default function BuilderWorkspace() {
               </div>
             </Panel>
 
-            <Separator className="w-2 bg-transparent">
-              <div className="mx-auto h-full w-[2px] rounded-full bg-slate-200/70 dark:bg-white/10" />
-            </Separator>
+            <Separator className="relative w-px bg-slate-200/70 dark:bg-white/10" />
 
             {/* Right: Preview/Code */}
-            <Panel defaultSize={62} minSize={38} className="flex flex-col">
+            <Panel defaultSize={62} minSize={38} className="flex min-h-0 flex-col">
               <header className="flex items-center justify-between border-b border-slate-200/70 px-5 py-4 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <button
@@ -707,7 +713,7 @@ export default function BuilderWorkspace() {
                 </div>
               </header>
 
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <AnimatePresence mode="wait">
                   {view === "preview" ? (
                     <motion.div
@@ -715,11 +721,11 @@ export default function BuilderWorkspace() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      className="h-full w-full p-5"
+                      className="h-full w-full min-h-0 p-5"
                     >
                       <div className="h-full w-full">
                         <div className="mx-auto flex h-full w-full justify-center">
-                          <div className={cn("h-full", previewWidthClass)}>
+                          <div className={cn("h-full min-h-0", previewWidthClass)}>
                             <PreviewFrame iframeKey={refreshKey} className="h-full" />
                           </div>
                         </div>
@@ -731,7 +737,7 @@ export default function BuilderWorkspace() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      className="flex h-full flex-col"
+                      className="flex h-full min-h-0 flex-col"
                     >
                       <div className="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 dark:border-white/10">
                         <div className="flex items-center gap-2">
@@ -812,7 +818,7 @@ export default function BuilderWorkspace() {
                   initial={{ y: 10, opacity: 0, scale: 0.99 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 10, opacity: 0, scale: 0.99 }}
-                  className="h-[92vh] w-[96vw] max-w-[1400px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0b0b0f]/60 shadow-2xl"
+                  className="h-[92dvh] w-[96vw] max-w-[1400px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0b0b0f]/60 shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
@@ -825,7 +831,7 @@ export default function BuilderWorkspace() {
                       Close (Esc)
                     </button>
                   </div>
-                  <div className="h-[calc(92vh-64px)] p-5">
+                  <div className="h-[calc(92dvh-64px)] p-5">
                     <PreviewFrame iframeKey={`${refreshKey}-fs`} className="h-full" />
                   </div>
                 </motion.div>
@@ -837,6 +843,10 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
+
+
 
 
 
