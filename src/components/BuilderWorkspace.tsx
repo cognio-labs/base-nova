@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -265,7 +265,7 @@ export default function BuilderWorkspace() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isFullscreen]);
+  }, [isFullscreen, isSidebarOpen]);
 
   useEffect(() => {
     return () => {
@@ -800,6 +800,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 
