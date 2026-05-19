@@ -251,8 +251,15 @@ export default function BuilderWorkspace() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [buildMode, setBuildMode] = useState<BuildMode>("App");
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<MemberRole>("Can edit");
+  const [isInvitePublic, setIsInvitePublic] = useState(false);
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
+  const [isCreatingInviteLink, setIsCreatingInviteLink] = useState(false);
   const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];
   const [hintIndex, setHintIndex] = useState(0);
+  const pathname = usePathname();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamTimerRef = useRef<number | null>(null);
@@ -317,12 +324,13 @@ export default function BuilderWorkspace() {
       if (e.key === "Escape") {
         if (isFullscreen) setIsFullscreen(false);
         if (isSidebarOpen) setIsSidebarOpen(false);
+        if (isShareModalOpen) setIsShareModalOpen(false);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isFullscreen, isSidebarOpen]);
+  }, [isFullscreen, isSidebarOpen, isShareModalOpen]);
 
   useEffect(() => {
     return () => {
@@ -890,6 +898,8 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
+
 
 
 
