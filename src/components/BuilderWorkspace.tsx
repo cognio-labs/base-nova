@@ -472,8 +472,144 @@ export default function BuilderWorkspace() {
               <span className="hidden sm:inline">Share</span>
             </button>
           </div>
-        </header>        <main className="relative flex min-h-0 flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,420px)]">
-          <section className="flex min-h-0 flex-1 flex-col">
+        </header>        <main className="relative flex min-h-0 flex-1 flex-col lg:grid lg:grid-cols-[minmax(430px,500px)_minmax(0,1fr)]">
+          <aside className="flex min-h-0 flex-col border-t border-slate-200/70 bg-white/85 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/70 lg:order-1 lg:border-t-0 lg:border-r lg:border-slate-200/70 lg:border-l-0">
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Chat panel</p>
+                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Prompt, debug, and track generation</p>
+              </div>
+              <button
+                onClick={() => setMessages([])}
+                className="rounded-full px-3 py-1.5 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/5 dark:hover:text-white"
+              >
+                Clear
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+              <div className="space-y-3">
+                {messages.length ? (
+                  messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}
+                    >
+                      <div
+                        className={cn(
+                          "max-w-[85%] rounded-3xl px-4 py-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
+                          message.role === "user"
+                            ? "bg-sky-500 text-white"
+                            : "bg-slate-100 text-slate-900 dark:bg-white/5 dark:text-white"
+                        )}
+                      >
+                        {message.content}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex min-h-[240px] items-center justify-center rounded-[28px] border border-dashed border-slate-200 bg-slate-50/70 px-6 text-center dark:border-white/10 dark:bg-white/5">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">No chat yet</p>
+                      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                        Describe the site you want and press Enter.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-slate-200/70 p-4 dark:border-white/5">
+              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
+                <div className="mb-3 space-y-2 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between gap-3">
+                    <span>
+                      {error
+                        ? error
+                        : isGenerating
+                          ? "Generating files and preview..."
+                          : `Build a ${promptHints[hintIndex].toLowerCase()}.`}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-bold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                          {buildMode}
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
+                          <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
+                            {mode}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {promptHints.map((hint) => (
+                      <button
+                        key={hint}
+                        onClick={() => setDraft(hint)}
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all",
+                          draft === hint
+                            ? "border-sky-500 bg-sky-500 text-white"
+                            : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:text-white"
+                        )}
+                      >
+                        {hint}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <textarea
+                  ref={textareaRef}
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={`Describe the ${promptHints[hintIndex].toLowerCase()} you want to build...`}
+                  className="w-full resize-none rounded-[22px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  style={{ minHeight: 140 }}
+                />
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-slate-400 transition-all hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-white/5 dark:hover:text-white">
+                      <Plus className="h-5 w-5" />
+                    </button>
+
+                    <button
+                      onClick={startVoiceInput}
+                      className={cn(
+                        "flex h-10 w-10 items-center justify-center rounded-2xl transition-all",
+                        isListening
+                          ? "animate-pulse bg-red-500 text-white"
+                          : "text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                      )}
+                      aria-label="Voice input"
+                    >
+                      <Mic className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => void handleSend()}
+                    disabled={isGenerating || !draft.trim()}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 dark:bg-white dark:text-slate-900"
+                    aria-label="Send prompt"
+                  >
+                    {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <section className="flex min-h-0 flex-1 flex-col lg:order-2 lg:border-l lg:border-slate-200/70">
             <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/65 px-3 py-3 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
               <div className="flex items-center gap-1 rounded-2xl bg-slate-100/80 p-1 dark:bg-white/5">
                 <button
@@ -623,117 +759,6 @@ export default function BuilderWorkspace() {
               </AnimatePresence>
             </div>
           </section>
-
-          <aside className="flex min-h-0 flex-col border-t border-slate-200/70 bg-white/85 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/70 lg:border-t-0 lg:border-l lg:border-slate-200/70 lg:w-[390px] xl:w-[430px]">
-            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
-              <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Chat panel</p>
-                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Prompt, debug, and track generation</p>
-              </div>
-              <button
-                onClick={() => setMessages([])}
-                className="rounded-full px-3 py-1.5 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/5 dark:hover:text-white"
-              >
-                Clear
-              </button>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-              <div className="space-y-3">
-                {messages.length ? (
-                  messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}
-                    >
-                      <div
-                        className={cn(
-                          "max-w-[85%] rounded-3xl px-4 py-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
-                          message.role === "user"
-                            ? "bg-sky-500 text-white"
-                            : "bg-slate-100 text-slate-900 dark:bg-white/5 dark:text-white"
-                        )}
-                      >
-                        {message.content}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex min-h-[240px] items-center justify-center rounded-[28px] border border-dashed border-slate-200 bg-slate-50/70 px-6 text-center dark:border-white/10 dark:bg-white/5">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">No chat yet</p>
-                      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                        Describe the site you want and press Enter.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="shrink-0 border-t border-slate-200/70 p-4 dark:border-white/5">
-              <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
-                <div className="mb-3 flex items-center justify-between gap-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  <span>{error ? error : isGenerating ? "Generating files and preview..." : "Describe the website you want, then press Enter."}</span>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-bold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                        {buildMode}
-                        <ChevronDown className="h-3 w-3" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                      {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                        <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
-                          {mode}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                <textarea
-                  ref={textareaRef}
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Describe the website you want to build..."
-                  className="w-full resize-none rounded-[22px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                  style={{ minHeight: 120 }}
-                />
-
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-slate-400 transition-all hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-white/5 dark:hover:text-white">
-                      <Plus className="h-5 w-5" />
-                    </button>
-
-                    <button
-                      onClick={startVoiceInput}
-                      className={cn(
-                        "flex h-10 w-10 items-center justify-center rounded-2xl transition-all",
-                        isListening
-                          ? "animate-pulse bg-red-500 text-white"
-                          : "text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
-                      )}
-                      aria-label="Voice input"
-                    >
-                      <Mic className="h-5 w-5" />
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={() => void handleSend()}
-                    disabled={isGenerating || !draft.trim()}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 dark:bg-white dark:text-slate-900"
-                    aria-label="Send prompt"
-                  >
-                    {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </aside>
         </main>
       </div>
 
@@ -775,6 +800,7 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
+
 
 
 

@@ -1,4 +1,4 @@
-ï»¿const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_OPENROUTER_MODEL = "openai/gpt-5.1-chat";
 const MAX_RETRIES = 2;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
@@ -74,7 +74,7 @@ function getOfflineJson(userPrompt: string) {
   </head>
   <body>
     <div class="wrap">
-      <div class="pill">Offline Mode â€¢ No API key</div>
+      <div class="pill">Offline Mode • No API key</div>
       <div style="height:14px"></div>
       <div class="card">
         <div class="grid">
@@ -226,7 +226,7 @@ export default function Page() {
           {["Beautiful UI", "Fast setup", "Easy editing", "Ready preview"].map((t) => (
             <div key={t} style={{ padding: 16, borderRadius: 18, border: "1px solid rgba(15,23,42,0.08)", background: "white" }}>
               <div style={{ fontWeight: 900 }}>{t}</div>
-              <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>Offline starter file â€” replace with AI output when API is ready.</div>
+              <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>Offline starter file — replace with AI output when API is ready.</div>
             </div>
           ))}
         </section>
@@ -375,13 +375,14 @@ export async function getOpenRouterResponse(
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
 
-    // If the key/model is invalid, return an offline starter so the app still works.
-    if (isJson && (message.includes("(401)") || message.toLowerCase().includes("invalid"))) {
+    // If any JSON generation path fails, return an offline starter so the app still works.
+    if (isJson) {
       return JSON.stringify(getOfflineJson(userPrompt));
     }
 
-    throw error;
+    throw new Error(message);
   }
 }
+
 
 
