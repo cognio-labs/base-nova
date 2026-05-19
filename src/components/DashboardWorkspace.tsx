@@ -5,9 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
+  AudioLines,
   Bot,
   Briefcase,
-  Check,
   ChevronDown,
   Gem,
   Grid2X2,
@@ -18,19 +18,21 @@ import {
   Mic,
   Moon,
   Plug,
-  Plus,
   Rocket,
   SlidersHorizontal,
   Sparkles,
   Sun,
+  Upload,
   Users,
 } from "lucide-react";
-import { useState, useRef } from "react";
-import { useGeneratorStore } from "@/lib/store";
+import { startTransition, useEffect, useRef, useState } from "react";
+
 import AuthModal from "@/components/AuthModal";
 import UserMenu from "@/components/UserMenu";
-import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/hooks/useAuth";
+import { writePendingBuilderPrompt } from "@/lib/builder-session";
+import { cn } from "@/lib/utils";
 
 type SpeechRecognitionResultEvent = {
   results: {
@@ -57,62 +59,48 @@ type SpeechRecognitionWindow = Window &
     webkitSpeechRecognition?: SpeechRecognitionConstructor;
   };
 
-const creationPrompts = {
-  primary: [
-    {
-      label: "Tasks & Workflows",
-      prompt:
-        "Create a polished tasks and workflows web app with a dashboard, task board, priority filters, automation status, team assignments, due dates, and a clean productivity-focused interface.",
-    },
-    {
-      label: "CRM & Sales",
-      prompt:
-        "Create a modern CRM and sales web app with leads, deal pipeline, customer profiles, revenue metrics, follow-up tasks, and a professional sales dashboard.",
-    },
-    {
-      label: "Content & Sites",
-      prompt:
-        "Create a content and websites management web app with site pages, content calendar, SEO checklist, publishing workflow, analytics cards, and an elegant editorial interface.",
-    },
-    {
-      label: "Finance",
-      prompt:
-        "Create a finance web app with expense tracking, income overview, budget categories, cash-flow charts, recent transactions, and a secure financial dashboard style.",
-    },
-    {
-      label: "Booking",
-      prompt:
-        "Create a booking web app with service listings, availability calendar, appointment scheduling, customer details, booking status, and a smooth reservation flow.",
-    },
-  ],
-  more: [
-    {
-      label: "E-Commerce",
-      prompt:
-        "Create an e-commerce website with product grid, featured product section, cart summary, category filters, checkout call to action, and a premium shopping experience.",
-    },
-    {
-      label: "Projects",
-      prompt:
-        "Create a project management web app with project overview, milestones, task progress, team members, timeline, status reporting, and a focused operations dashboard.",
-    },
-    {
-      label: "Events & Community",
-      prompt:
-        "Create an events and community website with upcoming events, member highlights, RSVP flow, discussion sections, event categories, and a friendly community design.",
-    },
-    {
-      label: "Wellness",
-      prompt:
-        "Create a wellness website with habit tracking, daily plans, meditation sessions, progress cards, coach recommendations, and a calm health-focused interface.",
-    },
-    {
-      label: "Operations",
-      prompt:
-        "Create an operations dashboard web app with process tracking, inventory or resource status, alerts, team workload, performance metrics, and a clear command-center layout.",
-    },
-  ],
-};
+const quickActionPrompts = [
+  {
+    label: "Tasks & Workflows",
+    prompt:
+      "Create a polished tasks and workflows web app with a dashboard, task board, priority filters, automation status, team assignments, due dates, and a clean productivity-focused interface.",
+  },
+  {
+    label: "CRM & Sales",
+    prompt:
+      "Create a modern CRM and sales web app with leads, deal pipeline, customer profiles, revenue metrics, follow-up tasks, and a professional sales dashboard.",
+  },
+  {
+    label: "Content & Sites",
+    prompt:
+      "Create a content and websites management web app with site pages, content calendar, SEO checklist, publishing workflow, analytics cards, and an elegant editorial interface.",
+  },
+  {
+    label: "Finance",
+    prompt:
+      "Create a finance web app with expense tracking, income overview, budget categories, cash-flow charts, recent transactions, and a secure financial dashboard style.",
+  },
+  {
+    label: "Booking",
+    prompt:
+      "Create a booking web app with service listings, availability calendar, appointment scheduling, customer details, booking status, and a smooth reservation flow.",
+  },
+  {
+    label: "Ecommerce",
+    prompt:
+      "Create an ecommerce storefront with product discovery, product pages, cart, checkout CTA, editorial merchandising, and a premium retail interface.",
+  },
+  {
+    label: "AI Chatbots",
+    prompt:
+      "Create an AI chatbot product workspace with chat history, agent settings, analytics, deployment controls, and a professional assistant builder UI.",
+  },
+  {
+    label: "Analytics",
+    prompt:
+      "Create an analytics platform with KPI cards, funnel charts, cohort tables, alerts, reporting filters, and a clean executive-ready dashboard.",
+  },
+];
 
 const sidebarItems = [
   { label: "My Dashboard", icon: Home, href: "/dashboard" },
@@ -130,18 +118,34 @@ const communityItems = [
 export default function DashboardWorkspace() {
   const pathname = usePathname();
   const router = useRouter();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [prompt, setPrompt] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [showModelSelect, setShowModelSelect] = useState(false);
-  const [isPlanActive, setIsPlanActive] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isAgentMode, setIsAgentMode] = useState(true);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const { generateProject, isGenerating, error } = useGeneratorStore();
+  const [isFocused, setIsFocused] = useState(false);
+  const [isLaunchingBuilder, setIsLaunchingBuilder] = useState(false);
+
   const { theme, setTheme } = useTheme();
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    router.prefetch("/create");
+  }, [router]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "0px";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 280)}px`;
+  }, [prompt]);
 
   if (isLoading) {
     return (
@@ -160,8 +164,7 @@ export default function DashboardWorkspace() {
 
   const startVoiceInput = () => {
     const speechWindow = window as SpeechRecognitionWindow;
-    const Recognition =
-      speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
 
     if (!Recognition) {
       alert("Speech recognition is not supported in your browser.");
@@ -169,35 +172,54 @@ export default function DashboardWorkspace() {
     }
 
     const recognition = new Recognition();
-
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      setPrompt(prev => prev + (prev ? " " : "") + transcript);
+      setPrompt((prev) => prev + (prev ? " " : "") + transcript);
     };
 
     recognition.start();
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) {
-      alert(`Selected file: ${e.target.files[0].name}. File attachment logic will be implemented with the backend.`);
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files?.length) {
+      return;
     }
+
+    alert(`Selected file: ${event.target.files[0].name}. File attachment logic will be implemented with the backend.`);
   };
 
-  const handleGenerate = async (nextPrompt = prompt) => {
-    if (!nextPrompt.trim() || isGenerating) return;
-    setPrompt(nextPrompt);
-    setIsMoreOpen(false);
-    router.push("/create");
-    await generateProject(nextPrompt);
+  const launchBuilder = async (nextPrompt = prompt) => {
+    const trimmedPrompt = nextPrompt.trim();
+    if (!trimmedPrompt || isLaunchingBuilder) {
+      return;
+    }
+
+    setPrompt(trimmedPrompt);
+    setShowModelSelect(false);
+    setIsLaunchingBuilder(true);
+
+    const promptWithMode = isAgentMode
+      ? `${trimmedPrompt}\n\nBuilder mode: autonomous AI builder.`
+      : trimmedPrompt;
+
+    writePendingBuilderPrompt(promptWithMode);
+
+    await new Promise((resolve) => window.setTimeout(resolve, 220));
+    startTransition(() => router.push("/create"));
+  };
+
+  const handleTextareaKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      void launchBuilder();
+    }
   };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 transition-colors duration-300 dark:bg-[#050505] dark:text-white">
       <div className="grid min-h-[calc(100vh-5rem)] grid-cols-1 md:grid-cols-[240px_1fr]">
-        {/* Sidebar */}
         <aside className="hidden border-r border-slate-100 bg-white p-4 transition-colors duration-300 dark:border-white/10 dark:bg-[#080808] md:block">
           <div className="flex flex-col gap-1">
             <Link
@@ -221,18 +243,24 @@ export default function DashboardWorkspace() {
           </div>
 
           <div className="mt-8 space-y-1">
-            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Navigation</h3>
+            <h3 className="mb-4 px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Navigation</h3>
             {sidebarItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
+                className={cn(
+                  "group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200",
                   pathname === item.href
-                  ? "bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300" 
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
-                }`}
+                    ? "bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+                )}
               >
-                <item.icon className={`h-4 w-4 ${pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"}`} />
+                <item.icon
+                  className={cn(
+                    "h-4 w-4",
+                    pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
+                  )}
+                />
                 {item.label}
               </Link>
             ))}
@@ -242,47 +270,54 @@ export default function DashboardWorkspace() {
             <button
               type="button"
               aria-expanded={isCommunityOpen}
-              onClick={() => setIsCommunityOpen(!isCommunityOpen)}
+              onClick={() => setIsCommunityOpen((open) => !open)}
               className="mb-4 flex w-full items-center justify-between rounded-lg px-4 py-1.5 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:hover:bg-white/10"
             >
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Community</h3>
-              <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${isCommunityOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 text-slate-400 transition-transform duration-300",
+                  isCommunityOpen ? "rotate-180" : ""
+                )}
+              />
             </button>
-            
+
             <AnimatePresence>
-              {isCommunityOpen && (
+              {isCommunityOpen ? (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.25 }}
                   className="space-y-1 overflow-hidden"
                 >
                   {communityItems.map((item) => (
                     <Link
                       key={item.label}
                       href={item.href}
-                      className={`group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200 ${
+                      className={cn(
+                        "group flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all duration-200",
                         pathname === item.href
                           ? "bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-300"
                           : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
-                      }`}
+                      )}
                     >
                       <item.icon
-                        className={`h-4 w-4 ${
+                        className={cn(
+                          "h-4 w-4",
                           pathname === item.href ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
-                        }`}
+                        )}
                       />
                       {item.label}
                     </Link>
                   ))}
                 </motion.div>
-              )}
+              ) : null}
             </AnimatePresence>
           </div>
 
           <div className="mt-8 space-y-1">
-            <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Project</h3>
+            <h3 className="mb-4 px-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Project</h3>
             <Link
               href="/projects"
               className="group flex w-full items-center justify-between px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
@@ -298,9 +333,14 @@ export default function DashboardWorkspace() {
           </div>
         </aside>
 
-        {/* Main Section */}
-        <section className="relative bg-[#fcfcfd] transition-colors duration-300 dark:bg-[#050505]">
-          <div className="flex items-center justify-end gap-2 px-4 pt-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.18),_transparent_38%),linear-gradient(180deg,_#f8fbff_0%,_#f6f9fc_52%,_#ffffff_100%)] transition-colors duration-300 dark:bg-[#050505]">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-sky-200/40 blur-3xl" />
+            <div className="absolute bottom-0 right-16 h-80 w-80 rounded-full bg-blue-100/40 blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(circle_at_center,black,transparent_78%)]" />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-end gap-2 px-4 pt-4 sm:px-6 lg:px-8">
             <Link
               href="/pricing"
               className="inline-flex h-10 items-center gap-2 rounded-full bg-slate-950 px-4 text-xs font-bold text-white shadow-lg shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 dark:bg-white dark:text-slate-950 dark:shadow-none"
@@ -318,7 +358,7 @@ export default function DashboardWorkspace() {
               {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </button>
 
-            {!isLoading && user ? (
+            {user ? (
               <UserMenu />
             ) : (
               <button
@@ -332,216 +372,245 @@ export default function DashboardWorkspace() {
             )}
           </div>
 
-          <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-24 pt-10">
-            {/* Toggle Header */}
-            <div className="mb-12 inline-flex max-w-full items-center gap-1 rounded-2xl bg-slate-100 p-1.5 shadow-inner dark:bg-white/10">
-              <button
-                type="button"
-                aria-pressed="true"
-                className="flex min-h-10 items-center gap-2 rounded-xl border border-slate-200/50 bg-white px-4 py-2 text-sm font-bold shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white dark:text-slate-950 sm:px-5"
-              >
-                <Grid2X2 className="h-4 w-4" />
-                Apps
-              </button>
-              <button
-                type="button"
-                aria-pressed="false"
-                className="flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-white/60 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white sm:px-5"
-              >
-                <Bot className="h-4 w-4" />
-                Superagents
-                <span className="rounded-md bg-sky-100 px-1.5 py-0.5 text-[9px] font-black text-sky-600 uppercase">New</span>
-              </button>
-            </div>
-
+          <div className="relative z-10 mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-6xl flex-col items-center justify-center px-4 pb-20 pt-10 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-2xl"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: isLaunchingBuilder ? 0.72 : 1, y: 0, scale: isLaunchingBuilder ? 0.985 : 1 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="w-full"
             >
-              <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-                The Platform for Modern Builders
-              </h1>
+              <div className="mx-auto max-w-4xl text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-white/75 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-sky-700 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-sky-200">
+                  <AudioLines className="h-3.5 w-3.5" />
+                  AI Builder Workspace
+                </div>
+                <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl dark:text-white">
+                  Build apps from prompts in a single operating surface.
+                </h1>
+                <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
+                  Start with a prompt, then move straight into a full AI builder with chat, live preview, code inspection, and responsive app generation.
+                </p>
+              </div>
 
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-                <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/50 transition-colors dark:border-white/10 dark:bg-[#0d0d0d] dark:shadow-black/30">
-                  <textarea
-                    value={prompt}
-                    onChange={(event) => setPrompt(event.target.value)}
-                    placeholder="Describe the app you want to create..."
-                    className="h-32 w-full resize-none border-0 bg-transparent px-4 py-2 text-base text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
-                  />
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-white/10">
-                    <div className="flex items-center gap-2 relative">
-                      <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        onChange={handleFileUpload} 
-                        className="hidden" 
-                      />
-                      <button 
-                        type="button" 
-                        aria-label="Attach a file"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
-                      >
-                        <Plus className="h-5 w-5" />
-                      </button>
-                      <button 
-                        type="button" 
-                        aria-label="Open model settings"
-                        aria-expanded={showModelSelect}
-                        onClick={() => setShowModelSelect(!showModelSelect)}
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 ${showModelSelect ? 'bg-sky-50 text-sky-600 border-sky-200 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-300' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}
-                      >
-                        <SlidersHorizontal className="h-5 w-5" />
-                      </button>
-
-                      {/* AI Model Dropdown */}
-                      <AnimatePresence>
-                        {showModelSelect && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            className="absolute top-full mt-2 left-0 w-64 rounded-xl border border-slate-200 bg-white p-1.5 shadow-2xl z-50 overflow-hidden"
-                          >
-                            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                              Select AI Model
-                            </div>
-                            <div className="group relative flex items-start gap-2.5 rounded-lg bg-slate-50 p-3 border border-slate-100">
-                              <div className="mt-0.5 rounded-md bg-white p-1 shadow-sm">
-                                <Sparkles className="h-3.5 w-3.5 text-slate-900" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="text-xs font-bold text-slate-900">Automatic</div>
-                                <div className="text-[10px] leading-tight text-slate-500 mt-0.5">
-                                  Matched with the best model for your request
-                                </div>
-                              </div>
-                              <Check className="mt-1 h-3 w-3 text-slate-900" />
-                            </div>
-                            
-                            <div className="my-1.5 border-t border-slate-100" />
-                            
-                            <Link 
-                              href="/pricing"
-                              className="flex items-center gap-2.5 rounded-lg p-3 transition-colors hover:bg-orange-50"
-                            >
-                              <div className="rounded-md bg-orange-100 p-1">
-                                <Gem className="h-3.5 w-3.5 text-orange-600" />
-                              </div>
-                              <span className="text-xs font-bold text-orange-600">
-                                Upgrade to select an AI model
-                              </span>
-                            </Link>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+              <div className="mx-auto mt-10 max-w-4xl">
+                <div className="relative">
+                  <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 opacity-80 blur-sm" />
+                  <motion.div
+                    animate={{ y: isFocused ? -2 : 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className={cn(
+                      "relative rounded-[28px] border border-white/80 bg-white/78 p-4 shadow-[0_30px_80px_-30px_rgba(59,130,246,0.38)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#0b0f16]/70",
+                      isFocused ? "ring-2 ring-sky-400/30" : ""
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-3 px-2 pb-3">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.26em] text-slate-400">Prompt Studio</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                          Launch directly into the AI builder workspace.
+                        </p>
+                      </div>
+                      <div className="hidden rounded-full border border-sky-100 bg-sky-50/80 px-3 py-1.5 text-[11px] font-bold text-sky-700 shadow-sm sm:block dark:border-sky-400/20 dark:bg-sky-500/10 dark:text-sky-200">
+                        Live preview + code
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      {/* Plan Toggle */}
-                      <div className="hidden items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-2 dark:border-white/10 dark:bg-white/5 sm:flex">
-                        <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPlanActive ? 'text-sky-600' : 'text-slate-400'}`}>
-                          Plan
-                        </span>
-                        <button 
+                    <textarea
+                      ref={textareaRef}
+                      value={prompt}
+                      onChange={(event) => setPrompt(event.target.value)}
+                      onKeyDown={handleTextareaKeyDown}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
+                      placeholder="Describe the app you want to create..."
+                      className="min-h-[160px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base leading-7 text-slate-950 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+                    />
+
+                    <div className="mt-4 flex flex-col gap-4 rounded-[22px] border border-sky-100/80 bg-slate-50/70 px-3 py-3 shadow-inner shadow-sky-100/40 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+
+                        <button
                           type="button"
-                          aria-label="Toggle planning mode"
-                          aria-pressed={isPlanActive}
-                          onClick={() => setIsPlanActive(!isPlanActive)}
-                          className={`relative h-5 w-10 rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 ${isPlanActive ? 'bg-sky-500' : 'bg-slate-200'}`}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white bg-white/90 px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
                         >
-                          <div className={`absolute left-1 top-1 h-3 w-3 rounded-full bg-white transition-transform duration-300 ${isPlanActive ? 'translate-x-5' : 'translate-x-0 shadow-sm'}`} />
+                          <Upload className="h-4 w-4" />
+                          Upload
+                        </button>
+
+                        <div className="relative">
+                          <button
+                            type="button"
+                            aria-expanded={showModelSelect}
+                            onClick={() => setShowModelSelect((open) => !open)}
+                            className={cn(
+                              "inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30",
+                              showModelSelect
+                                ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200"
+                                : "border-white bg-white/90 text-slate-700 hover:border-sky-200 hover:text-sky-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                            )}
+                          >
+                            <SlidersHorizontal className="h-4 w-4" />
+                            Settings
+                          </button>
+
+                          <AnimatePresence>
+                            {showModelSelect ? (
+                              <motion.div
+                                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                className="absolute left-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-3xl border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#10151f]/95"
+                              >
+                                <div className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                                  AI Routing
+                                </div>
+                                <div className="rounded-2xl border border-sky-100 bg-sky-50/80 p-3 dark:border-sky-400/20 dark:bg-sky-500/10">
+                                  <div className="flex items-start gap-3">
+                                    <div className="rounded-2xl bg-white p-2 text-slate-900 shadow-sm dark:bg-white/10 dark:text-white">
+                                      <Sparkles className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-bold text-slate-900 dark:text-white">Automatic</p>
+                                      <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                                        Picks the best model and launches the full builder with live preview and code mode.
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <Link
+                                  href="/pricing"
+                                  className="mt-2 flex items-center gap-2 rounded-2xl px-3 py-3 text-xs font-bold text-orange-600 transition hover:bg-orange-50 dark:hover:bg-orange-500/10"
+                                >
+                                  <Gem className="h-4 w-4" />
+                                  Upgrade for manual model selection
+                                </Link>
+                              </motion.div>
+                            ) : null}
+                          </AnimatePresence>
+                        </div>
+
+                        <button
+                          type="button"
+                          aria-pressed={isAgentMode}
+                          onClick={() => setIsAgentMode((value) => !value)}
+                          className={cn(
+                            "inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30",
+                            isAgentMode
+                              ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200"
+                              : "border-white bg-white/90 text-slate-700 hover:border-sky-200 hover:text-sky-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                          )}
+                        >
+                          <Bot className="h-4 w-4" />
+                          AI Mode
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={isListening ? "Listening" : "Start voice input"}
+                          onClick={startVoiceInput}
+                          className={cn(
+                            "inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white bg-white/90 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
+                            isListening ? "animate-pulse border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/10 dark:text-sky-200" : ""
+                          )}
+                        >
+                          <Mic className="h-4 w-4" />
                         </button>
                       </div>
 
-                      <button 
-                        type="button"
-                        aria-label={isListening ? "Listening" : "Start voice input"}
-                        onClick={startVoiceInput}
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 ${isListening ? 'text-sky-500 scale-110 animate-pulse bg-sky-50 dark:bg-sky-500/10' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}
-                      >
-                        <Mic className="h-5 w-5" />
-                      </button>
                       <button
                         type="button"
-                        aria-label="Generate app"
-                        onClick={() => handleGenerate()}
-                        disabled={isGenerating || !prompt.trim()}
-                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 focus-visible:ring-offset-2 disabled:opacity-50 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                        onClick={() => void launchBuilder()}
+                        disabled={!prompt.trim() || isLaunchingBuilder}
+                        className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(59,130,246,0.9)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(37,99,235,0.95)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[168px]"
                       >
-                        {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
+                        {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
+                        <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                  {creationPrompts.primary.map((item) => (
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+                  {quickActionPrompts.map((item) => (
                     <button
                       key={item.label}
                       type="button"
-                      onClick={() => handleGenerate(item.prompt)}
-                      disabled={isGenerating}
-                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 disabled:opacity-50 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-sky-500/10 dark:hover:text-sky-300"
+                      onClick={() => void launchBuilder(item.prompt)}
+                      disabled={isLaunchingBuilder}
+                      className="rounded-2xl border border-sky-100 bg-white/82 px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 disabled:opacity-60 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15 dark:hover:text-white"
                     >
                       {item.label}
                     </button>
                   ))}
-                  <div className="relative">
-                    <button
-                      type="button"
-                      aria-expanded={isMoreOpen}
-                      onClick={() => setIsMoreOpen((open) => !open)}
-                      className="min-h-9 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                </div>
+
+                <div className="mt-8 grid gap-4 md:grid-cols-3">
+                  {[
+                    {
+                      title: "Chat-first creation",
+                      copy: "Start in a large prompt composer, then move into a conversation-driven builder with persistent history.",
+                    },
+                    {
+                      title: "Live preview workspace",
+                      copy: "Generate sites and apps into a split-screen environment with instant preview and code inspection.",
+                    },
+                    {
+                      title: "Responsive builder modes",
+                      copy: "Switch between preview, code, desktop, tablet, and mobile views without leaving the workspace.",
+                    },
+                  ].map((card) => (
+                    <div
+                      key={card.title}
+                      className="rounded-[24px] border border-white/80 bg-white/65 p-5 shadow-[0_20px_45px_-30px_rgba(148,163,184,0.9)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
                     >
-                      ... More
-                    </button>
-                    <AnimatePresence>
-                      {isMoreOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="absolute bottom-full left-0 z-50 mb-4 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl"
-                        >
-                          {creationPrompts.more.map((item) => (
-                            <button
-                              key={item.label}
-                              type="button"
-                              onClick={() => handleGenerate(item.prompt)}
-                              className="block min-h-9 w-full rounded-lg px-4 py-2.5 text-left text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/30 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
-                            >
-                              {item.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                      <p className="text-sm font-black text-slate-900 dark:text-white">{card.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{card.copy}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              {error && (
-                <div className="mt-6 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-600 border border-red-100 text-center">
-                  {error}
-                </div>
-              )}
-
-
             </motion.div>
           </div>
+
+          <AnimatePresence>
+            {isLaunchingBuilder ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="pointer-events-none absolute inset-0 z-20 bg-[radial-gradient(circle_at_top,_rgba(191,219,254,0.55),_rgba(255,255,255,0.92))] backdrop-blur-md"
+              >
+                <div className="flex h-full items-center justify-center">
+                  <motion.div
+                    initial={{ scale: 0.94, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="rounded-[28px] border border-white/80 bg-white/80 px-8 py-6 text-center shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#0b0f16]/80"
+                  >
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/30">
+                      <Loader2 className="h-6 w-6 animate-spin" />
+                    </div>
+                    <p className="mt-4 text-sm font-black uppercase tracking-[0.2em] text-sky-700 dark:text-sky-200">
+                      Launching Builder
+                    </p>
+                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                      Opening chat, live preview, and realtime generation workspace.
+                    </p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </section>
       </div>
+
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }
-
-
-
-
-
