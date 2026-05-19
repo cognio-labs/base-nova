@@ -1,4 +1,3 @@
-﻿
 "use client";
 
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
@@ -347,369 +346,373 @@ export default function BuilderWorkspace() {
 
   return (
     <div className="h-[calc(100dvh-5rem)] w-full overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(186,230,253,0.35),_transparent_36%),linear-gradient(180deg,_#f8fbff_0%,_#f4f8fc_48%,_#ffffff_100%)] dark:bg-[#09111f]">
-      <div className="mx-auto flex h-full w-full max-w-[1700px] flex-col px-4 py-4 md:px-6 md:py-6">
-        <div className="relative flex h-full min-h-0 overflow-hidden rounded-[28px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
+      <div className="mx-auto flex h-full w-full max-w-[1700px] flex-col px-3 py-3 md:px-5 md:py-4">
+        <div className="relative flex h-full min-h-0 overflow-hidden rounded-[30px] border border-sky-100/80 bg-white/78 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#070c14]/70">
           <div className="pointer-events-none absolute inset-0 opacity-70">
             <div className="absolute -top-48 left-1/3 h-80 w-80 rounded-full bg-gradient-to-br from-sky-300/45 to-blue-300/25 blur-3xl" />
             <div className="absolute -bottom-56 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200/25 to-cyan-200/20 blur-3xl" />
           </div>
 
-          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0">
+          <Group orientation="horizontal" className="relative z-10 flex h-full min-h-0 overflow-hidden">
             {/* Left: Chat */}
-            <Panel defaultSize={34} minSize={26} className="flex min-h-0 flex-col bg-white/24 dark:bg-white/[0.03]">
-              <header className="border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200/70 to-blue-200/70 text-slate-900 dark:text-white">
-                      <Sparkles className="h-5 w-5" />
+            <Panel defaultSize={31} minSize={24} className="min-h-0 min-w-0 overflow-hidden bg-white/82 dark:bg-[#09111a]/72">
+              <div className="mx-auto flex h-full w-full max-w-[460px] min-h-0 flex-col">
+                <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-[18px] bg-gradient-to-br from-sky-200/80 to-blue-100/80 text-slate-900 dark:text-white">
+                        <Sparkles className="h-4.5 w-4.5" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">AI Builder</p>
+                        <p className="text-[13px] font-extrabold leading-5 text-slate-950 dark:text-white">Workspace</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-400">AI Builder</p>
-                      <p className="text-sm font-extrabold leading-5 text-slate-900 dark:text-white">Workspace</p>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className={cn(
-                            "flex h-10 items-center gap-2 rounded-2xl px-3 text-xs font-extrabold",
-                            panelBg,
-                            "hover:bg-white/80 dark:hover:bg-white/10"
-                          )}
-                        >
-                          <Braces className="h-4 w-4 text-slate-500 dark:text-slate-300" />
-                          <span>{buildMode}</span>
-                          <ChevronDown className="h-4 w-4 opacity-70" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44">
-                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                          <DropdownMenuItem
-                            key={mode}
-                            onSelect={() => setBuildMode(mode)}
-                            className="flex items-center justify-between"
-                          >
-                            <span>{mode}</span>
-                            {buildMode === mode ? <Check className="h-4 w-4" /> : null}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <button
-                      type="button"
-                      onClick={clearChat}
-                      className={cn(
-                        "h-10 rounded-2xl px-3 text-xs font-extrabold text-slate-600 dark:text-slate-200",
-                        panelBg,
-                        "hover:bg-white/80 dark:hover:bg-white/10"
-                      )}
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-              </header>
-
-              <div className="border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
-                <div className={cn("rounded-[24px] p-3", panelBg)}>
-                  <p className="text-[11px] font-black uppercase tracking-[0.26em] text-slate-400 dark:text-slate-400">
-                    Suggestions
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {suggestions.map((s) => (
-                      <button
-                        key={s.label}
-                        type="button"
-                        disabled={isGenerating}
-                        onClick={() => setDraft(s.text)}
-                        className="group inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/78 px-3 py-2 text-[11px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
-                      >
-                        <span className="truncate max-w-[150px]">{s.label}</span>
-                        <span className="rounded-xl bg-slate-900/5 px-2 py-0.5 text-[10px] font-black text-slate-500 dark:bg-white/10 dark:text-slate-300">
-                          {formatShortcut(s.shortcut)}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div
-                ref={listRef}
-                className="flex-1 min-h-0 overflow-auto px-4 py-4 [scrollbar-width:thin]"
-              >
-                <div className="space-y-3">
-                  {messages.length === 0 ? (
-                    <div className={cn("rounded-[24px] p-4", panelBg)}>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
-                      <p className="mt-2 text-[13px] leading-6 text-slate-600 dark:text-slate-300">
-                        I&apos;ll generate a live preview and editable code in realtime. Press <span className="font-semibold">Enter</span> to send and
-                        <span className="font-semibold"> Shift+Enter</span> for a new line.
-                      </p>
-                    </div>
-                  ) : null}
-
-                  {messages.map((m) => (
-                    <motion.div
-                      key={m.id}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={cn(
-                        "max-w-[90%] rounded-[22px] border px-4 py-3 text-[13px] leading-6 shadow-sm",
-                        m.role === "user"
-                          ? "ml-auto border-slate-200/70 bg-white/85 text-slate-900 dark:border-white/10 dark:bg-white/6 dark:text-white"
-                          : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/85 to-blue-50/90 text-slate-900 dark:border-white/10 dark:from-sky-500/10 dark:to-blue-500/10 dark:text-white"
-                      )}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="whitespace-pre-wrap">{m.content}</div>
-                        {m.role === "user" ? (
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
                           <button
                             type="button"
-                            onClick={() => setDraft(m.content)}
-                            className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"
+                            className={cn(
+                              "flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold",
+                              panelBg,
+                              "hover:bg-white/80 dark:hover:bg-white/10"
+                            )}
                           >
-                            Edit
+                            <Braces className="h-3.5 w-3.5 text-slate-500 dark:text-slate-300" />
+                            <span>{buildMode}</span>
+                            <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                           </button>
-                        ) : null}
-                      </div>
-                    </motion.div>
-                  ))}
-
-                  {isGenerating ? (
-                    <div className={cn("rounded-[24px] p-4", panelBg)}>
-                      <div className="flex items-center gap-2 text-xs font-extrabold text-slate-700 dark:text-slate-200">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </div>
-                      <div className="mt-3 space-y-2">
-                        {workflowLogs.map((log, idx) => {
-                          const active = idx === activeAgentIndex;
-                          const done = activeAgentIndex > idx;
-                          return (
-                            <div
-                              key={`${log.agent}-${idx}`}
-                              className={cn(
-                                "flex items-center justify-between rounded-2xl border px-3 py-2 text-xs",
-                                done
-                                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                                  : active
-                                    ? "border-sky-500/30 bg-sky-500/10 text-slate-900 dark:text-white"
-                                    : "border-slate-200/70 bg-white/60 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-                              )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-44">
+                          {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
+                            <DropdownMenuItem
+                              key={mode}
+                              onSelect={() => setBuildMode(mode)}
+                              className="flex items-center justify-between"
                             >
-                              <span className="max-w-[55%] truncate font-bold">{log.agent}</span>
-                              <span className="max-w-[40%] truncate opacity-90">{log.action}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
+                              <span>{mode}</span>
+                              {buildMode === mode ? <Check className="h-4 w-4" /> : null}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <button
+                        type="button"
+                        onClick={clearChat}
+                        className={cn(
+                          "h-9 rounded-2xl px-3 text-[11px] font-extrabold text-slate-600 dark:text-slate-200",
+                          panelBg,
+                          "hover:bg-white/80 dark:hover:bg-white/10"
+                        )}
+                      >
+                        Clear
+                      </button>
                     </div>
-                  ) : null}
-
-                  {error ? (
-                    <div className="rounded-[22px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
-                      {error}
-                    </div>
-                  ) : null}
-
-                  <div ref={bottomRef} />
-                </div>
-              </div>
-
-              <div className="border-t border-slate-200/70 bg-white/55 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03]">
-                <div
-                  className={cn(
-                    "rounded-[24px] p-2.5 transition",
-                    panelBg,
-                    isDropActive ? "ring-2 ring-sky-500/30" : ""
-                  )}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDropActive(true);
-                  }}
-                  onDragLeave={() => setIsDropActive(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setIsDropActive(false);
-                    handleUpload(e.dataTransfer.files?.[0] ?? null);
-                  }}
-                >
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsVisualMode((v) => !v);
-                        setView("code");
-                      }}
-                      className={cn(
-                        "inline-flex items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold",
-                        isVisualMode
-                          ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
-                          : "bg-transparent text-slate-700 dark:text-slate-200",
-                        "hover:bg-slate-900/5 dark:hover:bg-white/10"
-                      )}
-                    >
-                      <Upload className="h-4 w-4" />
-                      Visual Edits
-                    </button>
-
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
-                      <FileUp className="h-4 w-4" />
-                      Upload Files
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => handleUpload(e.target.files?.[0] ?? null)}
-                      />
-                    </label>
-
-                    <button
-                      type="button"
-                      aria-label={isListening ? "Listening" : "Voice input"}
-                      onClick={startVoiceInput}
-                      className={cn(
-                        "inline-flex items-center gap-2 rounded-[14px] px-2.5 py-2 text-[11px] font-bold",
-                        isListening
-                          ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
-                          : "text-slate-700 dark:text-slate-200",
-                        "hover:bg-slate-900/5 dark:hover:bg-white/10"
-                      )}
-                    >
-                      <Mic className={cn("h-4 w-4", isListening ? "animate-pulse" : "")} />
-                      Voice
-                    </button>
-
-                    <span className="ml-auto hidden text-[10px] font-bold text-slate-400 dark:text-slate-400 sm:inline">
-                      Enter to send • Shift+Enter newline
-                    </span>
                   </div>
+                </header>
 
-                  <div className="mt-2.5 flex items-end gap-2.5">
-                    <textarea
-                      value={draft}
-                      onChange={(e) => setDraft(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder="Describe the app you want to build..."
-                      className="min-h-[54px] max-h-32 w-full resize-none rounded-[18px] border border-slate-200/70 bg-white/78 px-4 py-3 text-[14px] font-medium leading-6 text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-sky-300 focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-slate-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => void handleSend()}
-                      disabled={isGenerating || !draft.trim()}
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-lg shadow-sky-500/15 transition hover:brightness-110 disabled:opacity-60"
-                      aria-label="Send"
-                    >
-                      {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
-                    </button>
+                <div className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                  <div className={cn("rounded-[20px] p-3", panelBg, "shadow-[0_18px_40px_-30px_rgba(15,23,42,0.28)]")}>
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 dark:text-slate-500">
+                      Suggestions
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {suggestions.map((s) => (
+                        <button
+                          key={s.label}
+                          type="button"
+                          disabled={isGenerating}
+                          onClick={() => setDraft(s.text)}
+                          className="group inline-flex items-center gap-2 rounded-xl border border-slate-200/70 bg-white/86 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 disabled:opacity-60"
+                        >
+                          <span className="truncate max-w-[128px]">{s.label}</span>
+                          <span className="rounded-lg bg-slate-900/5 px-1.5 py-0.5 text-[10px] font-black text-slate-500 dark:bg-white/10 dark:text-slate-300">
+                            {formatShortcut(s.shortcut)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  ref={listRef}
+                  className="min-h-0 flex-1 overflow-y-auto px-4 py-3 [scrollbar-width:thin]"
+                >
+                  <div className="space-y-2.5 pr-1">
+                    {messages.length === 0 ? (
+                      <div className={cn("rounded-[20px] p-4", panelBg)}>
+                        <p className="text-[13px] font-bold text-slate-900 dark:text-white">Describe what you want to build.</p>
+                        <p className="mt-1.5 text-[12px] leading-5 text-slate-600 dark:text-slate-300">
+                          I&apos;ll generate the preview and code on the right. Press <span className="font-semibold">Enter</span> to send and
+                          <span className="font-semibold"> Shift+Enter</span> for a new line.
+                        </p>
+                      </div>
+                    ) : null}
+
+                    {messages.map((m) => (
+                      <motion.div
+                        key={m.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={cn(
+                          "max-w-[92%] rounded-[20px] border px-3.5 py-3 text-[12.5px] leading-5 shadow-sm",
+                          m.role === "user"
+                            ? "ml-auto border-slate-200/70 bg-white/90 text-slate-900 dark:border-white/10 dark:bg-white/6 dark:text-white"
+                            : "mr-auto border-slate-200/70 bg-gradient-to-br from-sky-100/85 to-blue-50/90 text-slate-900 dark:border-white/10 dark:from-sky-500/10 dark:to-blue-500/10 dark:text-white"
+                        )}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="whitespace-pre-wrap">{m.content}</div>
+                          {m.role === "user" ? (
+                            <button
+                              type="button"
+                              onClick={() => setDraft(m.content)}
+                              className="shrink-0 rounded-full border border-sky-200/80 bg-white/90 px-2 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-sky-700 transition hover:bg-sky-50 dark:border-white/10 dark:bg-white/10 dark:text-sky-200"
+                            >
+                              Edit
+                            </button>
+                          ) : null}
+                        </div>
+                      </motion.div>
+                    ))}
+
+                    {isGenerating ? (
+                      <div className={cn("rounded-[20px] p-4", panelBg)}>
+                        <div className="flex items-center gap-2 text-[11px] font-extrabold text-slate-700 dark:text-slate-200">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          {workflowLogs.map((log, idx) => {
+                            const active = idx === activeAgentIndex;
+                            const done = activeAgentIndex > idx;
+                            return (
+                              <div
+                                key={`${log.agent}-${idx}`}
+                                className={cn(
+                                  "flex items-center justify-between rounded-2xl border px-3 py-2 text-[11px]",
+                                  done
+                                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                                    : active
+                                      ? "border-sky-500/30 bg-sky-500/10 text-slate-900 dark:text-white"
+                                      : "border-slate-200/70 bg-white/60 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+                                )}
+                              >
+                                <span className="max-w-[52%] truncate font-bold">{log.agent}</span>
+                                <span className="max-w-[42%] truncate opacity-90">{log.action}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {error ? (
+                      <div className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-[12px] font-semibold text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
+                        {error}
+                      </div>
+                    ) : null}
+
+                    <div ref={bottomRef} />
+                  </div>
+                </div>
+
+                <div className="shrink-0 border-t border-slate-200/70 bg-white/72 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-[#09111a]/85">
+                  <div
+                    className={cn(
+                      "rounded-[22px] border border-white/70 bg-white/92 p-2.5 shadow-[0_22px_50px_-34px_rgba(15,23,42,0.28)] backdrop-blur-xl transition dark:border-white/10 dark:bg-[#0d1522]/92",
+                      isDropActive ? "ring-2 ring-sky-500/30" : ""
+                    )}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDropActive(true);
+                    }}
+                    onDragLeave={() => setIsDropActive(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDropActive(false);
+                      handleUpload(e.dataTransfer.files?.[0] ?? null);
+                    }}
+                  >
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsVisualMode((v) => !v);
+                          setView("code");
+                        }}
+                        className={cn(
+                          "inline-flex h-8 items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold",
+                          isVisualMode
+                            ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
+                            : "bg-transparent text-slate-700 dark:text-slate-200",
+                          "hover:bg-slate-900/5 dark:hover:bg-white/10"
+                        )}
+                      >
+                        <Upload className="h-3.5 w-3.5" />
+                        Visual Edits
+                      </button>
+
+                      <label className="inline-flex h-8 cursor-pointer items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10">
+                        <FileUp className="h-3.5 w-3.5" />
+                        Upload Files
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e) => handleUpload(e.target.files?.[0] ?? null)}
+                        />
+                      </label>
+
+                      <button
+                        type="button"
+                        aria-label={isListening ? "Listening" : "Voice input"}
+                        onClick={startVoiceInput}
+                        className={cn(
+                          "inline-flex h-8 items-center gap-2 rounded-[12px] px-2.5 text-[11px] font-bold",
+                          isListening
+                            ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
+                            : "text-slate-700 dark:text-slate-200",
+                          "hover:bg-slate-900/5 dark:hover:bg-white/10"
+                        )}
+                      >
+                        <Mic className={cn("h-3.5 w-3.5", isListening ? "animate-pulse" : "")} />
+                        Voice
+                      </button>
+                    </div>
+
+                    <div className="mt-2.5 flex items-end gap-2">
+                      <div className="flex-1 rounded-[18px] border border-slate-200/70 bg-slate-50/90 dark:border-white/10 dark:bg-white/5">
+                        <textarea
+                          value={draft}
+                          onChange={(e) => setDraft(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder="Describe the app you want to build..."
+                          className="h-[72px] w-full resize-none bg-transparent px-3.5 py-3 text-[13px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
+                        />
+                        <div className="flex items-center justify-end px-3 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
+                          Enter to send � Shift+Enter newline
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void handleSend()}
+                        disabled={isGenerating || !draft.trim()}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-gradient-to-br from-slate-900 to-sky-600 text-white shadow-[0_16px_32px_-18px_rgba(14,116,144,0.7)] transition hover:brightness-110 disabled:opacity-60"
+                        aria-label="Send"
+                      >
+                        {isGenerating ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <ArrowUp className="h-4.5 w-4.5" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </Panel>
 
-            <Separator className="relative w-px bg-slate-200/70 dark:bg-white/10" />
+            <Separator className="relative w-2 bg-transparent before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-slate-200/80 dark:before:bg-white/10" />
 
             {/* Right: Preview/Code */}
-            <Panel defaultSize={62} minSize={38} className="flex min-h-0 flex-col">
-              <header className="flex items-center justify-between border-b border-slate-200/70 px-5 py-4 dark:border-white/10">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setView("preview")}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
-                      view === "preview"
-                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
-                        : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                    )}
-                  >
-                    <Eye className="h-4 w-4" />
-                    Preview
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setView("code")}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
-                      view === "code"
-                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
-                        : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                    )}
-                  >
-                    <Code2 className="h-4 w-4" />
-                    Code
-                  </button>
+            <Panel defaultSize={69} minSize={38} className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-white/72 dark:bg-[#0b111c]/68">
+              <header className="shrink-0 border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto [scrollbar-width:none]">
+                    <button
+                      type="button"
+                      onClick={() => setView("preview")}
+                      className={cn(
+                        "inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold whitespace-nowrap",
+                        view === "preview"
+                          ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                          : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                      )}
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Preview
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setView("code")}
+                      className={cn(
+                        "inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold whitespace-nowrap",
+                        view === "code"
+                          ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                          : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                      )}
+                    >
+                      <Code2 className="h-3.5 w-3.5" />
+                      Code
+                    </button>
 
-                  <div className="mx-2 h-6 w-px bg-slate-200/70 dark:bg-white/10" />
+                    <div className="mx-1 h-5 w-px bg-slate-200/70 dark:bg-white/10" />
 
-                  <button
-                    type="button"
-                    onClick={() => setRefreshKey((k) => k + 1)}
-                    className="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                  >
-                    <RefreshCcw className="h-4 w-4" />
-                    Refresh
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setRefreshKey((k) => k + 1)}
+                      className="inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold whitespace-nowrap text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                    >
+                      <RefreshCcw className="h-3.5 w-3.5" />
+                      Refresh
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => alert("Publish is not wired yet. Hook this up to your hosting workflow.")}
-                    className="hidden md:inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                  >
-                    Publish
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => alert("Publish is not wired yet. Hook this up to your hosting workflow.")}
+                      className="hidden md:inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold whitespace-nowrap text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                    >
+                      Publish
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => alert("Share is not wired yet. Hook this up to your project links.")}
-                    className="hidden md:inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                  >
-                    <Share2 className="h-4 w-4" />
-                    Share
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className={cn("hidden sm:flex items-center gap-1 rounded-2xl p-1", panelBg)}>
-                    {(
-                      [
-                        { id: "desktop" as const, label: "Desktop" },
-                        { id: "tablet" as const, label: "Tablet" },
-                        { id: "mobile" as const, label: "Mobile" },
-                      ]
-                    ).map((m) => (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => setDeviceMode(m.id)}
-                        className={cn(
-                          "rounded-2xl px-3 py-2 text-xs font-extrabold",
-                          deviceMode === m.id
-                            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
-                            : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
-                        )}
-                      >
-                        {m.label}
-                      </button>
-                    ))}
+                    <button
+                      type="button"
+                      onClick={() => alert("Share is not wired yet. Hook this up to your project links.")}
+                      className="hidden md:inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold whitespace-nowrap text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                      Share
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsFullscreen(true)}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold text-slate-700",
-                      panelBg,
-                      "hover:bg-white/80 dark:hover:bg-white/10"
-                    )}
-                  >
-                    <Expand className="h-4 w-4" />
-                    Fullscreen
-                  </button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <div className={cn("hidden sm:flex items-center gap-1 rounded-2xl p-1", panelBg)}>
+                      {(
+                        [
+                          { id: "desktop" as const, label: "Desktop" },
+                          { id: "tablet" as const, label: "Tablet" },
+                          { id: "mobile" as const, label: "Mobile" },
+                        ]
+                      ).map((m) => (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => setDeviceMode(m.id)}
+                          className={cn(
+                            "rounded-2xl px-3 py-2 text-[11px] font-extrabold",
+                            deviceMode === m.id
+                              ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
+                              : "text-slate-700 hover:bg-slate-900/5 dark:text-slate-200 dark:hover:bg-white/10"
+                          )}
+                        >
+                          {m.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsFullscreen(true)}
+                      className={cn(
+                        "inline-flex h-9 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold text-slate-700",
+                        panelBg,
+                        "hover:bg-white/80 dark:hover:bg-white/10"
+                      )}
+                    >
+                      <Expand className="h-3.5 w-3.5" />
+                      Fullscreen
+                    </button>
+                  </div>
                 </div>
               </header>
 
@@ -721,13 +724,11 @@ export default function BuilderWorkspace() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      className="h-full w-full min-h-0 p-5"
+                      className="h-full w-full min-h-0 p-4"
                     >
-                      <div className="h-full w-full">
-                        <div className="mx-auto flex h-full w-full justify-center">
-                          <div className={cn("h-full min-h-0", previewWidthClass)}>
-                            <PreviewFrame iframeKey={refreshKey} className="h-full" />
-                          </div>
+                      <div className="mx-auto flex h-full w-full justify-center rounded-[24px] border border-slate-200/70 bg-white/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] dark:border-white/10 dark:bg-white/[0.03]">
+                        <div className={cn("h-full min-h-0", previewWidthClass)}>
+                          <PreviewFrame iframeKey={refreshKey} className="h-full" />
                         </div>
                       </div>
                     </motion.div>
@@ -737,12 +738,12 @@ export default function BuilderWorkspace() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
-                      className="flex h-full min-h-0 flex-col"
+                      className="flex h-full min-h-0 flex-col overflow-hidden"
                     >
-                      <div className="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 dark:border-white/10">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-white/10">
+                        <div className="flex min-w-0 items-center gap-2">
                           <Code2 className="h-4 w-4 text-slate-500 dark:text-slate-300" />
-                          <p className="text-xs font-extrabold text-slate-700 dark:text-slate-200">Generated Code</p>
+                          <p className="text-[11px] font-extrabold text-slate-700 dark:text-slate-200">Generated Code</p>
                         </div>
 
                         <DropdownMenu>
@@ -751,12 +752,12 @@ export default function BuilderWorkspace() {
                               type="button"
                               disabled={!filesForEditor.length}
                               className={cn(
-                                "flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-extrabold",
+                                "flex h-9 min-w-0 items-center gap-2 rounded-2xl px-3 text-[11px] font-extrabold",
                                 panelBg,
                                 "text-slate-700 dark:text-slate-200 disabled:opacity-60"
                               )}
                             >
-                              <span className="truncate max-w-[240px]">{activePath ?? "No files"}</span>
+                              <span className="truncate max-w-[220px] sm:max-w-[300px]">{activePath ?? "No files"}</span>
                               <ChevronDown className="h-4 w-4 opacity-70" />
                             </button>
                           </DropdownMenuTrigger>
@@ -775,7 +776,7 @@ export default function BuilderWorkspace() {
                         </DropdownMenu>
                       </div>
 
-                      <div className="flex-1">
+                      <div className="flex-1 min-h-0">
                         <Editor
                           theme="vs-dark"
                           language={activeLanguage}
@@ -794,7 +795,7 @@ export default function BuilderWorkspace() {
                         />
                       </div>
 
-                      <div className="border-t border-slate-200/70 px-5 py-3 text-xs text-slate-500 dark:border-white/10 dark:text-slate-300">
+                      <div className="border-t border-slate-200/70 px-4 py-3 text-[11px] text-slate-500 dark:border-white/10 dark:text-slate-300">
                         Tip: editing <span className="font-bold">preview.html</span> updates the live preview instantly.
                       </div>
                     </motion.div>
@@ -843,22 +844,4 @@ export default function BuilderWorkspace() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
