@@ -517,15 +517,71 @@ export default function DashboardWorkspace() {
                           AI Mode
                         </button>
 
+                        <div className="relative">
+                          <button
+                            type="button"
+                            aria-expanded={showMorePrompts}
+                            onClick={() => setShowMorePrompts((open) => !open)}
+                            className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-white/70 bg-white/80 px-4 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"
+                          >
+                            <Grid2X2 className="h-4 w-4" />
+                            More
+                            <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", showMorePrompts ? "rotate-180" : "")} />
+                          </button>
+
+                          <AnimatePresence>
+                            {showMorePrompts ? (
+                              <motion.div
+                                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                className="absolute left-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-[22px] border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#10151f]/95"
+                              >
+                                <div className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                                  More Prompts
+                                </div>
+                                <div className="space-y-1">
+                                  {morePromptPrompts.map((item) => (
+                                    <button
+                                      key={item.label}
+                                      type="button"
+                                      onClick={() => {
+                                        setShowMorePrompts(false);
+                                        void launchBuilder(item.prompt);
+                                      }}
+                                      className="flex w-full items-center justify-between rounded-2xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
+                                    >
+                                      <span>{item.label}</span>
+                                      <ArrowRight className="h-4 w-4 opacity-50" />
+                                    </button>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            ) : null}
+                          </AnimatePresence>
+                        </div>
+
                         <button
-                        type="button"
-                        onClick={() => void launchBuilder()}
-                        disabled={!prompt.trim() || isLaunchingBuilder}
-                        className="inline-flex h-[52px] w-[220px] items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
-                        <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
-                      </button>
+                          type="button"
+                          aria-label={isListening ? "Listening" : "Start voice input"}
+                          onClick={startVoiceInput}
+                          className={cn(
+                            "inline-flex h-[42px] w-[42px] items-center justify-center rounded-[14px] border border-white/70 bg-white/80 text-slate-700 shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/20 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15",
+                            isListening ? "animate-pulse border-slate-200 bg-white/85 text-slate-900 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-100" : ""
+                          )}
+                        >
+                          <Mic className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => void launchBuilder()}
+                          disabled={!prompt.trim() || isLaunchingBuilder}
+                          className="inline-flex h-[52px] w-[220px] items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-slate-950 via-slate-800 to-sky-700 px-6 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(15,23,42,0.6)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(15,23,42,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {isLaunchingBuilder ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
+                          <span>{isLaunchingBuilder ? "Opening builder" : "Send to Builder"}</span>
+                        </button>
                     </div>
                   </motion.div>
                 </div>
