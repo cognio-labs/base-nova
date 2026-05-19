@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -601,30 +601,6 @@ export default function DashboardWorkspace() {
                   ))}
                 </div>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-3">
-                  {[
-                    {
-                      title: "Chat-first creation",
-                      copy: "Start in a large prompt composer, then move into a conversation-driven builder with persistent history.",
-                    },
-                    {
-                      title: "Live preview workspace",
-                      copy: "Generate sites and apps into a split-screen environment with instant preview and code inspection.",
-                    },
-                    {
-                      title: "Responsive builder modes",
-                      copy: "Switch between preview, code, desktop, tablet, and mobile views without leaving the workspace.",
-                    },
-                  ].map((card) => (
-                    <div
-                      key={card.title}
-                      className="rounded-[24px] border border-white/80 bg-white/65 p-5 shadow-[0_20px_45px_-30px_rgba(148,163,184,0.9)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5"
-                    >
-                      <p className="text-sm font-black text-slate-900 dark:text-white">{card.title}</p>
-                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{card.copy}</p>
-                    </div>
-                  ))}
-                </div>
               </div>
             </motion.div>
           </div>
