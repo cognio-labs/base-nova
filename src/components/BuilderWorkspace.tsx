@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
@@ -101,36 +101,37 @@ function writeStoredChatMessages(messages: ChatMessage[]) {
   window.dispatchEvent(new Event(CHAT_STORAGE_EVENT));
 }
 
-function subscribeToStoredChatMessages(onStoreChange: () => void) {
-  if (typeof window === "undefined") {
-    return () => undefined;
-  }
-
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key === CHAT_STORAGE_KEY) {
-      onStoreChange();
-    }
-  };
-
-  window.addEventListener("storage", handleStorage);
-  window.addEventListener(CHAT_STORAGE_EVENT, onStoreChange);
-
-  return () => {
-    window.removeEventListener("storage", handleStorage);
-    window.removeEventListener(CHAT_STORAGE_EVENT, onStoreChange);
-  };
-}
-
 function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
-  const messages = useSyncExternalStore(subscribeToStoredChatMessages, readStoredChatMessages, () => []);
-  const setMessages: Dispatch<SetStateAction<ChatMessage[]>> = (value) => {
-    const nextMessages =
-      typeof value === "function"
-        ? (value as (current: ChatMessage[]) => ChatMessage[])(readStoredChatMessages())
-        : value;
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
-    writeStoredChatMessages(nextMessages);
-  };
+  useEffect(() => {
+    setMessages(readStoredChatMessages());
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
+    writeStoredChatMessages(messages);
+  }, [hasHydrated, messages]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === CHAT_STORAGE_KEY) {
+        setMessages(readStoredChatMessages());
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   return [messages, setMessages];
 }
@@ -630,7 +631,7 @@ export default function BuilderWorkspace() {
                           className="h-[72px] w-full resize-none bg-transparent px-3.5 py-3 text-[13px] font-medium leading-5 text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-400"
                         />
                         <div className="flex items-center justify-end px-3 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-                          Enter to send • Shift+Enter newline
+                          Enter to send â€¢ Shift+Enter newline
                         </div>
                       </div>
                       <button
