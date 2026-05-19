@@ -441,6 +441,7 @@ export default function DashboardWorkspace() {
                           className="hidden"
                         />
 
+                      </div>
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
