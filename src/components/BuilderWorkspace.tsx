@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type KeyboardEvent as ReactKeyboardEvent, type SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
@@ -67,6 +67,7 @@ type SpeechRecognitionWindow = Window &
   };
 
 const CHAT_STORAGE_KEY = "lokoai.builder.chat.v1";
+const CHAT_STORAGE_EVENT = "lokoai.builder.chat.sync";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -81,20 +82,55 @@ function safeJsonParse<T>(value: string | null): T | null {
   }
 }
 
-function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    if (typeof window === "undefined") return [];
-    const parsed = safeJsonParse<ChatMessage[]>(window.localStorage.getItem(CHAT_STORAGE_KEY));
-    return Array.isArray(parsed) ? parsed : [];
-  });
+function readStoredChatMessages(): ChatMessage[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
 
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-    } catch {
-      // ignore quota errors
+  const parsed = safeJsonParse<ChatMessage[]>(window.localStorage.getItem(CHAT_STORAGE_KEY));
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+function writeStoredChatMessages(messages: ChatMessage[]) {
+  try {
+    window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  } catch {
+    // ignore quota errors
+  }
+
+  window.dispatchEvent(new Event(CHAT_STORAGE_EVENT));
+}
+
+function subscribeToStoredChatMessages(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === CHAT_STORAGE_KEY) {
+      onStoreChange();
     }
-  }, [messages]);
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(CHAT_STORAGE_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(CHAT_STORAGE_EVENT, onStoreChange);
+  };
+}
+
+function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
+  const messages = useSyncExternalStore(subscribeToStoredChatMessages, readStoredChatMessages, () => []);
+  const setMessages: Dispatch<SetStateAction<ChatMessage[]>> = (value) => {
+    const nextMessages =
+      typeof value === "function"
+        ? (value as (current: ChatMessage[]) => ChatMessage[])(readStoredChatMessages())
+        : value;
+
+    writeStoredChatMessages(nextMessages);
+  };
 
   return [messages, setMessages];
 }
