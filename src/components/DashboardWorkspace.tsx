@@ -384,13 +384,20 @@ export default function DashboardWorkspace() {
                   <AudioLines className="h-3.5 w-3.5" />
                   AI Builder Workspace
                 </div>
-                <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">`r`n                  Build apps from prompts in a `{\"}`r`n                  <span className="bg-gradient-to-r from-sky-300 via-cyan-200 to-indigo-200 bg-clip-text text-transparent dark:from-sky-200 dark:via-cyan-100 dark:to-indigo-100">`r`n                    single operating surface`r`n                  </span>`r`n                  .`r`n                </h1>
+                <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
+                  Build apps from prompts in a 
+                  <span className="bg-gradient-to-r from-sky-300 via-cyan-200 to-indigo-200 bg-clip-text text-transparent dark:from-sky-200 dark:via-cyan-100 dark:to-indigo-100">
+                    single operating surface
+                  </span>
+                  .
+                </h1>
                 <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">
                   Start with a prompt, then move straight into a full AI builder with chat, live preview, code inspection, and responsive app generation.
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-3xl">`r`n                <div className="relative">
+              <div className="mx-auto mt-10 max-w-3xl">
+                <div className="relative">
                   <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 opacity-80 blur-sm" />
                   <motion.div
                     animate={{ y: isFocused ? -2 : 0 }}
