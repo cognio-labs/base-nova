@@ -94,6 +94,23 @@ type SpeechRecognitionWindow = Window &
 const CHAT_STORAGE_KEY = "lokoai.builder.chat.v1";
 const CHAT_STORAGE_EVENT = "lokoai.builder.chat.sync";
 const EMPTY_CHAT_MESSAGES: ChatMessage[] = [];
+const TYPEWRITER_PROMPTS = [
+  "Let’s build an AI startup MVP…",
+  "Create a modern SaaS landing page…",
+  "Build a multi-agent AI system…",
+  "Design a crypto trading dashboard…",
+  "Generate a beautiful portfolio website…",
+  "Create a Telegram AI automation bot…",
+  "Build a full-stack Next.js application…",
+  "Make a stunning eCommerce website…",
+  "Create a futuristic admin dashboard…",
+  "Generate a premium UI/UX design…",
+  "Build an AI chatbot for my business…",
+  "Create a viral social media web app…",
+  "Design a mobile app landing page…",
+  "Build a no-code AI website builder…",
+  "Create a modern fintech platform…",
+];
 
 let cachedChatStorageValue: string | null | undefined;
 let cachedChatMessages: ChatMessage[] = EMPTY_CHAT_MESSAGES;
@@ -255,6 +272,9 @@ export default function BuilderWorkspace() {
   const [isCreatingInviteLink, setIsCreatingInviteLink] = useState(false);
   const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];
   const [hintIndex, setHintIndex] = useState(0);
+  const [typewriterIndex, setTypewriterIndex] = useState(0);
+  const [typewriterText, setTypewriterText] = useState("");
+  const [isTypewriterDeleting, setIsTypewriterDeleting] = useState(false);
   const pathname = usePathname();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -309,6 +329,39 @@ export default function BuilderWorkspace() {
 
     return () => window.clearInterval(timer);
   }, [promptHints.length]);
+
+  useEffect(() => {
+    const currentPrompt = TYPEWRITER_PROMPTS[typewriterIndex];
+    const isComplete = typewriterText === currentPrompt;
+    const isEmpty = typewriterText.length === 0;
+
+    const delay = isComplete && !isTypewriterDeleting
+      ? 1500
+      : isTypewriterDeleting
+        ? 28
+        : 54 + (typewriterText.length % 4) * 12;
+
+    const timer = window.setTimeout(() => {
+      if (!isTypewriterDeleting && isComplete) {
+        setIsTypewriterDeleting(true);
+        return;
+      }
+
+      if (isTypewriterDeleting && isEmpty) {
+        setIsTypewriterDeleting(false);
+        setTypewriterIndex((current) => (current + 1) % TYPEWRITER_PROMPTS.length);
+        return;
+      }
+
+      setTypewriterText((current) =>
+        isTypewriterDeleting
+          ? current.slice(0, -1)
+          : currentPrompt.slice(0, current.length + 1)
+      );
+    }, delay);
+
+    return () => window.clearTimeout(timer);
+  }, [isTypewriterDeleting, typewriterIndex, typewriterText]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -765,16 +818,29 @@ export default function BuilderWorkspace() {
             </div>
 
             <div className="sticky bottom-0 z-10 shrink-0 border-t border-slate-200/70 bg-white/90 p-4 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/82">
-              <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950">
-                <textarea
-                  ref={textareaRef}
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Describe what you want to build..."
-                  className="w-full resize-none rounded-[20px] border border-slate-200 bg-slate-50/80 px-4 py-3 text-[15px] font-normal leading-6 text-slate-900 outline-none placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                  style={{ minHeight: 112 }}
-                />
+              <div className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-sky-400/15 dark:bg-slate-950">
+                <div className="relative overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50/90 shadow-inner shadow-slate-200/40 transition-all focus-within:border-sky-300 focus-within:bg-white focus-within:shadow-sky-500/10 dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.96))] dark:shadow-black/20 dark:focus-within:border-sky-400/40">
+                  {!draft ? (
+                    <div className="pointer-events-none absolute inset-0 flex items-center px-4 py-3">
+                      <div className="flex min-w-0 items-center text-[14px] font-medium leading-6 tracking-tight text-slate-400 dark:text-slate-400 sm:text-[15px]">
+                        <span className="truncate bg-gradient-to-r from-slate-500 via-sky-500 to-indigo-500 bg-clip-text text-transparent dark:from-slate-300 dark:via-sky-300 dark:to-cyan-200">
+                          {typewriterText}
+                        </span>
+                        <span className="typewriter-cursor ml-1 h-5 w-[2px] shrink-0 rounded-full bg-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.65)]" />
+                      </div>
+                    </div>
+                  ) : null}
+                  <textarea
+                    ref={textareaRef}
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder=""
+                    className="relative z-10 w-full resize-none border-none bg-transparent px-4 py-3 text-[15px] font-medium leading-6 text-slate-900 outline-none placeholder:text-transparent dark:text-white"
+                    style={{ minHeight: 112 }}
+                    aria-label="Describe what you want to build"
+                  />
+                </div>
 
                 <div className="mt-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">

@@ -235,6 +235,20 @@ body {
   animation: marquee-vertical-down 16s linear infinite;
 }
 
+.typewriter-cursor {
+  animation: typewriter-cursor-blink 1s steps(2, start) infinite;
+}
+
+@keyframes typewriter-cursor-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
 
 
 
