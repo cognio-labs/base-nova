@@ -950,7 +950,7 @@ export default function BuilderWorkspace() {
 
         <main className="relative flex min-h-0 flex-1 overflow-hidden bg-transparent p-3 lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#1b1b20]/72 pt-0 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
+            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-white/42 pt-0 shadow-[0_30px_90px_rgba(14,116,144,0.16)] backdrop-blur-2xl transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
             <div className="hidden shrink-0 items-center justify-between border-b border-zinc-800 px-4 py-4">
@@ -1083,7 +1083,7 @@ export default function BuilderWorkspace() {
             </div>
 
             <div className="sticky bottom-0 z-10 shrink-0 bg-transparent p-4">
-              <div className="rounded-lg border border-white/12 bg-white/[0.075] p-3 shadow-[0_18px_45px_rgba(0,0,0,0.34)] backdrop-blur-2xl focus-within:border-sky-500/70">
+              <div className="rounded-lg border border-cyan-900/10 bg-white/72 p-3 shadow-[0_18px_45px_rgba(14,116,144,0.14)] backdrop-blur-2xl focus-within:border-sky-300/80">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -1183,7 +1183,7 @@ export default function BuilderWorkspace() {
             </div>
           </aside>
 
-          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-white/12 bg-white/[0.045] shadow-[0_26px_80px_rgba(0,0,0,0.30)] backdrop-blur-2xl lg:ml-1">
+          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-cyan-900/10 bg-white/62 shadow-[0_26px_80px_rgba(14,116,144,0.14)] backdrop-blur-2xl lg:ml-1">
             <div className="hidden shrink-0 items-center justify-between gap-2 border-b border-zinc-800 bg-[#1f1f22] px-3 py-2 sm:px-4">
               <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 <Globe className="h-3.5 w-3.5" />
