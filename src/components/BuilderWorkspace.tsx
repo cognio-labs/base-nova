@@ -464,19 +464,19 @@ export default function BuilderWorkspace() {
 
     GENERATION_TASK_BLUEPRINT.forEach((task, index) => {
       const timerId = window.setTimeout(() => {
-        setGenerationTasks((current) => {
-          const completed = current.map((item) =>
-            item.status === "active" ? { ...item, status: "completed" as TaskStatus } : item
-          );
-
-          return [
-            ...completed,
-            {
-              ...task,
-              status: "active",
-            },
-          ];
-        });
+        setGenerationTasks(
+          GENERATION_TASK_BLUEPRINT.slice(0, Math.min(GENERATION_TASK_BLUEPRINT.length, index + 3)).map(
+            (item, itemIndex) => ({
+              ...item,
+              status:
+                itemIndex < index
+                  ? "completed"
+                  : itemIndex === index
+                    ? "active"
+                    : "pending",
+            })
+          )
+        );
       }, 420 + index * 720);
 
       taskTimersRef.current.push(timerId);
@@ -904,36 +904,119 @@ export default function BuilderWorkspace() {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="space-y-3">
-                {messages.length ? (
-                  messages.map((message) => (
-                    <div
+            <div
+              ref={taskPanelRef}
+              className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <div className="space-y-4">
+                {messages
+                  .filter((message) => message.role === "user")
+                  .map((message) => (
+                    <motion.div
                       key={message.id}
-                      className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex justify-end"
                     >
-                      <div
-                        className={cn(
-                          "max-w-[85%] rounded-lg px-4 py-3 text-sm font-semibold leading-relaxed shadow-sm whitespace-pre-wrap",
-                          message.role === "user"
-                            ? "bg-[#303033] text-white"
-                            : "bg-[#2a2a2d] text-zinc-200"
-                        )}
-                      >
+                      <div className="max-w-[82%] rounded-lg bg-[#303033]/95 px-4 py-3 text-sm font-semibold leading-relaxed text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] whitespace-pre-wrap ring-1 ring-white/5">
                         {message.content}
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex min-h-[240px] items-center justify-center px-6 text-center">
-                    <div className="hidden">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">No chat yet</p>
-                      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                        Describe the site you want and press Enter.
-                      </p>
-                    </div>
-                  </div>
-                )}
+                    </motion.div>
+                  ))}
+
+                <AnimatePresence>
+                  {(generationTasks.length > 0 || isTaskPanelLive || isGenerating) && (
+                    <motion.div
+                      key="task-panel"
+                      initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                      transition={{ duration: 0.24, ease: "easeOut" }}
+                      className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.055] shadow-[0_20px_55px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
+                    >
+                      <div className="border-b border-white/10 bg-white/[0.035] px-4 py-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-black tracking-tight text-zinc-100">Plan</p>
+                            <p className="mt-0.5 text-[11px] font-medium text-zinc-500">
+                              Multi-agent generation timeline
+                            </p>
+                          </div>
+                          <span
+                            className={cn(
+                              "rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em]",
+                              isTaskPanelLive || isGenerating
+                                ? "border-sky-400/25 bg-sky-500/10 text-sky-300"
+                                : "border-emerald-400/25 bg-emerald-500/10 text-emerald-300"
+                            )}
+                          >
+                            {isTaskPanelLive || isGenerating ? "Live" : "Done"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1 px-3 py-3">
+                        <AnimatePresence initial={false}>
+                          {generationTasks.map((task, index) => (
+                            <motion.div
+                              key={task.id}
+                              initial={{ opacity: 0, x: -10, height: 0 }}
+                              animate={{ opacity: 1, x: 0, height: "auto" }}
+                              exit={{ opacity: 0, x: -8, height: 0 }}
+                              transition={{ duration: 0.2, delay: Math.min(index * 0.02, 0.12) }}
+                              className={cn(
+                                "group relative flex gap-3 rounded-xl px-2.5 py-2.5 transition-colors",
+                                task.status === "active" ? "bg-sky-500/[0.075]" : "hover:bg-white/[0.035]"
+                              )}
+                            >
+                              <div className="relative mt-0.5 shrink-0">
+                                <TaskStatusIcon status={task.status} />
+                                {index < generationTasks.length - 1 ? (
+                                  <span className="absolute left-1/2 top-6 h-6 w-px -translate-x-1/2 bg-white/10" />
+                                ) : null}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                                  <p
+                                    className={cn(
+                                      "min-w-0 flex-1 truncate text-sm font-semibold",
+                                      task.status === "completed"
+                                        ? "text-zinc-300"
+                                        : task.status === "active"
+                                          ? "text-sky-100"
+                                          : "text-zinc-500"
+                                    )}
+                                  >
+                                    {task.label}
+                                  </p>
+                                  {task.filePath ? (
+                                    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-white/10 bg-black/20 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+                                      <FileText className="h-3 w-3" />
+                                      <span className="max-w-[140px] truncate">{task.filePath}</span>
+                                    </span>
+                                  ) : null}
+                                </div>
+                                <p className="mt-1 text-[11px] font-medium text-zinc-500">{task.agent}</p>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+
+                        {generationTasks.length === 0 ? (
+                          <div className="flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-semibold text-zinc-400">
+                            <TaskStatusIcon status="active" />
+                            Preparing AI agents...
+                          </div>
+                        ) : null}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {!messages.length && !generationTasks.length && !isGenerating ? (
+                  <div className="h-[260px]" />
+                ) : null}
               </div>
             </div>
 
