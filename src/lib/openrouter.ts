@@ -1,4 +1,5 @@
 import { getOpenRouterConfig } from "@/lib/openrouterConfig";
+import { getLocalGeneratedProject } from "@/lib/localGeneratedProject";
 
 const MAX_RETRIES = 0;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
@@ -44,6 +45,8 @@ function toTitleFromPrompt(prompt: string) {
 }
 
 export function getOfflineGeneratedProject(userPrompt: string) {
+  return getLocalGeneratedProject(userPrompt);
+
   const projectTitle = toTitleFromPrompt(userPrompt);
   const description = userPrompt.trim() || "Offline generated starter";
 

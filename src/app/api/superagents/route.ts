@@ -33,9 +33,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const orchestrationPrompt = `
+    const systemPrompt = `
       You are the LokoAI Superagent Orchestrator, an advanced AI IDE system.
-      You will simulate a collaborative workflow between 4 specialized agents to build the user's project: "${prompt}".
+      You will simulate a collaborative workflow between 4 specialized agents to build the user's project.
       
       The agents are:
       1. Product Manager (PM): Defines features and structure.
@@ -69,8 +69,8 @@ export async function POST(req: Request) {
 
     const content = await Promise.race([
       getAIResponse(
-        "You are an elite multi-agent orchestration engine. Respond only with JSON.",
-        orchestrationPrompt,
+        systemPrompt,
+        prompt,
         true
       ),
       new Promise<string>((resolve) =>

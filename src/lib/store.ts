@@ -1,5 +1,7 @@
 ﻿import { create } from "zustand";
 
+import { getLocalGeneratedProject } from "@/lib/localGeneratedProject";
+
 interface GeneratedFile {
   path: string;
   content: string;
@@ -68,6 +70,49 @@ function normalizeFiles(files: GeneratedFile[], previewHtml: string | null): Gen
   }
 
   return next;
+}
+
+type GeneratedProjectPayload = {
+  files?: GeneratedFile[];
+  previewHtml?: string | null;
+  projectTitle?: string;
+  workflowLogs?: AgentLog[];
+};
+
+function buildGeneratedState(data: GeneratedProjectPayload): Partial<GenerationState> {
+  const files = Array.isArray(data.files) ? data.files : [];
+  const previewHtml = typeof data.previewHtml === "string" ? data.previewHtml : null;
+  const normalized = normalizeFiles(files, previewHtml);
+  const initialTabs: EditorTab[] = [];
+
+  for (const candidate of [
+    VIRTUAL_PREVIEW_PATH,
+    "app/page.tsx",
+    "app/layout.tsx",
+    "app/globals.css",
+    "app/dashboard/page.tsx",
+    "components/navbar.tsx",
+    "components/sidebar.tsx",
+  ]) {
+    if (normalized.some((file) => file.path === candidate)) {
+      initialTabs.push({ path: candidate, title: tabTitle(candidate) });
+    }
+  }
+
+  const fallbackFirst = normalized[0]?.path ?? null;
+  const activeFilePath = initialTabs[0]?.path ?? fallbackFirst;
+
+  return {
+    generatedFiles: normalized,
+    previewHtml,
+    projectTitle: typeof data.projectTitle === "string" ? data.projectTitle : "",
+    isGenerating: false,
+    activeAgentIndex: -1,
+    view: "preview",
+    openTabs: initialTabs.length ? initialTabs : activeFilePath ? [{ path: activeFilePath, title: tabTitle(activeFilePath) }] : [],
+    activeFilePath,
+    workflowLogs: Array.isArray(data.workflowLogs) ? data.workflowLogs : [],
+  };
 }
 
 export const useGeneratorStore = create<GenerationState>((set, get) => ({
@@ -142,50 +187,30 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
     simulateAgents();
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+
       const response = await fetch("/api/superagents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
-      });
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeoutId));
 
       const data = await response.json();
       if (data.error) throw new Error(data.error);
 
-      const files = Array.isArray(data.files) ? (data.files as GeneratedFile[]) : [];
-      const previewHtml = typeof data.previewHtml === "string" ? data.previewHtml : null;
-
-      const normalized = normalizeFiles(files, previewHtml);
-      const initialTabs: EditorTab[] = [];
-
-      for (const candidate of [
-        "app/page.tsx",
-        "app/layout.tsx",
-        "app/dashboard/page.tsx",
-        "components/navbar.tsx",
-        "components/sidebar.tsx",
-        VIRTUAL_PREVIEW_PATH,
-      ]) {
-        if (normalized.some((f) => f.path === candidate)) {
-          initialTabs.push({ path: candidate, title: tabTitle(candidate) });
-        }
+      if (!Array.isArray(data.files) || !data.files.length || typeof data.previewHtml !== "string") {
+        throw new Error("Generator returned an empty project.");
       }
 
-      const fallbackFirst = normalized[0]?.path ?? null;
-      const activeFilePath = initialTabs[0]?.path ?? fallbackFirst;
-
-      set({
-        generatedFiles: normalized,
-        previewHtml,
-        projectTitle: typeof data.projectTitle === "string" ? data.projectTitle : "",
-        isGenerating: false,
-        activeAgentIndex: -1,
-        view: "preview",
-        openTabs: initialTabs.length ? initialTabs : activeFilePath ? [{ path: activeFilePath, title: tabTitle(activeFilePath) }] : [],
-        activeFilePath,
-      });
+      set(buildGeneratedState(data));
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Unknown error";
-      set({ error: message, isGenerating: false, activeAgentIndex: -1 });
+      const fallback = getLocalGeneratedProject(prompt);
+      set({
+        ...buildGeneratedState(fallback),
+        error: null,
+      });
     }
   },
 
