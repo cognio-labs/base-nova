@@ -784,7 +784,7 @@ export default function BuilderWorkspace() {
 
         <main className="relative flex min-h-0 flex-1 overflow-hidden bg-transparent p-3 lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#1f1f22] pt-0 shadow-[0_30px_90px_rgba(0,0,0,0.45)] transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
+            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#1b1b20]/72 pt-0 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
             <div className="hidden shrink-0 items-center justify-between border-b border-zinc-800 px-4 py-4">
@@ -833,8 +833,8 @@ export default function BuilderWorkspace() {
               </div>
             </div>
 
-            <div className="sticky bottom-0 z-10 shrink-0 bg-[#1f1f22] p-4">
-              <div className="rounded-lg border border-zinc-700 bg-[#2b2b2f] p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)] focus-within:border-sky-500/80">
+            <div className="sticky bottom-0 z-10 shrink-0 bg-transparent p-4">
+              <div className="rounded-lg border border-white/12 bg-white/[0.075] p-3 shadow-[0_18px_45px_rgba(0,0,0,0.34)] backdrop-blur-2xl focus-within:border-sky-500/70">
                 <div className="relative overflow-hidden rounded-md bg-transparent">
                   {!draft ? (
                     <div className="pointer-events-none absolute left-0 right-0 top-1 z-0">
@@ -906,7 +906,7 @@ export default function BuilderWorkspace() {
             </div>
           </aside>
 
-          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-zinc-700 bg-[#1f1f22] lg:ml-1">
+          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-white/12 bg-white/[0.045] shadow-[0_26px_80px_rgba(0,0,0,0.30)] backdrop-blur-2xl lg:ml-1">
             <div className="hidden shrink-0 items-center justify-between gap-2 border-b border-zinc-800 bg-[#1f1f22] px-3 py-2 sm:px-4">
               <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 <Globe className="h-3.5 w-3.5" />
@@ -959,7 +959,7 @@ export default function BuilderWorkspace() {
                     exit={{ opacity: 0, scale: 0.99 }}
                     className="flex h-full w-full justify-center"
                   >
-                    <div className="relative h-full w-full overflow-hidden rounded-lg bg-[#1f1f22]">
+                    <div className="relative h-full w-full overflow-hidden rounded-lg bg-transparent">
                       {showPreviewSkeleton ? (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-sky-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
                           <div className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
