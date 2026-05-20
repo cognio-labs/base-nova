@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Eye,
   Globe,
+  HelpCircle,
   Link2,
   Loader2,
   Mic,
