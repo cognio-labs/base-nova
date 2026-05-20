@@ -1,0 +1,4 @@
+LokoAI Superagent Error: SyntaxError: Bad escaped character in JSON at position 10 (line 1 column 11)
+    at JSON.parse (<anonymous>)
+LokoAI Superagent Error: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
