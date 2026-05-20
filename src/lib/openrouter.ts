@@ -43,7 +43,7 @@ function toTitleFromPrompt(prompt: string) {
   return titled;
 }
 
-function getOfflineJson(userPrompt: string) {
+export function getOfflineGeneratedProject(userPrompt: string) {
   const projectTitle = toTitleFromPrompt(userPrompt);
   const description = userPrompt.trim() || "Offline generated starter";
 
@@ -361,7 +361,7 @@ export async function getOpenRouterResponse(
 
   // If key is missing, fall back to offline generation for JSON flows.
   if (!apiKey) {
-    if (isJson) return JSON.stringify(getOfflineJson(userPrompt));
+    if (isJson) return JSON.stringify(getOfflineGeneratedProject(userPrompt));
     throw new Error("Missing OPENROUTER_API_KEY in environment variables.");
   }
 
@@ -383,7 +383,7 @@ export async function getOpenRouterResponse(
 
     // If any JSON generation path fails, return an offline starter so the app still works.
     if (isJson) {
-      return JSON.stringify(getOfflineJson(userPrompt));
+      return JSON.stringify(getOfflineGeneratedProject(userPrompt));
     }
 
     throw new Error(message);
