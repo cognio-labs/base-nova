@@ -78,22 +78,16 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-html,
+html {
+  scroll-behavior: smooth;
+}
+
 body {
+  scroll-behavior: smooth;
   width: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
   scrollbar-gutter: stable;
-  scroll-behavior: smooth;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
   overscroll-behavior: none;
   background-color: var(--background);
 }
