@@ -16,13 +16,16 @@ import Editor from "@monaco-editor/react";
 import {
   ArrowUp,
   ArrowLeft,
+  Check,
   ChevronDown,
+  Circle,
   Code2,
   Expand,
   ExternalLink,
   Eye,
   Globe,
   HelpCircle,
+  FileText,
   Link2,
   Loader2,
   Mic,
@@ -64,6 +67,18 @@ type ChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: number;
+};
+
+type TaskStatus = "completed" | "active" | "pending";
+type TaskKind = "plan" | "code" | "file" | "design" | "debug" | "deploy";
+
+type GenerationTask = {
+  id: string;
+  label: string;
+  status: TaskStatus;
+  kind: TaskKind;
+  agent: string;
+  filePath?: string;
 };
 
 type SpeechRecognitionResultEvent = {
@@ -110,6 +125,20 @@ const TYPEWRITER_PROMPTS = [
   "Design a mobile app landing page…",
   "Build a no-code AI website builder…",
   "Create a modern fintech platform…",
+];
+
+const GENERATION_TASK_BLUEPRINT: Array<Omit<GenerationTask, "status">> = [
+  { id: "architecture", label: "Setup project architecture", kind: "plan", agent: "Planner" },
+  { id: "schema", label: "Create database schema", kind: "code", agent: "Data Agent" },
+  { id: "api", label: "Initialize API routes", kind: "code", agent: "Backend Agent" },
+  { id: "auth", label: "Build authentication system", kind: "code", agent: "Security Agent" },
+  { id: "hero", label: "Building Hero section...", kind: "design", agent: "UI Agent" },
+  { id: "navbar", label: "Writing components/Navbar.tsx", kind: "file", agent: "Component Agent", filePath: "components/Navbar.tsx" },
+  { id: "dashboard", label: "Creating dashboard layout", kind: "file", agent: "Layout Agent", filePath: "app/dashboard/page.tsx" },
+  { id: "styles", label: "Generating responsive styles", kind: "design", agent: "Design Agent", filePath: "app/globals.css" },
+  { id: "backend", label: "Connecting backend APIs", kind: "code", agent: "Integration Agent" },
+  { id: "animations", label: "Optimizing animations", kind: "debug", agent: "Motion Agent" },
+  { id: "final-ui", label: "Finalizing UI design", kind: "deploy", agent: "QA Agent" },
 ];
 
 let cachedChatStorageValue: string | null | undefined;
@@ -220,6 +249,30 @@ function subscribeToStoredChatMessages(onStoreChange: () => void) {
   };
 }
 
+function TaskStatusIcon({ status }: { status: TaskStatus }) {
+  if (status === "completed") {
+    return (
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-400/25">
+        <Check className="h-3.5 w-3.5" />
+      </span>
+    );
+  }
+
+  if (status === "active") {
+    return (
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/30">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex h-5 w-5 items-center justify-center rounded-full text-zinc-500 ring-1 ring-zinc-700/80">
+      <Circle className="h-2.5 w-2.5 fill-current" />
+    </span>
+  );
+}
+
 function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
   const messages = useSyncExternalStore(
     subscribeToStoredChatMessages,
@@ -275,9 +328,13 @@ export default function BuilderWorkspace() {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [typewriterText, setTypewriterText] = useState("");
   const [isTypewriterDeleting, setIsTypewriterDeleting] = useState(false);
+  const [generationTasks, setGenerationTasks] = useState<GenerationTask[]>([]);
+  const [isTaskPanelLive, setIsTaskPanelLive] = useState(false);
   const pathname = usePathname();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const taskPanelRef = useRef<HTMLDivElement | null>(null);
+  const taskTimersRef = useRef<number[]>([]);
   const streamTimerRef = useRef<number | null>(null);
   const pendingPromptRef = useRef(false);
   const shareTimerRef = useRef<number | null>(null);
@@ -381,11 +438,57 @@ export default function BuilderWorkspace() {
       if (streamTimerRef.current) {
         window.clearInterval(streamTimerRef.current);
       }
+      taskTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+      taskTimersRef.current = [];
       if (shareTimerRef.current) {
         window.clearTimeout(shareTimerRef.current);
       }
     };
   }, []);
+
+  useEffect(() => {
+    const panel = taskPanelRef.current;
+    if (!panel) return;
+
+    panel.scrollTo({
+      top: panel.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [generationTasks]);
+
+  const startGenerationTimeline = () => {
+    taskTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    taskTimersRef.current = [];
+    setIsTaskPanelLive(true);
+    setGenerationTasks([]);
+
+    GENERATION_TASK_BLUEPRINT.forEach((task, index) => {
+      const timerId = window.setTimeout(() => {
+        setGenerationTasks((current) => {
+          const completed = current.map((item) =>
+            item.status === "active" ? { ...item, status: "completed" as TaskStatus } : item
+          );
+
+          return [
+            ...completed,
+            {
+              ...task,
+              status: "active",
+            },
+          ];
+        });
+      }, 420 + index * 720);
+
+      taskTimersRef.current.push(timerId);
+    });
+
+    const finishTimerId = window.setTimeout(() => {
+      setGenerationTasks((current) => current.map((item) => ({ ...item, status: "completed" })));
+      setIsTaskPanelLive(false);
+    }, 420 + GENERATION_TASK_BLUEPRINT.length * 720 + 900);
+
+    taskTimersRef.current.push(finishTimerId);
+  };
 
   const startVoiceInput = () => {
     const speechWindow = window as SpeechRecognitionWindow;
@@ -449,6 +552,7 @@ export default function BuilderWorkspace() {
     }
 
     pushMessage({ role: "user", content: trimmedPrompt });
+    startGenerationTimeline();
 
     const assistantId = pushMessage({
       role: "assistant",
