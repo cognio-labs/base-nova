@@ -819,14 +819,14 @@ export default function BuilderWorkspace() {
 
             <div className="sticky bottom-0 z-10 shrink-0 border-t border-slate-200/70 bg-white/90 p-4 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/82">
               <div className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-sky-400/15 dark:bg-slate-950">
-                <div className="relative overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50/90 shadow-inner shadow-slate-200/40 transition-all focus-within:border-sky-300 focus-within:bg-white focus-within:shadow-sky-500/10 dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.96))] dark:shadow-black/20 dark:focus-within:border-sky-400/40">
+                <div className="relative overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50/90 shadow-inner shadow-slate-200/40 transition-all focus-within:border-slate-300 focus-within:bg-white focus-within:shadow-slate-400/10 dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.96))] dark:shadow-black/20 dark:focus-within:border-slate-500/60">
                   {!draft ? (
-                    <div className="pointer-events-none absolute inset-0 flex items-start px-4 py-3">
-                      <div className="flex min-w-0 items-center pt-0.5 text-[13px] font-medium leading-5 tracking-tight text-slate-500 dark:text-slate-400 sm:text-[13px]">
-                        <span className="truncate text-slate-500 dark:text-slate-400">
+                    <div className="pointer-events-none absolute left-4 right-4 top-3 z-0">
+                      <div className="flex min-w-0 items-center text-xs font-medium leading-5 tracking-normal text-slate-600 dark:text-slate-400">
+                        <span className="truncate text-slate-600 dark:text-slate-400">
                           {typewriterText}
                         </span>
-                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-slate-500/70 dark:bg-slate-400/80" />
+                        <span className="typewriter-cursor ml-1 h-3.5 w-[2px] shrink-0 rounded-full bg-slate-600/70 dark:bg-slate-400/80" />
                       </div>
                     </div>
                   ) : null}
@@ -836,7 +836,7 @@ export default function BuilderWorkspace() {
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder=""
-                    className="relative z-10 w-full resize-none border-none bg-transparent px-4 py-3 text-[15px] font-medium leading-6 text-slate-900 outline-none placeholder:text-transparent dark:text-white"
+                    className="relative z-10 w-full resize-none border-none bg-transparent px-4 py-3 text-sm font-medium leading-6 text-slate-900 outline-none placeholder:text-transparent dark:text-white"
                     style={{ minHeight: 112 }}
                     aria-label="Describe what you want to build"
                   />
