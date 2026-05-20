@@ -818,6 +818,30 @@ export default function BuilderWorkspace() {
       >
         Code
       </button>
+      <span className="mx-0.5 h-6 w-px bg-white/10" />
+      <button
+        onClick={() => setView("code")}
+        className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold text-slate-300 transition hover:bg-white/5 hover:text-white"
+        aria-label="Edit generated code"
+      >
+        <Code2 className="h-3.5 w-3.5" />
+        Edit
+      </button>
+      <button
+        onClick={cyclePreviewStyle}
+        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-300 transition hover:bg-white/5 hover:text-white"
+        aria-label="Change preview style"
+        title={`Style: ${previewStyle}`}
+      >
+        <Palette className="h-3.5 w-3.5" />
+      </button>
+      <button
+        onClick={() => setDeviceMode((mode) => (mode === "desktop" ? "mobile" : "desktop"))}
+        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-300 transition hover:bg-white/5 hover:text-white"
+        aria-label="Toggle preview size"
+      >
+        <Grid2X2 className="h-3.5 w-3.5" />
+      </button>
     </div>
   </div>
 
@@ -1228,32 +1252,6 @@ export default function BuilderWorkspace() {
                         previewStyle === "default" && "bg-transparent"
                       )}
                     >
-                      <div className="absolute left-3 top-3 z-20 flex items-center overflow-hidden rounded-md border border-white/10 bg-black/20 p-0.5 text-xs font-semibold text-zinc-300 shadow-lg shadow-black/20 backdrop-blur-xl">
-                        <button
-                          onClick={() => setView("code")}
-                          className="inline-flex h-7 items-center gap-1.5 rounded px-2.5 transition hover:bg-white/10 hover:text-white"
-                          aria-label="Edit generated code"
-                        >
-                          <Code2 className="h-3.5 w-3.5" />
-                          Edit
-                        </button>
-                        <span className="h-5 w-px bg-white/10" />
-                        <button
-                          onClick={cyclePreviewStyle}
-                          className="inline-flex h-7 items-center justify-center rounded px-2 transition hover:bg-white/10 hover:text-white"
-                          aria-label="Change preview style"
-                          title={`Style: ${previewStyle}`}
-                        >
-                          <Palette className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setDeviceMode((mode) => (mode === "desktop" ? "mobile" : "desktop"))}
-                          className="inline-flex h-7 items-center justify-center rounded px-2 transition hover:bg-white/10 hover:text-white"
-                          aria-label="Toggle preview size"
-                        >
-                          <Grid2X2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
                       {showPreviewSkeleton ? (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-sky-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
                           <div className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
