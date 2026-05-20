@@ -2,6 +2,7 @@ import { getOpenRouterConfig } from "@/lib/openrouterConfig";
 
 const MAX_RETRIES = 2;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+const REQUEST_TIMEOUT_MS = 25000;
 
 type OpenRouterResponse = {
   choices?: Array<{
@@ -308,6 +309,9 @@ async function requestOpenRouter(
   userPrompt: string
 ) {
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     const response = await fetch(chatCompletionsUrl, {
       method: "POST",
       headers: {
@@ -323,7 +327,8 @@ async function requestOpenRouter(
           { role: "user", content: userPrompt },
         ],
       }),
-    });
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     const data = (await response.json()) as OpenRouterResponse;
 

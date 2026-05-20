@@ -3,6 +3,20 @@ import { getOpenRouterResponse } from "@/lib/openrouter";
 import { getOpenRouterAgentResponse } from "@/lib/openrouterAgent";
 
 type AIProvider = "gemini" | "openrouter" | "openrouter_agent";
+const AI_PROVIDER_TIMEOUT_MS = 30000;
+
+function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(
+      () => reject(new Error(`${label} timed out after ${AI_PROVIDER_TIMEOUT_MS / 1000}s`)),
+      AI_PROVIDER_TIMEOUT_MS
+    );
+
+    promise
+      .then(resolve, reject)
+      .finally(() => clearTimeout(timeoutId));
+  });
+}
 
 function getAIProvider(): AIProvider {
   const provider = process.env.AI_PROVIDER?.toLowerCase();
@@ -32,21 +46,36 @@ export async function getAIResponse(
 
   if (provider === "openrouter_agent") {
     try {
-      return await getOpenRouterAgentResponse(systemPrompt, userPrompt, isJson);
+      return await withTimeout(
+        getOpenRouterAgentResponse(systemPrompt, userPrompt, isJson),
+        "OpenRouter agent"
+      );
     } catch {
-      return getOpenRouterResponse(systemPrompt, userPrompt, isJson);
+      return withTimeout(
+        getOpenRouterResponse(systemPrompt, userPrompt, isJson),
+        "OpenRouter fallback"
+      );
     }
   }
 
   if (provider === "openrouter") {
-    return getOpenRouterResponse(systemPrompt, userPrompt, isJson);
+    return withTimeout(
+      getOpenRouterResponse(systemPrompt, userPrompt, isJson),
+      "OpenRouter"
+    );
   }
 
   try {
-    return await getGeminiResponse(systemPrompt, userPrompt, isJson);
+    return await withTimeout(
+      getGeminiResponse(systemPrompt, userPrompt, isJson),
+      "Gemini"
+    );
   } catch (error) {
     if (isJson) {
-      return getOpenRouterResponse(systemPrompt, userPrompt, isJson);
+      return withTimeout(
+        getOpenRouterResponse(systemPrompt, userPrompt, isJson),
+        "OpenRouter fallback"
+      );
     }
 
     throw error;

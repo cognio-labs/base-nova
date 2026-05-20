@@ -2,6 +2,26 @@
 import { getAIResponse } from "@/lib/ai";
 import { getErrorMessage } from "@/lib/api";
 
+function parseAIJson(content: string) {
+  const trimmed = content
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/i, "")
+    .trim();
+
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+
+    if (start >= 0 && end > start) {
+      return JSON.parse(trimmed.slice(start, end + 1));
+    }
+
+    throw new Error("AI response was not valid JSON.");
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
@@ -52,7 +72,7 @@ export async function POST(req: Request) {
 
     if (!content) throw new Error("No content returned");
 
-    return NextResponse.json(JSON.parse(content));
+    return NextResponse.json(parseAIJson(content));
   } catch (error: unknown) {
     console.error("LokoAI Superagent Error:", error);
     return NextResponse.json(

@@ -1,19 +1,5 @@
-[dev-safe] Cleared C:\Users\PC\base44\.next\dev
-▲ Next.js 16.2.6 (webpack)
-- Local:         http://localhost:302
-- Network:       http://192.168.1.25:302
-- Environments: .env.local
-✓ Ready in 1017ms
 
-○ Compiling / ...
- GET / 200 in 17.0s (next.js: 16.4s, application-code: 597ms)
- GET / 200 in 305ms (next.js: 15ms, application-code: 290ms)
- GET / 200 in 202ms (next.js: 4ms, application-code: 199ms)
- GET / 200 in 143ms (next.js: 3ms, application-code: 140ms)
- GET / 200 in 307ms (next.js: 4ms, application-code: 303ms)
- GET / 200 in 222ms (next.js: 3ms, application-code: 220ms)
-○ Compiling /_error ...
- GET / 500 in 6.3s (next.js: 6.3s, application-code: 30ms)
- GET / 500 in 6.3s (next.js: 6.3s, application-code: 33ms)
- GET / 500 in 910ms (next.js: 886ms, application-code: 24ms)
- GET / 500 in 910ms (next.js: 886ms, application-code: 24ms)
+> lokoai@0.1.0 dev
+> node scripts/dev-safe.mjs
+
+[?25h

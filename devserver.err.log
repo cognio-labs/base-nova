@@ -1,74 +1,10 @@
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\server\app-paths-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\server\\app-paths-manifest.json',
-  page: '/'
-}
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
-}
-Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\server\app-paths-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\server\\app-paths-manifest.json',
-  page: '/'
-}
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
-}
-Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
-}
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json',
-  page: '/'
-}
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
-}
-Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json',
-  page: '/'
-}
-⨯ Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
-}
-Error: ENOENT: no such file or directory, open 'C:\Users\PC\base44\.next\dev\routes-manifest.json'
-    at ignore-listed frames {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'C:\\Users\\PC\\base44\\.next\\dev\\routes-manifest.json'
+⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::302
+    at <unknown> (Error: listen EADDRINUSE: address already in use :::302)
+    at new Promise (<anonymous>) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 302
 }
