@@ -23,7 +23,6 @@ import {
   Grid2X2,
   Expand,
   ExternalLink,
-  Eye,
   Globe,
   HelpCircle,
   FileText,
@@ -837,91 +836,37 @@ export default function BuilderWorkspace() {
     </div>
   </div>
 
-  <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="inline-flex h-7 w-full max-w-[280px] items-center justify-between rounded-full border border-cyan-900/10 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white hover:text-slate-900">
-          <RefreshCcw className="h-3.5 w-3.5 text-slate-400" />
-          <span className="truncate">{pathname || "/create"}</span>
-          <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-52">
-        <DropdownMenuItem onSelect={() => setRefreshKey((key) => key + 1)}>
-          Refresh preview
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => setView("preview")}>
-          Open preview
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => setView("code")}>
-          Open code editor
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-
-    <div className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
-      <button
-        onClick={() => setView("preview")}
-        className={cn(
-          "flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
-          view === "preview"
-            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-        )}
-      >
-        <Eye className="h-3.5 w-3.5" />
-        Preview
-      </button>
-      <button
-        onClick={() => setView("code")}
-        className={cn(
-          "flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
-          view === "code"
-            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-        )}
-      >
-        <Code2 className="h-3.5 w-3.5" />
-        Code
-      </button>
-    </div>
-
-    <div className="inline-flex items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 p-0.5 text-slate-500 shadow-sm">
-      <button
-        onClick={() => setDeviceMode("desktop")}
-        className={cn(
-          "rounded p-1.5 transition-all",
-          deviceMode === "desktop"
-            ? "bg-slate-900 text-white"
-            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
-        )}
-        aria-label="Desktop preview"
-      >
-        <Monitor className="h-3.5 w-3.5" />
-      </button>
-      <button
-        onClick={() => setDeviceMode("mobile")}
-        className={cn(
-          "rounded p-1.5 transition-all",
-          deviceMode === "mobile"
-            ? "bg-slate-900 text-white"
-            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
-        )}
-        aria-label="Mobile preview"
-      >
-        <Smartphone className="h-3.5 w-3.5" />
-      </button>
+  <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
+    <div className="inline-flex h-7 w-full max-w-[310px] items-center rounded-full border border-cyan-900/10 bg-white/[0.82] text-xs font-semibold text-slate-600 shadow-[0_10px_26px_rgba(14,116,144,0.10)] backdrop-blur-xl">
       <button
         onClick={() => setRefreshKey((key) => key + 1)}
-        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
+        className="inline-flex h-full w-9 items-center justify-center rounded-l-full text-slate-400 transition hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Refresh preview"
+        title="Refresh preview"
       >
         <RefreshCcw className="h-3.5 w-3.5" />
       </button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="inline-flex min-w-0 flex-1 select-none items-center justify-center gap-2 border-x border-cyan-900/10 px-3 text-slate-600 transition hover:bg-cyan-50 hover:text-slate-900">
+            <span className="truncate">{pathname || "/create"}</span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="center" className="w-56">
+          <DropdownMenuItem onSelect={() => setView("preview")}>Show preview</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setView("code")}>Edit code</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setRefreshKey((key) => key + 1)}>Refresh preview</DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleOpenExternalPreview}>Open in new tab</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <button
         onClick={handleOpenExternalPreview}
-        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
+        className="inline-flex h-full w-9 items-center justify-center rounded-r-full text-slate-400 transition hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Open preview in new tab"
+        title="Open preview in new tab"
       >
         <ExternalLink className="h-3.5 w-3.5" />
       </button>
@@ -933,10 +878,12 @@ export default function BuilderWorkspace() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="inline-flex rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
+            className="inline-flex items-center gap-1 rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
             aria-label="Preview device options"
+            title={`${deviceMode === "desktop" ? "Desktop" : "Mobile"} preview`}
           >
             {deviceMode === "desktop" ? <Monitor className="h-3.5 w-3.5" /> : <Smartphone className="h-3.5 w-3.5" />}
+            <ChevronDown className="h-3 w-3" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
