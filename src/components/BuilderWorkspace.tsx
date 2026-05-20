@@ -742,6 +742,14 @@ export default function BuilderWorkspace() {
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
+    <div className="ml-2 hidden items-center gap-2 rounded-md border border-white/10 bg-white/[0.055] px-2.5 py-1 shadow-inner shadow-white/5 sm:flex">
+      <div className="flex h-5 w-5 items-center justify-center rounded bg-sky-500/15 text-[11px] font-black text-sky-300 ring-1 ring-sky-400/25">
+        L
+      </div>
+      <span className="text-xs font-black tracking-tight text-zinc-100">
+        Loko<span className="text-sky-300">AI</span>
+      </span>
+    </div>
     <div className="ml-2 hidden overflow-hidden rounded-md border border-white/10 bg-white/[0.055] p-0.5 sm:flex">
       <button
         onClick={() => setView("preview")}
