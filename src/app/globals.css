@@ -80,6 +80,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
 body {
@@ -87,9 +88,15 @@ body {
   width: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
+  scrollbar-width: none;
   scrollbar-gutter: stable;
   overscroll-behavior: none;
   background-color: var(--background);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .glass {
@@ -234,7 +241,6 @@ body {
 .animate-marquee-vertical-down {
   animation: marquee-vertical-down 16s linear infinite;
 }
-
 
 
 
