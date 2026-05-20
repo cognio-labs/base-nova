@@ -1,6 +1,6 @@
 import { getOpenRouterConfig } from "@/lib/openrouterConfig";
 
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 0;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 const REQUEST_TIMEOUT_MS = 25000;
 

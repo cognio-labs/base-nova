@@ -25,9 +25,10 @@ function getAIProvider(): AIProvider {
     return provider;
   }
 
-  // Prefer OpenRouter when available because it has a built-in offline JSON fallback.
+  // Prefer direct OpenRouter chat completions for website generation. The agent SDK
+  // can be selected explicitly with AI_PROVIDER=openrouter_agent.
   if (process.env.OPENROUTER_API_KEY) {
-    return "openrouter_agent";
+    return "openrouter";
   }
 
   if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
