@@ -40,10 +40,10 @@ export default function PreviewFrame({ iframeKey, className, iframeClassName }: 
 
   if (!previewHtml) {
     return (
-      <div className={"relative flex h-full min-h-0 items-center justify-center rounded-[inherit] bg-[#1f1f22] p-8 text-center text-zinc-400 " + (className ?? "") }>
+      <div className={"relative flex h-full min-h-0 items-center justify-center rounded-[inherit] border border-white/10 bg-[#1f1f22]/80 p-8 text-center text-zinc-400 shadow-[inset_0_0_80px_rgba(0,0,0,0.18)] backdrop-blur-xl " + (className ?? "") }>
         <div>
-          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center text-6xl font-black italic tracking-tighter text-zinc-400/80">
-            b
+          <div className="mx-auto mb-5 flex items-center justify-center text-4xl font-black tracking-tight text-zinc-300">
+            Loko<span className="text-sky-400">AI</span>
           </div>
           <p className="text-base font-medium text-zinc-400">Your preview will appear here</p>
         </div>

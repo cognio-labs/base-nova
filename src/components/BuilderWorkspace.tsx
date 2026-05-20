@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
   ArrowUp,
+  ArrowLeft,
   ChevronDown,
   Code2,
   Expand,
@@ -619,25 +620,54 @@ export default function BuilderWorkspace() {
       className="relative h-[100dvh] w-screen overflow-hidden bg-[#1f1f22] text-zinc-100"
       style={shellStyle}
     >
-      <div className="absolute inset-0 bg-[#1f1f22]" />
+      <div className="absolute inset-0 bg-[#141416]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(76,29,149,0.34),transparent_34%),radial-gradient(circle_at_76%_18%,rgba(14,165,233,0.20),transparent_32%),radial-gradient(circle_at_52%_100%,rgba(37,99,235,0.16),transparent_38%),linear-gradient(135deg,#151519_0%,#1f1f24_44%,#15161b_100%)]" />
+      <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.85)_1px,transparent_0)] [background-size:18px_18px]" />
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.07] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/35 to-transparent" />
 
       {isSidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] lg:hidden" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar overlay" />}
 
       <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">
-        <header className="hidden">
+        <header className="relative z-30 flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.045] px-2 text-zinc-200 shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-2xl">
   <div className="flex min-w-0 items-center">
-    <h2 className="truncate text-base font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-lg">
-      {projectLabel}
-    </h2>
+    <button
+      onClick={() => setIsSidebarOpen((value) => !value)}
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 transition hover:bg-white/10 hover:text-white"
+      aria-label="Toggle chat panel"
+    >
+      <ArrowLeft className="h-4 w-4" />
+    </button>
+    <div className="ml-2 hidden overflow-hidden rounded-md border border-white/10 bg-white/[0.055] p-0.5 sm:flex">
+      <button
+        onClick={() => setView("preview")}
+        className={cn(
+          "rounded px-5 py-1 text-xs font-semibold transition",
+          view === "preview" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
+        )}
+      >
+        Preview
+      </button>
+      <button
+        onClick={() => setView("code")}
+        className={cn(
+          "rounded px-5 py-1 text-xs font-semibold transition",
+          view === "code" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
+        )}
+      >
+        Code
+      </button>
+    </div>
   </div>
 
   <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
-    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-      <Globe className="h-3.5 w-3.5" />
-      <span className="max-w-44 truncate">{pathname || "/workspace"}</span>
+    <div className="inline-flex h-7 w-full max-w-[280px] items-center justify-between rounded-full border border-white/10 bg-white/[0.07] px-3 text-xs font-semibold text-zinc-300 shadow-inner shadow-black/20">
+      <RefreshCcw className="h-3.5 w-3.5 text-zinc-400" />
+      <span className="truncate">{pathname || "/workspace"}</span>
+      <ChevronDown className="h-3.5 w-3.5 text-zinc-500" />
     </div>
 
-    <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
+    <div className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
       <button
         onClick={() => setView("preview")}
         className={cn(
@@ -664,14 +694,14 @@ export default function BuilderWorkspace() {
       </button>
     </div>
 
-    <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
+    <div className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.055] p-0.5 shadow-sm">
       <button
         onClick={() => setDeviceMode("desktop")}
         className={cn(
-          "rounded-full p-2 transition-all",
+          "rounded p-1.5 transition-all",
           deviceMode === "desktop"
-            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+            ? "bg-white text-zinc-950"
+            : "text-zinc-400 hover:bg-white/10 hover:text-white"
         )}
         aria-label="Desktop preview"
       >
@@ -680,10 +710,10 @@ export default function BuilderWorkspace() {
       <button
         onClick={() => setDeviceMode("mobile")}
         className={cn(
-          "rounded-full p-2 transition-all",
+          "rounded p-1.5 transition-all",
           deviceMode === "mobile"
-            ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+            ? "bg-white text-zinc-950"
+            : "text-zinc-400 hover:bg-white/10 hover:text-white"
         )}
         aria-label="Mobile preview"
       >
@@ -691,14 +721,14 @@ export default function BuilderWorkspace() {
       </button>
       <button
         onClick={() => setRefreshKey((key) => key + 1)}
-        className="rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+        className="rounded p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
         aria-label="Refresh preview"
       >
         <RefreshCcw className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={handleOpenExternalPreview}
-        className="rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+        className="rounded p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
         aria-label="Open preview in new tab"
       >
         <ExternalLink className="h-3.5 w-3.5" />
@@ -706,15 +736,21 @@ export default function BuilderWorkspace() {
     </div>
   </div>
 
-  <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-    <Avatar size="sm" className="hidden sm:flex ring-2 ring-white/70 dark:ring-slate-900">
+  <div className="flex shrink-0 items-center gap-1.5">
+    <button
+      onClick={handleAiAction}
+      className="inline-flex h-7 items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-2 text-[11px] font-bold text-sky-200 transition hover:bg-sky-500/20"
+    >
+      AI
+    </button>
+    <Avatar size="sm" className="hidden sm:flex h-7 w-7 ring-1 ring-white/15">
       <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="Profile" />
       <AvatarFallback>A</AvatarFallback>
     </Avatar>
 
     <button
       onClick={() => setIsShareModalOpen(true)}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/80 bg-white/80 text-slate-700 shadow-sm transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 shadow-sm transition-all hover:bg-white/10 hover:text-white"
       aria-label="Share project"
     >
       <Plus className="h-4 w-4" />
@@ -722,7 +758,7 @@ export default function BuilderWorkspace() {
 
     <button
       onClick={handleGithubOpen}
-      className="inline-flex h-9 items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 px-3 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+      className="inline-flex h-7 items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 text-[11px] font-semibold text-zinc-300 shadow-sm transition-all hover:bg-white/10 hover:text-white"
       aria-label="Open GitHub"
     >
       <Code2 className="h-3.5 w-3.5" />
@@ -731,11 +767,11 @@ export default function BuilderWorkspace() {
 
     <button
       onClick={handleShare}
-      className="inline-flex h-9 items-center gap-1 rounded-full bg-sky-500 px-3 text-xs font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:bg-sky-600"
+      className="inline-flex h-7 items-center gap-1 rounded-md bg-white px-3 text-[11px] font-bold text-zinc-950 shadow-lg shadow-black/20 transition-all hover:bg-zinc-200"
       aria-label="Upload and share"
     >
       <Upload className="h-3.5 w-3.5" />
-      <span className="hidden md:inline">Share</span>
+      <span className="hidden md:inline">Publish</span>
     </button>
 
     {shareFeedback ? (
@@ -746,7 +782,7 @@ export default function BuilderWorkspace() {
   </div>
 </header>
 
-        <main className="relative flex min-h-0 flex-1 overflow-hidden bg-[#1f1f22] p-3 lg:flex-row">
+        <main className="relative flex min-h-0 flex-1 overflow-hidden bg-transparent p-3 lg:flex-row">
           <aside className={cn(
             "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#1f1f22] pt-0 shadow-[0_30px_90px_rgba(0,0,0,0.45)] transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
