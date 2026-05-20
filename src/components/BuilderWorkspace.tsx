@@ -787,7 +787,7 @@ export default function BuilderWorkspace() {
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
-    <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/78 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
+    <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/90 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
       <button
         onClick={() => setView("preview")}
         className={cn(
@@ -838,12 +838,6 @@ export default function BuilderWorkspace() {
   </div>
 
   <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
-    <div className="inline-flex h-7 w-full max-w-[280px] items-center justify-between rounded-full border border-white/10 bg-white/[0.07] px-3 text-xs font-semibold text-zinc-300 shadow-inner shadow-black/20">
-      <RefreshCcw className="h-3.5 w-3.5 text-zinc-400" />
-      <span className="truncate">{pathname || "/workspace"}</span>
-      <ChevronDown className="h-3.5 w-3.5 text-zinc-500" />
-    </div>
-
     <div className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
       <button
         onClick={() => setView("preview")}
@@ -871,14 +865,14 @@ export default function BuilderWorkspace() {
       </button>
     </div>
 
-    <div className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.055] p-0.5 shadow-sm">
+    <div className="inline-flex items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 p-0.5 text-slate-500 shadow-sm">
       <button
         onClick={() => setDeviceMode("desktop")}
         className={cn(
           "rounded p-1.5 transition-all",
           deviceMode === "desktop"
-            ? "bg-white text-zinc-950"
-            : "text-zinc-400 hover:bg-white/10 hover:text-white"
+            ? "bg-slate-900 text-white"
+            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
         )}
         aria-label="Desktop preview"
       >
@@ -889,8 +883,8 @@ export default function BuilderWorkspace() {
         className={cn(
           "rounded p-1.5 transition-all",
           deviceMode === "mobile"
-            ? "bg-white text-zinc-950"
-            : "text-zinc-400 hover:bg-white/10 hover:text-white"
+            ? "bg-slate-900 text-white"
+            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
         )}
         aria-label="Mobile preview"
       >
@@ -898,14 +892,14 @@ export default function BuilderWorkspace() {
       </button>
       <button
         onClick={() => setRefreshKey((key) => key + 1)}
-        className="rounded p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Refresh preview"
       >
         <RefreshCcw className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={handleOpenExternalPreview}
-        className="rounded p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Open preview in new tab"
       >
         <ExternalLink className="h-3.5 w-3.5" />
@@ -916,7 +910,7 @@ export default function BuilderWorkspace() {
   <div className="flex shrink-0 items-center gap-1.5">
     <button
       onClick={() => setIsShareModalOpen(true)}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 shadow-sm transition-all hover:bg-white/10 hover:text-white"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-cyan-900/10 bg-white/80 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-slate-900"
       aria-label="Share project"
     >
       <Plus className="h-4 w-4" />
@@ -924,7 +918,7 @@ export default function BuilderWorkspace() {
 
     <button
       onClick={handleGithubOpen}
-      className="inline-flex h-7 items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 text-[11px] font-semibold text-zinc-300 shadow-sm transition-all hover:bg-white/10 hover:text-white"
+      className="inline-flex h-7 items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 px-2 text-[11px] font-semibold text-slate-600 shadow-sm transition-all hover:bg-white hover:text-slate-900"
       aria-label="Open GitHub"
     >
       <Code2 className="h-3.5 w-3.5" />
@@ -933,7 +927,7 @@ export default function BuilderWorkspace() {
 
     <button
       onClick={handleShare}
-      className="inline-flex h-7 items-center gap-1 rounded-md bg-white px-3 text-[11px] font-bold text-zinc-950 shadow-lg shadow-black/20 transition-all hover:bg-zinc-200"
+      className="inline-flex h-7 items-center gap-1 rounded-md bg-slate-900 px-3 text-[11px] font-bold text-white shadow-lg shadow-cyan-900/15 transition-all hover:bg-slate-800"
       aria-label="Upload and share"
     >
       <Upload className="h-3.5 w-3.5" />
