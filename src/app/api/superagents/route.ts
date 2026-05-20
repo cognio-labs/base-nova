@@ -1,6 +1,9 @@
 ﻿import { NextResponse } from "next/server";
 import { getAIResponse } from "@/lib/ai";
 import { getErrorMessage } from "@/lib/api";
+import { getOfflineGeneratedProject } from "@/lib/openrouter";
+
+const GENERATION_TIMEOUT_MS = 28000;
 
 function parseAIJson(content: string) {
   const trimmed = content
@@ -64,11 +67,19 @@ export async function POST(req: Request) {
       }
     `;
 
-    const content = await getAIResponse(
-      "You are an elite multi-agent orchestration engine. Respond only with JSON.",
-      orchestrationPrompt,
-      true
-    );
+    const content = await Promise.race([
+      getAIResponse(
+        "You are an elite multi-agent orchestration engine. Respond only with JSON.",
+        orchestrationPrompt,
+        true
+      ),
+      new Promise<string>((resolve) =>
+        setTimeout(
+          () => resolve(JSON.stringify(getOfflineGeneratedProject(prompt))),
+          GENERATION_TIMEOUT_MS
+        )
+      ),
+    ]);
 
     if (!content) throw new Error("No content returned");
 
