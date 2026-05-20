@@ -1,6 +1,9 @@
 ﻿import { NextResponse } from "next/server";
 import { getAIResponse } from "@/lib/ai";
 import { getErrorMessage } from "@/lib/api";
+import { getOfflineGeneratedProject } from "@/lib/openrouter";
+
+const GENERATION_TIMEOUT_MS = 28000;
 
 function parseAIJson(content: string) {
   const trimmed = content
@@ -74,7 +77,15 @@ export async function POST(req: Request) {
       Do not include any text outside the JSON block.
     `;
 
-    const content = await getAIResponse(systemPrompt, prompt, true);
+    const content = await Promise.race([
+      getAIResponse(systemPrompt, prompt, true),
+      new Promise<string>((resolve) =>
+        setTimeout(
+          () => resolve(JSON.stringify(getOfflineGeneratedProject(prompt))),
+          GENERATION_TIMEOUT_MS
+        )
+      ),
+    ]);
 
     if (!content) {
       throw new Error("No content returned from AI");
