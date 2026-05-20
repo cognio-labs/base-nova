@@ -778,19 +778,11 @@ export default function BuilderWorkspace() {
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
-    <div className="ml-2 hidden items-center gap-2 rounded-md border border-white/10 bg-white/[0.055] px-2.5 py-1 shadow-inner shadow-white/5 sm:flex">
-      <div className="flex h-5 w-5 items-center justify-center rounded bg-sky-500/15 text-[11px] font-black text-sky-300 ring-1 ring-sky-400/25">
-        L
-      </div>
-      <span className="text-xs font-black tracking-tight text-zinc-100">
-        Loko<span className="text-sky-300">AI</span>
-      </span>
-    </div>
-    <div className="ml-2 hidden overflow-hidden rounded-md border border-white/10 bg-white/[0.055] p-0.5 sm:flex">
+    <div className="ml-2 hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.065] p-1 shadow-inner shadow-black/20 sm:flex">
       <button
         onClick={() => setView("preview")}
         className={cn(
-          "rounded px-5 py-1 text-xs font-semibold transition",
+          "min-w-[78px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
           view === "preview" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
         )}
       >
@@ -799,7 +791,7 @@ export default function BuilderWorkspace() {
       <button
         onClick={() => setView("code")}
         className={cn(
-          "rounded px-5 py-1 text-xs font-semibold transition",
+          "min-w-[68px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
           view === "code" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
         )}
       >
@@ -1055,6 +1047,13 @@ export default function BuilderWorkspace() {
 
             <div className="sticky bottom-0 z-10 shrink-0 bg-transparent p-4">
               <div className="rounded-lg border border-white/12 bg-white/[0.075] p-3 shadow-[0_18px_45px_rgba(0,0,0,0.34)] backdrop-blur-2xl focus-within:border-sky-500/70">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(event) => handleFileAttach(event.target.files)}
+                />
                 <div className="relative overflow-hidden rounded-md bg-transparent">
                   {!draft ? (
                     <div className="pointer-events-none absolute left-0 right-0 top-1 z-0">
@@ -1080,13 +1079,28 @@ export default function BuilderWorkspace() {
 
                 <div className="mt-6 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3b3b40] text-zinc-300 transition-all hover:bg-[#46464c] hover:text-white">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3b3b40] text-zinc-300 transition-all hover:bg-[#46464c] hover:text-white"
+                      aria-label="Attach files"
+                    >
                       <Plus className="h-5 w-5" />
                     </button>
-                    <button className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 sm:inline-flex">
-                      Standard
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 sm:inline-flex">
+                          {buildMode === "App" ? "Standard" : buildMode}
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-40">
+                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
+                          <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
+                            {mode === "App" ? "Standard" : mode}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
                     <button
                       onClick={startVoiceInput}
@@ -1103,11 +1117,17 @@ export default function BuilderWorkspace() {
                   </div>
 
                   <div className="hidden items-center gap-5 text-xs font-semibold text-zinc-400 sm:flex">
-                    <button className="inline-flex items-center gap-1.5 transition hover:text-zinc-100">
+                    <button
+                      onClick={handleSelectDraft}
+                      className="inline-flex items-center gap-1.5 transition hover:text-zinc-100"
+                    >
                       <ExternalLink className="h-3.5 w-3.5" />
                       Select
                     </button>
-                    <button className="inline-flex items-center gap-1.5 transition hover:text-zinc-100">
+                    <button
+                      onClick={handlePlanDraft}
+                      className="inline-flex items-center gap-1.5 transition hover:text-zinc-100"
+                    >
                       <HelpCircle className="h-3.5 w-3.5" />
                       Plan
                     </button>
