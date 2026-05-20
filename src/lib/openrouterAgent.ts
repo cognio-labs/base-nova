@@ -1,8 +1,7 @@
-﻿import { OpenRouter } from "@openrouter/sdk";
+import { OpenRouter } from "@openrouter/sdk";
 import { callModel, tool } from "@openrouter/agent";
 import { z } from "zod";
-
-const DEFAULT_OPENROUTER_MODEL = "openai/gpt-5.1-chat";
+import { getOpenRouterConfig } from "@/lib/openrouterConfig";
 
 function stripJsonFences(text: string) {
   return text
@@ -36,13 +35,13 @@ export async function getOpenRouterAgentResponse(
   isJson: boolean = false
 ) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL || DEFAULT_OPENROUTER_MODEL;
+  const { apiBaseUrl, model } = getOpenRouterConfig();
 
   if (!apiKey) {
     throw new Error("Missing OPENROUTER_API_KEY in environment variables.");
   }
 
-  const client = new OpenRouter({ apiKey });
+  const client = new OpenRouter({ apiKey, serverURL: apiBaseUrl });
 
   const input = [
     "SYSTEM:",
@@ -72,4 +71,3 @@ export async function getOpenRouterAgentResponse(
 
   return text;
 }
-

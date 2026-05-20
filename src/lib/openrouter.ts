@@ -1,5 +1,5 @@
-﻿const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const DEFAULT_OPENROUTER_MODEL = "openai/gpt-5.1-chat";
+import { getOpenRouterConfig } from "@/lib/openrouterConfig";
+
 const MAX_RETRIES = 2;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
 
@@ -74,7 +74,7 @@ function getOfflineJson(userPrompt: string) {
   </head>
   <body>
     <div class="wrap">
-      <div class="pill">Offline Mode • No API key</div>
+      <div class="pill">Offline Mode � No API key</div>
       <div style="height:14px"></div>
       <div class="card">
         <div class="grid">
@@ -226,7 +226,7 @@ export default function Page() {
           {["Beautiful UI", "Fast setup", "Easy editing", "Ready preview"].map((t) => (
             <div key={t} style={{ padding: 16, borderRadius: 18, border: "1px solid rgba(15,23,42,0.08)", background: "white" }}>
               <div style={{ fontWeight: 900 }}>{t}</div>
-              <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>Offline starter file — replace with AI output when API is ready.</div>
+              <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>Offline starter file � replace with AI output when API is ready.</div>
             </div>
           ))}
         </section>
@@ -302,12 +302,13 @@ create table if not exists projects (
 
 async function requestOpenRouter(
   apiKey: string,
+  chatCompletionsUrl: string,
   model: string,
   systemPrompt: string,
   userPrompt: string
 ) {
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
-    const response = await fetch(OPENROUTER_API_URL, {
+    const response = await fetch(chatCompletionsUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -351,7 +352,7 @@ export async function getOpenRouterResponse(
   isJson: boolean = false
 ) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL || DEFAULT_OPENROUTER_MODEL;
+  const { chatCompletionsUrl, model } = getOpenRouterConfig();
 
   // If key is missing, fall back to offline generation for JSON flows.
   if (!apiKey) {
@@ -360,7 +361,7 @@ export async function getOpenRouterResponse(
   }
 
   try {
-    const data = await requestOpenRouter(apiKey, model, systemPrompt, userPrompt);
+    const data = await requestOpenRouter(apiKey, chatCompletionsUrl, model, systemPrompt, userPrompt);
     let text = data.choices?.[0]?.message?.content;
 
     if (!text) {
@@ -383,6 +384,9 @@ export async function getOpenRouterResponse(
     throw new Error(message);
   }
 }
+
+
+
 
 
 
