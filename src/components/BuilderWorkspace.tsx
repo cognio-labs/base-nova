@@ -724,11 +724,11 @@ export default function BuilderWorkspace() {
       className="relative h-[100dvh] w-screen overflow-hidden bg-[#1f1f22] text-zinc-100"
       style={shellStyle}
     >
-      <div className="absolute inset-0 bg-[#141416]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(76,29,149,0.34),transparent_34%),radial-gradient(circle_at_76%_18%,rgba(14,165,233,0.20),transparent_32%),radial-gradient(circle_at_52%_100%,rgba(37,99,235,0.16),transparent_38%),linear-gradient(135deg,#151519_0%,#1f1f24_44%,#15161b_100%)]" />
-      <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.85)_1px,transparent_0)] [background-size:18px_18px]" />
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.07] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/35 to-transparent" />
+      <div className="absolute inset-0 bg-[#11151c]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_0%,rgba(56,189,248,0.20),transparent_30%),radial-gradient(circle_at_28%_18%,rgba(88,28,135,0.24),transparent_34%),radial-gradient(circle_at_86%_8%,rgba(14,165,233,0.13),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(37,99,235,0.11),transparent_42%),linear-gradient(135deg,#10131a_0%,#171b22_42%,#10141b_100%)]" />
+      <div className="absolute inset-0 opacity-[0.045] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.9)_1px,transparent_0)] [background-size:20px_20px]" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-sky-300/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/40 to-transparent" />
 
       {isSidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] lg:hidden" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar overlay" />}
 
@@ -841,17 +841,6 @@ export default function BuilderWorkspace() {
   </div>
 
   <div className="flex shrink-0 items-center gap-1.5">
-    <button
-      onClick={handleAiAction}
-      className="inline-flex h-7 items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-2 text-[11px] font-bold text-sky-200 transition hover:bg-sky-500/20"
-    >
-      AI
-    </button>
-    <Avatar size="sm" className="hidden sm:flex h-7 w-7 ring-1 ring-white/15">
-      <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="Profile" />
-      <AvatarFallback>A</AvatarFallback>
-    </Avatar>
-
     <button
       onClick={() => setIsShareModalOpen(true)}
       className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 shadow-sm transition-all hover:bg-white/10 hover:text-white"

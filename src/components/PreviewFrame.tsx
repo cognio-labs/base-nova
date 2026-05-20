@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useGeneratorStore } from "@/lib/store";
-import { HelpCircle, Loader2, MessageCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 type PreviewFrameProps = {
   iframeKey?: string | number;
@@ -46,16 +46,6 @@ export default function PreviewFrame({ iframeKey, className, iframeClassName }: 
             Loko<span className="text-sky-400">AI</span>
           </div>
           <p className="text-base font-medium text-zinc-400">Your preview will appear here</p>
-        </div>
-        <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-8 text-sm font-medium text-sky-500">
-          <a className="inline-flex items-center gap-1.5 transition hover:text-sky-400" href="#" onClick={(event) => event.preventDefault()}>
-            <HelpCircle className="h-4 w-4" />
-            Help Center
-          </a>
-          <a className="inline-flex items-center gap-1.5 transition hover:text-sky-400" href="#" onClick={(event) => event.preventDefault()}>
-            <MessageCircle className="h-4 w-4" />
-            Join our Community
-          </a>
         </div>
       </div>
     );
