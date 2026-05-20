@@ -787,7 +787,7 @@ export default function BuilderWorkspace() {
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
-    <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/90 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
+    <div className="ml-2 hidden items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/90 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
       <button
         onClick={() => setView("preview")}
         className={cn(
@@ -838,6 +838,27 @@ export default function BuilderWorkspace() {
   </div>
 
   <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 lg:flex">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="inline-flex h-7 w-full max-w-[280px] items-center justify-between rounded-full border border-cyan-900/10 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white hover:text-slate-900">
+          <RefreshCcw className="h-3.5 w-3.5 text-slate-400" />
+          <span className="truncate">{pathname || "/create"}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-52">
+        <DropdownMenuItem onSelect={() => setRefreshKey((key) => key + 1)}>
+          Refresh preview
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => setView("preview")}>
+          Open preview
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => setView("code")}>
+          Open code editor
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
     <div className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5">
       <button
         onClick={() => setView("preview")}
@@ -908,6 +929,30 @@ export default function BuilderWorkspace() {
   </div>
 
   <div className="flex shrink-0 items-center gap-1.5">
+    <div className="hidden items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 p-0.5 text-slate-500 shadow-sm md:inline-flex">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className="inline-flex rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
+            aria-label="Preview device options"
+          >
+            {deviceMode === "desktop" ? <Monitor className="h-3.5 w-3.5" /> : <Smartphone className="h-3.5 w-3.5" />}
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem onSelect={() => setDeviceMode("desktop")}>Desktop preview</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setDeviceMode("mobile")}>Mobile preview</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <button
+        onClick={() => setIsFullscreen(true)}
+        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
+        aria-label="Fullscreen preview"
+      >
+        <Expand className="h-3.5 w-3.5" />
+      </button>
+    </div>
+
     <button
       onClick={() => setIsShareModalOpen(true)}
       className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-cyan-900/10 bg-white/80 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-slate-900"
