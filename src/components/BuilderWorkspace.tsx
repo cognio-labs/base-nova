@@ -766,43 +766,35 @@ export default function BuilderWorkspace() {
 
   return (
     <div
-      className="relative h-[100dvh] w-screen overflow-hidden bg-[#1f1f22] text-zinc-100"
+      className="relative h-[100dvh] w-screen overflow-hidden bg-[#f4fbfb] text-slate-900"
       style={shellStyle}
     >
-      <div className="absolute inset-0 bg-[#11151c]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_0%,rgba(56,189,248,0.20),transparent_30%),radial-gradient(circle_at_28%_18%,rgba(88,28,135,0.24),transparent_34%),radial-gradient(circle_at_86%_8%,rgba(14,165,233,0.13),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(37,99,235,0.11),transparent_42%),linear-gradient(135deg,#10131a_0%,#171b22_42%,#10141b_100%)]" />
-      <div className="absolute inset-0 opacity-[0.045] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.9)_1px,transparent_0)] [background-size:20px_20px]" />
-      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-sky-300/[0.08] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-[#f6fbf9]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_0%,rgba(125,211,252,0.36),transparent_32%),radial-gradient(circle_at_34%_16%,rgba(187,247,208,0.42),transparent_36%),radial-gradient(circle_at_86%_10%,rgba(240,253,250,0.82),transparent_34%),radial-gradient(circle_at_54%_100%,rgba(186,230,253,0.28),transparent_44%),linear-gradient(135deg,#ffffff_0%,#f0fdf4_42%,#ecfeff_100%)]" />
+      <div className="absolute inset-0 opacity-[0.20] [background-image:radial-gradient(circle_at_1px_1px,rgba(14,116,144,0.22)_1px,transparent_0)] [background-size:22px_22px]" />
+      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-white/80 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-emerald-50/80 to-transparent" />
 
       {isSidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] lg:hidden" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar overlay" />}
 
       <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">
-        <header className="relative z-30 flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.045] px-2 text-zinc-200 shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-2xl">
+        <header className="relative z-30 grid h-11 shrink-0 grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-cyan-900/10 bg-white/72 px-2 text-slate-700 shadow-[0_16px_40px_rgba(14,116,144,0.10)] backdrop-blur-2xl">
   <div className="flex min-w-0 items-center">
     <button
       onClick={() => setIsSidebarOpen((value) => !value)}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 transition hover:bg-white/10 hover:text-white"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-cyan-900/10 bg-white/70 text-slate-500 transition hover:bg-white hover:text-slate-900"
       aria-label="Toggle chat panel"
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
-    <div className="ml-2 hidden items-center gap-2 rounded-lg border border-sky-300/15 bg-[#162836]/80 p-1 shadow-inner shadow-sky-900/20 backdrop-blur-xl sm:flex">
-      <div className="ml-1 flex h-6 items-center gap-1.5 rounded-md border border-sky-300/15 bg-sky-400/10 px-2">
-        <span className="flex h-4 w-4 items-center justify-center rounded bg-sky-400/15 text-[10px] font-black text-sky-300 ring-1 ring-sky-300/20">
-          L
-        </span>
-        <span className="text-xs font-black tracking-tight text-zinc-100">
-          Loko<span className="text-sky-300">AI</span>
-        </span>
-      </div>
+    <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/78 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
       <button
         onClick={() => setView("preview")}
         className={cn(
-          "min-w-[78px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
+          "min-w-[74px] rounded-md px-3.5 py-1.5 text-xs font-semibold transition",
           view === "preview"
-            ? "bg-white text-zinc-950 shadow-sm shadow-black/20"
-            : "text-slate-300 hover:bg-white/5 hover:text-white"
+            ? "bg-slate-900 text-white shadow-sm shadow-cyan-900/15"
+            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
         )}
       >
         Preview
@@ -810,18 +802,18 @@ export default function BuilderWorkspace() {
       <button
         onClick={() => setView("code")}
         className={cn(
-          "min-w-[68px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
+          "min-w-[64px] rounded-md px-3.5 py-1.5 text-xs font-semibold transition",
           view === "code"
-            ? "bg-white text-zinc-950 shadow-sm shadow-black/20"
-            : "text-slate-300 hover:bg-white/5 hover:text-white"
+            ? "bg-slate-900 text-white shadow-sm shadow-cyan-900/15"
+            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
         )}
       >
         Code
       </button>
-      <span className="mx-0.5 h-6 w-px bg-white/10" />
+      <span className="mx-0.5 h-6 w-px bg-cyan-900/10" />
       <button
         onClick={() => setView("code")}
-        className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold text-slate-300 transition hover:bg-white/5 hover:text-white"
+        className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Edit generated code"
       >
         <Code2 className="h-3.5 w-3.5" />
@@ -829,7 +821,7 @@ export default function BuilderWorkspace() {
       </button>
       <button
         onClick={cyclePreviewStyle}
-        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-300 transition hover:bg-white/5 hover:text-white"
+        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Change preview style"
         title={`Style: ${previewStyle}`}
       >
@@ -837,7 +829,7 @@ export default function BuilderWorkspace() {
       </button>
       <button
         onClick={() => setDeviceMode((mode) => (mode === "desktop" ? "mobile" : "desktop"))}
-        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-300 transition hover:bg-white/5 hover:text-white"
+        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
         aria-label="Toggle preview size"
       >
         <Grid2X2 className="h-3.5 w-3.5" />
