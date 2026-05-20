@@ -778,12 +778,22 @@ export default function BuilderWorkspace() {
     >
       <ArrowLeft className="h-4 w-4" />
     </button>
-    <div className="ml-2 hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.065] p-1 shadow-inner shadow-black/20 sm:flex">
+    <div className="ml-2 hidden items-center gap-2 rounded-lg border border-sky-300/15 bg-[#162836]/80 p-1 shadow-inner shadow-sky-900/20 backdrop-blur-xl sm:flex">
+      <div className="ml-1 flex h-6 items-center gap-1.5 rounded-md border border-sky-300/15 bg-sky-400/10 px-2">
+        <span className="flex h-4 w-4 items-center justify-center rounded bg-sky-400/15 text-[10px] font-black text-sky-300 ring-1 ring-sky-300/20">
+          L
+        </span>
+        <span className="text-xs font-black tracking-tight text-zinc-100">
+          Loko<span className="text-sky-300">AI</span>
+        </span>
+      </div>
       <button
         onClick={() => setView("preview")}
         className={cn(
           "min-w-[78px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
-          view === "preview" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
+          view === "preview"
+            ? "bg-white text-zinc-950 shadow-sm shadow-black/20"
+            : "text-slate-300 hover:bg-white/5 hover:text-white"
         )}
       >
         Preview
@@ -792,7 +802,9 @@ export default function BuilderWorkspace() {
         onClick={() => setView("code")}
         className={cn(
           "min-w-[68px] rounded-md px-4 py-1.5 text-sm font-semibold transition",
-          view === "code" ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
+          view === "code"
+            ? "bg-white text-zinc-950 shadow-sm shadow-black/20"
+            : "text-slate-300 hover:bg-white/5 hover:text-white"
         )}
       >
         Code
