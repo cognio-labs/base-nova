@@ -615,16 +615,15 @@ export default function BuilderWorkspace() {
 
   return (
     <div
-      className="relative h-[100dvh] w-screen overflow-hidden bg-[#f6f9fc] text-slate-900 dark:bg-slate-950 dark:text-white"
+      className="relative h-[100dvh] w-screen overflow-hidden bg-[#1f1f22] text-zinc-100"
       style={shellStyle}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(14,165,233,0.16),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(99,102,241,0.10),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.86),rgba(241,245,249,0.92))] dark:bg-[radial-gradient(circle_at_20%_0%,rgba(14,165,233,0.10),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(99,102,241,0.10),transparent_30%),linear-gradient(180deg,rgba(2,6,23,0.92),rgba(15,23,42,0.95))]" />
+      <div className="absolute inset-0 bg-[#1f1f22]" />
 
       {isSidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] lg:hidden" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar overlay" />}
 
       <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200/70 bg-white/82 px-3 backdrop-blur-2xl dark:border-white/5 dark:bg-slate-950/78 sm:px-4 lg:px-6">
+        <header className="hidden">
   <div className="flex min-w-0 items-center">
     <h2 className="truncate text-base font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-lg">
       {projectLabel}
@@ -746,12 +745,12 @@ export default function BuilderWorkspace() {
   </div>
 </header>
 
-        <main className="relative flex min-h-0 flex-1 overflow-hidden lg:flex-row">
+        <main className="relative flex min-h-0 flex-1 overflow-hidden bg-[#1f1f22] p-3 lg:flex-row">
           <aside className={cn(
-            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden border-r border-slate-200/70 bg-white/90 pt-16 shadow-[0_30px_90px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-transform duration-300 dark:border-white/5 dark:bg-slate-950/82 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[400px] lg:shrink-0 lg:basis-[400px] lg:translate-x-0 lg:pt-0 lg:shadow-none xl:w-[430px] xl:basis-[430px]",
+            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-[#1f1f22] pt-0 shadow-[0_30px_90px_rgba(0,0,0,0.45)] transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}>
-            <div className="flex shrink-0 items-center justify-between border-b border-slate-200/70 px-4 py-4 dark:border-white/5">
+            <div className="hidden shrink-0 items-center justify-between border-b border-zinc-800 px-4 py-4">
               <div>
                 <p className="text-sm font-bold text-slate-900 dark:text-white">Chat panel</p>
                 <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Prompt, debug, and track generation</p>
@@ -774,10 +773,10 @@ export default function BuilderWorkspace() {
                     >
                       <div
                         className={cn(
-                          "max-w-[85%] rounded-3xl px-4 py-3 text-[14px] font-normal leading-relaxed shadow-sm whitespace-pre-wrap",
+                          "max-w-[85%] rounded-lg px-4 py-3 text-sm font-semibold leading-relaxed shadow-sm whitespace-pre-wrap",
                           message.role === "user"
-                            ? "bg-sky-500 text-white"
-                            : "bg-slate-100 text-slate-900 dark:bg-white/5 dark:text-white"
+                            ? "bg-[#303033] text-white"
+                            : "bg-[#2a2a2d] text-zinc-200"
                         )}
                       >
                         {message.content}
@@ -785,8 +784,8 @@ export default function BuilderWorkspace() {
                     </div>
                   ))
                 ) : (
-                  <div className="flex min-h-[240px] items-center justify-center rounded-[28px] border border-dashed border-slate-200 bg-slate-50/70 px-6 text-center dark:border-white/10 dark:bg-white/5">
-                    <div>
+                  <div className="flex min-h-[240px] items-center justify-center px-6 text-center">
+                    <div className="hidden">
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">No chat yet</p>
                       <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
                         Describe the site you want and press Enter.
@@ -797,16 +796,16 @@ export default function BuilderWorkspace() {
               </div>
             </div>
 
-            <div className="sticky bottom-0 z-10 shrink-0 border-t border-slate-200/70 bg-white/90 p-4 backdrop-blur-xl dark:border-white/5 dark:bg-slate-950/82">
-              <div className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-sky-400/15 dark:bg-slate-950">
-                <div className="relative overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50/90 shadow-inner shadow-slate-200/40 transition-all focus-within:border-slate-300 focus-within:bg-white focus-within:shadow-slate-400/10 dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.96))] dark:shadow-black/20 dark:focus-within:border-slate-500/60">
+            <div className="sticky bottom-0 z-10 shrink-0 bg-[#1f1f22] p-4">
+              <div className="rounded-lg border border-zinc-700 bg-[#2b2b2f] p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)] focus-within:border-sky-500/80">
+                <div className="relative overflow-hidden rounded-md bg-transparent">
                   {!draft ? (
-                    <div className="pointer-events-none absolute left-4 right-4 top-3 z-0">
-                      <div className="flex min-w-0 items-center text-xs font-medium leading-5 tracking-normal text-slate-600 dark:text-slate-400">
-                        <span className="truncate text-slate-600 dark:text-slate-400">
+                    <div className="pointer-events-none absolute left-0 right-0 top-1 z-0">
+                      <div className="flex min-w-0 items-center text-sm font-semibold leading-6 tracking-normal text-zinc-400">
+                        <span className="truncate text-zinc-400">
                           {typewriterText}
                         </span>
-                        <span className="typewriter-cursor ml-1 h-3.5 w-[2px] shrink-0 rounded-full bg-slate-600/70 dark:bg-slate-400/80" />
+                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-zinc-400/80" />
                       </div>
                     </div>
                   ) : null}
@@ -816,25 +815,29 @@ export default function BuilderWorkspace() {
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder=""
-                    className="relative z-10 w-full resize-none border-none bg-transparent px-4 py-3 text-sm font-medium leading-6 text-slate-900 outline-none placeholder:text-transparent dark:text-white"
-                    style={{ minHeight: 112 }}
+                    className="relative z-10 w-full resize-none border-none bg-transparent px-0 py-1 text-sm font-semibold leading-6 text-zinc-100 outline-none placeholder:text-transparent"
+                    style={{ minHeight: 70 }}
                     aria-label="Describe what you want to build"
                   />
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3">
+                <div className="mt-6 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <button className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition-all hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-white/5 dark:hover:text-white">
-                      <Plus className="h-4 w-4" />
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3b3b40] text-zinc-300 transition-all hover:bg-[#46464c] hover:text-white">
+                      <Plus className="h-5 w-5" />
+                    </button>
+                    <button className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 sm:inline-flex">
+                      Standard
+                      <ChevronDown className="h-3 w-3" />
                     </button>
 
                     <button
                       onClick={startVoiceInput}
                       className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-xl transition-all",
+                        "flex h-8 w-8 items-center justify-center rounded-full transition-all",
                         isListening
                           ? "animate-pulse bg-red-500 text-white"
-                          : "text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                          : "text-zinc-400 hover:bg-white/5 hover:text-white"
                       )}
                       aria-label="Voice input"
                     >
@@ -842,10 +845,21 @@ export default function BuilderWorkspace() {
                     </button>
                   </div>
 
+                  <div className="hidden items-center gap-5 text-xs font-semibold text-zinc-400 sm:flex">
+                    <button className="inline-flex items-center gap-1.5 transition hover:text-zinc-100">
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      Select
+                    </button>
+                    <button className="inline-flex items-center gap-1.5 transition hover:text-zinc-100">
+                      <HelpCircle className="h-3.5 w-3.5" />
+                      Plan
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => void handleSend()}
                     disabled={isGenerating || !draft.trim()}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 dark:bg-white dark:text-slate-900"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-600 text-white shadow-lg shadow-sky-950/30 transition-all hover:bg-sky-500 active:scale-95 disabled:opacity-50"
                     aria-label="Send prompt"
                   >
                     {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
@@ -855,8 +869,8 @@ export default function BuilderWorkspace() {
             </div>
           </aside>
 
-          <section className="flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden lg:border-l lg:border-slate-200/70">
-            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200/70 bg-white/60 px-3 py-2 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/40 sm:px-4">
+          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-zinc-700 bg-[#1f1f22] lg:ml-1">
+            <div className="hidden shrink-0 items-center justify-between gap-2 border-b border-zinc-800 bg-[#1f1f22] px-3 py-2 sm:px-4">
               <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 <Globe className="h-3.5 w-3.5" />
                 <span className="truncate">Live route: {pathname || "/workspace"}</span>
@@ -898,7 +912,7 @@ export default function BuilderWorkspace() {
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-hidden p-3 sm:p-4 lg:p-5"> 
+            <div className="min-h-0 flex-1 overflow-hidden p-0"> 
               <AnimatePresence mode="wait">
                 {view === "preview" ? (
                   <motion.div
@@ -908,7 +922,7 @@ export default function BuilderWorkspace() {
                     exit={{ opacity: 0, scale: 0.99 }}
                     className="flex h-full w-full justify-center"
                   >
-                    <div className="relative h-full w-full max-w-[1100px] overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.12)] dark:border-white/10 dark:bg-slate-950">
+                    <div className="relative h-full w-full overflow-hidden rounded-lg bg-[#1f1f22]">
                       {showPreviewSkeleton ? (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-sky-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
                           <div className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-white/5">

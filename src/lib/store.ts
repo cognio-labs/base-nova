@@ -128,7 +128,7 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
   workflowLogs: [],
   activeAgentIndex: -1,
 
-  view: "code",
+  view: "preview",
   error: null,
   saveMessage: null,
   debugMessage: null,

@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useGeneratorStore } from "@/lib/store";
-import { Loader2 } from "lucide-react";
+import { HelpCircle, Loader2, MessageCircle } from "lucide-react";
 
 type PreviewFrameProps = {
   iframeKey?: string | number;
@@ -40,8 +40,23 @@ export default function PreviewFrame({ iframeKey, className, iframeClassName }: 
 
   if (!previewHtml) {
     return (
-      <div className={"flex h-full min-h-0 items-center justify-center rounded-[inherit] border border-dashed border-slate-200 bg-white/90 p-8 text-center text-slate-500 shadow-inner dark:border-white/10 dark:bg-slate-950/90 " + (className ?? "") }>
-        <p className="max-w-sm text-sm">Preview is not available yet. Generate a project to see the live sandbox here.</p>
+      <div className={"relative flex h-full min-h-0 items-center justify-center rounded-[inherit] bg-[#1f1f22] p-8 text-center text-zinc-400 " + (className ?? "") }>
+        <div>
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center text-6xl font-black italic tracking-tighter text-zinc-400/80">
+            b
+          </div>
+          <p className="text-base font-medium text-zinc-400">Your preview will appear here</p>
+        </div>
+        <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-8 text-sm font-medium text-sky-500">
+          <a className="inline-flex items-center gap-1.5 transition hover:text-sky-400" href="#" onClick={(event) => event.preventDefault()}>
+            <HelpCircle className="h-4 w-4" />
+            Help Center
+          </a>
+          <a className="inline-flex items-center gap-1.5 transition hover:text-sky-400" href="#" onClick={(event) => event.preventDefault()}>
+            <MessageCircle className="h-4 w-4" />
+            Join our Community
+          </a>
+        </div>
       </div>
     );
   }
