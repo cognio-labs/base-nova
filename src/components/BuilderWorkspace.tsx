@@ -821,12 +821,12 @@ export default function BuilderWorkspace() {
               <div className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-sky-400/15 dark:bg-slate-950">
                 <div className="relative overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50/90 shadow-inner shadow-slate-200/40 transition-all focus-within:border-sky-300 focus-within:bg-white focus-within:shadow-sky-500/10 dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.96))] dark:shadow-black/20 dark:focus-within:border-sky-400/40">
                   {!draft ? (
-                    <div className="pointer-events-none absolute inset-0 flex items-center px-4 py-3">
-                      <div className="flex min-w-0 items-center text-[14px] font-medium leading-6 tracking-tight text-slate-400 dark:text-slate-400 sm:text-[15px]">
-                        <span className="truncate bg-gradient-to-r from-slate-500 via-sky-500 to-indigo-500 bg-clip-text text-transparent dark:from-slate-300 dark:via-sky-300 dark:to-cyan-200">
+                    <div className="pointer-events-none absolute inset-0 flex items-start px-4 py-3">
+                      <div className="flex min-w-0 items-center pt-0.5 text-[13px] font-medium leading-5 tracking-tight text-slate-500 dark:text-slate-400 sm:text-[13px]">
+                        <span className="truncate text-slate-500 dark:text-slate-400">
                           {typewriterText}
                         </span>
-                        <span className="typewriter-cursor ml-1 h-5 w-[2px] shrink-0 rounded-full bg-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.65)]" />
+                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-slate-500/70 dark:bg-slate-400/80" />
                       </div>
                     </div>
                   ) : null}
