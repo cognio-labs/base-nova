@@ -333,6 +333,7 @@ export default function BuilderWorkspace() {
   const pathname = usePathname();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const taskPanelRef = useRef<HTMLDivElement | null>(null);
   const taskTimersRef = useRef<number[]>([]);
   const streamTimerRef = useRef<number | null>(null);
@@ -519,6 +520,41 @@ export default function BuilderWorkspace() {
 
   const updateMessage = (id: string, content: string) => {
     setMessages((current) => current.map((message) => (message.id === id ? { ...message, content } : message)));
+  };
+
+  const handleFileAttach = (files: FileList | null) => {
+    if (!files?.length) return;
+
+    const fileNames = Array.from(files)
+      .map((file) => file.name)
+      .slice(0, 4);
+
+    pushMessage({
+      role: "assistant",
+      content: `Attached ${fileNames.length} file${fileNames.length === 1 ? "" : "s"}: ${fileNames.join(", ")}`,
+    });
+  };
+
+  const handleSelectDraft = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.focus();
+
+    if (draft.trim()) {
+      textarea.select();
+      return;
+    }
+
+    setDraft("Create a premium AI product landing page with pricing, testimonials, and dashboard preview.");
+  };
+
+  const handlePlanDraft = () => {
+    const planPrompt =
+      draft.trim() || "Create a premium AI builder website with a modern SaaS layout and dashboard.";
+
+    pushMessage({ role: "user", content: planPrompt });
+    startGenerationTimeline();
   };
 
   const streamMessage = (id: string, fullText: string) => {
