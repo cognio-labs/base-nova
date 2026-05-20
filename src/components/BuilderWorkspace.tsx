@@ -1088,11 +1088,11 @@ export default function BuilderWorkspace() {
                 <div className="relative overflow-hidden rounded-md bg-transparent">
                   {!draft ? (
                     <div className="pointer-events-none absolute left-0 right-0 top-1 z-0">
-                      <div className="flex min-w-0 items-center text-sm font-semibold leading-6 tracking-normal text-zinc-400">
-                        <span className="truncate text-zinc-400">
+                      <div className="flex min-w-0 items-center text-sm font-medium leading-6 tracking-normal text-slate-500">
+                        <span className="truncate text-slate-500">
                           {typewriterText}
                         </span>
-                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-zinc-400/80" />
+                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-slate-500/80" />
                       </div>
                     </div>
                   ) : null}
@@ -1102,7 +1102,7 @@ export default function BuilderWorkspace() {
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder=""
-                    className="relative z-10 w-full resize-none border-none bg-transparent px-0 py-1 text-sm font-semibold leading-6 text-zinc-100 outline-none placeholder:text-transparent"
+                    className="relative z-10 w-full resize-none border-none bg-transparent px-0 py-1 text-sm font-semibold leading-6 text-slate-900 caret-sky-500 outline-none placeholder:text-transparent selection:bg-sky-200/70 selection:text-slate-950"
                     style={{ minHeight: 70 }}
                     aria-label="Describe what you want to build"
                   />
