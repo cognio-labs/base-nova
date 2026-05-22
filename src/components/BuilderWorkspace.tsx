@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import {
+  useCallback,
   useEffect,
-  useEffectEvent,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -14,51 +15,39 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import {
-  ArrowUp,
   ArrowLeft,
+  ArrowUp,
   Check,
   ChevronDown,
   Circle,
-  Code2,
-  Grid2X2,
+  Download,
   Expand,
   ExternalLink,
-  Globe,
-  HelpCircle,
   FileText,
-  Link2,
+  Globe,
   Loader2,
+  MessageSquare,
   Mic,
   Monitor,
-  Palette,
   Plus,
   RefreshCcw,
   Share2,
   Smartphone,
-  Upload,
-  UserPlus,
+  Sparkles,
+  Wand2,
+  X,
+  Sun,
+  Moon,
 } from "lucide-react";
-
-import { usePathname } from "next/navigation";
-import PreviewFrame from "@/components/PreviewFrame";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useGeneratorStore } from "@/lib/store";
-import { clearPendingBuilderPrompt, readPendingBuilderPrompt } from "@/lib/builder-session";
+import { clearProjectPendingPrompt, readProjectPendingPrompt } from "@/lib/builder-session";
 import { cn } from "@/lib/utils";
 
 type ChatRole = "user" | "assistant";
@@ -82,14 +71,11 @@ type GenerationTask = {
   filePath?: string;
 };
 
+type DeviceMode = "desktop" | "mobile";
+type BuildMode = "Landing" | "App" | "Dashboard";
+
 type SpeechRecognitionResultEvent = {
-  results: {
-    [index: number]: {
-      [index: number]: {
-        transcript: string;
-      };
-    };
-  };
+  results: { [index: number]: { [index: number]: { transcript: string } } };
 };
 
 type SpeechRecognitionInstance = {
@@ -107,196 +93,891 @@ type SpeechRecognitionWindow = Window &
     webkitSpeechRecognition?: SpeechRecognitionConstructor;
   };
 
-const CHAT_STORAGE_KEY = "lokoai.builder.chat.v1";
-const CHAT_STORAGE_EVENT = "lokoai.builder.chat.sync";
-const EMPTY_CHAT_MESSAGES: ChatMessage[] = [];
-const TYPEWRITER_PROMPTS = [
-  "Let’s build an AI startup MVP…",
-  "Create a modern SaaS landing page…",
-  "Build a multi-agent AI system…",
-  "Design a crypto trading dashboard…",
-  "Generate a beautiful portfolio website…",
-  "Create a Telegram AI automation bot…",
-  "Build a full-stack Next.js application…",
-  "Make a stunning eCommerce website…",
-  "Create a futuristic admin dashboard…",
-  "Generate a premium UI/UX design…",
-  "Build an AI chatbot for my business…",
-  "Create a viral social media web app…",
-  "Design a mobile app landing page…",
-  "Build a no-code AI website builder…",
-  "Create a modern fintech platform…",
-];
-
 const GENERATION_TASK_BLUEPRINT: Array<Omit<GenerationTask, "status">> = [
-  { id: "architecture", label: "Setup project architecture", kind: "plan", agent: "Planner" },
-  { id: "schema", label: "Create database schema", kind: "code", agent: "Data Agent" },
-  { id: "api", label: "Initialize API routes", kind: "code", agent: "Backend Agent" },
-  { id: "auth", label: "Build authentication system", kind: "code", agent: "Security Agent" },
-  { id: "hero", label: "Building Hero section...", kind: "design", agent: "UI Agent" },
-  { id: "navbar", label: "Writing components/Navbar.tsx", kind: "file", agent: "Component Agent", filePath: "components/Navbar.tsx" },
-  { id: "dashboard", label: "Creating dashboard layout", kind: "file", agent: "Layout Agent", filePath: "app/dashboard/page.tsx" },
-  { id: "styles", label: "Generating responsive styles", kind: "design", agent: "Design Agent", filePath: "app/globals.css" },
-  { id: "backend", label: "Connecting backend APIs", kind: "code", agent: "Integration Agent" },
-  { id: "animations", label: "Optimizing animations", kind: "debug", agent: "Motion Agent" },
-  { id: "final-ui", label: "Finalizing UI design", kind: "deploy", agent: "QA Agent" },
+  { id: "analysis", label: "Analyzing requirements", kind: "plan", agent: "Design Architect" },
+  { id: "palette", label: "Establishing color palette & typography", kind: "design", agent: "Visual Designer" },
+  { id: "layout", label: "Building responsive layout structure", kind: "code", agent: "Layout Engineer" },
+  { id: "hero", label: "Crafting hero section", kind: "design", agent: "UI Designer", filePath: "index.html" },
+  { id: "features", label: "Designing feature cards", kind: "design", agent: "UI Designer" },
+  { id: "social-proof", label: "Adding testimonials & social proof", kind: "design", agent: "Conversion Expert" },
+  { id: "animations", label: "Adding CSS animations", kind: "code", agent: "Motion Designer" },
+  { id: "responsive", label: "Ensuring mobile responsiveness", kind: "debug", agent: "QA Engineer" },
+  { id: "optimize", label: "Optimizing for conversion", kind: "deploy", agent: "Growth Engineer" },
+  { id: "finalize", label: "Final polish & review", kind: "deploy", agent: "QA Engineer" },
 ];
 
-let cachedChatStorageValue: string | null | undefined;
-let cachedChatMessages: ChatMessage[] = EMPTY_CHAT_MESSAGES;
+const EMPTY_MESSAGES: ChatMessage[] = [];
 
-type DeviceMode = "desktop" | "mobile";
-type BuildMode = "App" | "Landing" | "Dashboard";
-type MemberRole = "Can edit" | "Can comment" | "Can view";
+// ── Live code typing component shown while generation is in progress ──────────
+const LIVE_CODE_FRAMES = [
+  { file: "src/App.tsx", code: `import React from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import Stats from './components/Stats';
+import Testimonials from './components/Testimonials';
+import Pricing from './components/Pricing';
+import HowItWorks from './components/HowItWorks';
+import CTASection from './components/CTASection';
+import Footer from './components/Footer';
 
-type Collaborator = {
-  id: string;
-  name: string;
-  email: string;
-  role: MemberRole | "Owner";
-  avatar?: string;
-  initials: string;
+export default function App() {
+  return (
+    <main style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <Navbar />
+      <Hero />
+      <Stats />
+      <Features />
+      <HowItWorks />
+      <Testimonials />
+      <Pricing />
+      <CTASection />
+      <Footer />
+    </main>
+  );
+}` },
+  { file: "src/components/Navbar.tsx", code: `import React, { useState, useEffect } from 'react';
+
+const NAV_LINKS = ['Features', 'Pricing', 'Testimonials', 'FAQ'];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      padding: '0 32px',
+      height: 64,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      background: scrolled
+        ? 'rgba(2,6,23,0.95)'
+        : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : 'none',
+      transition: 'all 0.3s ease',
+    }}>
+      <div style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>
+        Brand
+      </div>
+      <div style={{ display: 'flex', gap: 32 }}>
+        {NAV_LINKS.map(link => (
+          <a key={link} href={\`#\${link.toLowerCase()}\`} style={{
+            color: 'rgba(255,255,255,0.7)',
+            textDecoration: 'none',
+            fontSize: 14,
+            fontWeight: 500,
+          }}>
+            {link}
+          </a>
+        ))}
+      </div>
+      <button style={{
+        padding: '10px 24px',
+        borderRadius: 9999,
+        background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+        color: '#fff',
+        fontWeight: 700,
+        border: 'none',
+        cursor: 'pointer',
+        fontSize: 14,
+      }}>
+        Get Started
+      </button>
+    </nav>
+  );
+}` },
+  { file: "src/components/Hero.tsx", code: `import React from 'react';
+
+export default function Hero() {
+  return (
+    <section style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '100px 24px 80px',
+      position: 'relative',
+      overflow: 'hidden',
+      background: '#020617',
+    }}>
+      {/* Radial glow orbs */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse at 30% 40%, rgba(99,102,241,0.22) 0%, transparent 60%)',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '-20%', right: '-10%',
+        width: 500, height: 500, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ position: 'relative', textAlign: 'center', maxWidth: 860, zIndex: 1 }}>
+        {/* Badge */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          background: 'rgba(99,102,241,0.12)',
+          border: '1px solid rgba(99,102,241,0.28)',
+          borderRadius: 9999, padding: '6px 18px',
+          fontSize: 13, fontWeight: 600, color: '#a5b4fc',
+          marginBottom: 28,
+        }}>
+          ✦ Powered by AI
+        </div>
+
+        <h1 style={{
+          fontSize: 'clamp(52px,8vw,96px)',
+          fontWeight: 900,
+          letterSpacing: '-0.05em',
+          lineHeight: 1.05,
+          marginBottom: 24,
+          background: 'linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6366f1 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
+          Transform Your Workflow
+        </h1>
+
+        <p style={{ fontSize: 20, lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', marginBottom: 44 }}>
+          The all-in-one platform that helps modern teams ship faster,
+          collaborate better, and build products customers love.
+        </p>
+
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button style={{
+            padding: '16px 36px', borderRadius: 9999,
+            background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+            color: '#fff', fontWeight: 700, border: 'none',
+            cursor: 'pointer', fontSize: 16,
+            boxShadow: '0 8px 32px rgba(99,102,241,0.4)',
+          }}>
+            Start Free Trial
+          </button>
+          <button style={{
+            padding: '16px 36px', borderRadius: 9999,
+            background: 'rgba(99,102,241,0.08)',
+            border: '1.5px solid rgba(99,102,241,0.4)',
+            color: '#a5b4fc', fontWeight: 700, cursor: 'pointer', fontSize: 16,
+          }}>
+            Watch Demo
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}` },
+  { file: "src/components/Features.tsx", code: `import React from 'react';
+
+const FEATURES = [
+  {
+    icon: '⚡',
+    title: 'Lightning Fast',
+    desc: 'Sub-100ms response times guaranteed. Deploy globally with zero cold starts.',
+  },
+  {
+    icon: '🔒',
+    title: 'Enterprise Security',
+    desc: 'SOC2 Type II certified. End-to-end encryption on all data in motion and at rest.',
+  },
+  {
+    icon: '📊',
+    title: 'Real-time Analytics',
+    desc: 'Live dashboards with instant insights. Track every metric that matters to your team.',
+  },
+  {
+    icon: '🤝',
+    title: 'Team Collaboration',
+    desc: 'Invite unlimited teammates. Assign roles, review changes, and ship together.',
+  },
+  {
+    icon: '🔌',
+    title: 'API-First Design',
+    desc: '200+ native integrations. Webhooks, REST & GraphQL APIs for any workflow.',
+  },
+  {
+    icon: '🌍',
+    title: 'Global CDN',
+    desc: 'Served from 50+ edge locations. Your users get a fast experience everywhere.',
+  },
+];
+
+export default function Features() {
+  return (
+    <section id="features" style={{ padding: '96px 24px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <p style={{
+          fontSize: 12, fontWeight: 700, letterSpacing: '0.15em',
+          textTransform: 'uppercase', color: '#6366f1', marginBottom: 12,
+        }}>
+          Features
+        </p>
+        <h2 style={{
+          fontSize: 'clamp(32px,5vw,56px)', fontWeight: 800,
+          letterSpacing: '-0.04em', color: '#fff',
+        }}>
+          Everything you need to ship
+        </h2>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: 24,
+      }}>
+        {FEATURES.map((f) => (
+          <div key={f.title} style={{
+            padding: '32px',
+            borderRadius: 20,
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            transition: 'all 0.25s ease',
+          }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: 14,
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 26, marginBottom: 20,
+            }}>
+              {f.icon}
+            </div>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 10 }}>
+              {f.title}
+            </h3>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
+              {f.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}` },
+  { file: "src/components/Pricing.tsx", code: `import React from 'react';
+
+const PLANS = [
+  {
+    name: 'Starter',
+    price: '$0',
+    period: 'forever free',
+    features: ['Up to 3 projects', '5GB storage', 'Community support', 'Basic analytics'],
+    cta: 'Start for free',
+    highlight: false,
+  },
+  {
+    name: 'Pro',
+    price: '$29',
+    period: 'per month',
+    features: ['Unlimited projects', '100GB storage', 'Priority support', 'Advanced analytics', 'Team collaboration', 'Custom domains'],
+    cta: 'Start Pro trial',
+    highlight: true,
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    period: 'tailored plan',
+    features: ['Everything in Pro', 'SSO & SAML', 'SLA guarantee', 'Dedicated account manager', 'Custom integrations', 'On-premise option'],
+    cta: 'Contact sales',
+    highlight: false,
+  },
+];
+
+export default function Pricing() {
+  return (
+    <section id="pricing" style={{ padding: '96px 24px', maxWidth: 1100, margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: 56 }}>
+        <h2 style={{
+          fontSize: 'clamp(32px,5vw,56px)', fontWeight: 800,
+          letterSpacing: '-0.04em', color: '#fff', marginBottom: 16,
+        }}>
+          Simple, transparent pricing
+        </h2>
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 17 }}>
+          Start free. Scale as you grow.
+        </p>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 24, alignItems: 'start',
+      }}>
+        {PLANS.map((plan) => (
+          <div key={plan.name} style={{
+            padding: 32, borderRadius: 24,
+            background: plan.highlight
+              ? 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))'
+              : 'rgba(255,255,255,0.03)',
+            border: plan.highlight
+              ? '1.5px solid rgba(99,102,241,0.45)'
+              : '1px solid rgba(255,255,255,0.07)',
+            position: 'relative',
+          }}>
+            {plan.highlight && (
+              <div style={{
+                position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
+                background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                color: '#fff', fontSize: 11, fontWeight: 800,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                padding: '4px 18px', borderRadius: 9999,
+              }}>
+                Most Popular
+              </div>
+            )}
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#a5b4fc', marginBottom: 8 }}>
+              {plan.name}
+            </p>
+            <div style={{ marginBottom: 8 }}>
+              <span style={{ fontSize: 42, fontWeight: 900, color: '#fff' }}>{plan.price}</span>
+              <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', marginLeft: 6 }}>
+                {plan.period}
+              </span>
+            </div>
+            <div style={{ margin: '24px 0', borderTop: '1px solid rgba(255,255,255,0.07)' }} />
+            <ul style={{ listStyle: 'none', marginBottom: 28 }}>
+              {plan.features.map((f) => (
+                <li key={f} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  marginBottom: 12, fontSize: 14, color: 'rgba(255,255,255,0.7)',
+                }}>
+                  <span style={{ color: '#6366f1', fontWeight: 800 }}>✓</span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <button style={{
+              width: '100%', padding: '13px 0', borderRadius: 12,
+              background: plan.highlight
+                ? 'linear-gradient(135deg,#6366f1,#8b5cf6)'
+                : 'rgba(255,255,255,0.07)',
+              color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 15,
+            }}>
+              {plan.cta}
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}` },
+  { file: "src/components/Testimonials.tsx", code: `import React from 'react';
+
+const TESTIMONIALS = [
+  {
+    name: 'Sarah Chen',
+    role: 'Head of Product, Vercel',
+    avatar: 'SC',
+    color: '#6366f1',
+    quote: 'Reduced our deployment pipeline from 45 minutes to under 8 minutes. The team adopted it in a single afternoon.',
+  },
+  {
+    name: 'Marcus Thompson',
+    role: 'CTO, Linear',
+    avatar: 'MT',
+    color: '#8b5cf6',
+    quote: 'We evaluated 12 tools before choosing this one. ROI was clear within the first week — churn dropped 34%.',
+  },
+  {
+    name: 'Priya Sharma',
+    role: 'Engineering Lead, Stripe',
+    avatar: 'PS',
+    color: '#06b6d4',
+    quote: 'Our team ships 3× faster now. The collaboration features alone saved us 12 hours of meetings per week.',
+  },
+];
+
+export default function Testimonials() {
+  return (
+    <section id="testimonials" style={{ padding: '96px 24px', background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <h2 style={{
+            fontSize: 'clamp(32px,5vw,52px)', fontWeight: 800,
+            letterSpacing: '-0.04em', color: '#fff',
+          }}>
+            Trusted by the best teams
+          </h2>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px,1fr))',
+          gap: 24,
+        }}>
+          {TESTIMONIALS.map((t) => (
+            <div key={t.name} style={{
+              padding: 28, borderRadius: 20,
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.07)',
+            }}>
+              <div style={{
+                fontSize: 28, color: t.color, marginBottom: 18, lineHeight: 1,
+              }}>
+                "
+              </div>
+              <p style={{
+                fontSize: 15, lineHeight: 1.7,
+                color: 'rgba(255,255,255,0.8)', marginBottom: 24, fontStyle: 'italic',
+              }}>
+                {t.quote}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  width: 40, height: 40, borderRadius: '50%',
+                  background: \`\${t.color}22\`, border: \`1.5px solid \${t.color}44\`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13, fontWeight: 700, color: t.color,
+                }}>
+                  {t.avatar}
+                </div>
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{t.name}</p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}` },
+  { file: "src/index.css", code: `/* Global styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #020617;
+  --surface: #0f172a;
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --accent: #a5b4fc;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 16px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+.fade-in-up { animation: fadeInUp 0.7s ease-out both; }
+.float      { animation: float 6s ease-in-out infinite; }` },
+  { file: "src/components/Footer.tsx", code: `import React from 'react';
+
+const LINKS = {
+  Product: ['Features', 'Pricing', 'Changelog', 'Roadmap'],
+  Company: ['About', 'Blog', 'Careers', 'Press'],
+  Legal: ['Privacy', 'Terms', 'Security', 'Cookies'],
 };
 
-const COLLABORATORS: Collaborator[] = [
-  {
-    id: "owner",
-    name: "Aryan Khan (you)",
-    email: "aryanthealgohype@gmail.com",
-    role: "Owner",
-    initials: "AK",
-  },
-  {
-    id: "designer",
-    name: "Ayan's Lovable",
-    email: "team@aryandigitalcanvas.com",
-    role: "Can edit",
-    initials: "AL",
-  },
-  {
-    id: "dev",
-    name: "People you invited",
-    email: "invites@workspace.local",
-    role: "Can comment",
-    initials: "PI",
-  },
+export default function Footer() {
+  return (
+    <footer style={{
+      background: '#020617',
+      borderTop: '1px solid rgba(255,255,255,0.06)',
+      padding: '64px 24px 32px',
+    }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '2fr repeat(3, 1fr)',
+          gap: 48, marginBottom: 56,
+        }}>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 14 }}>Brand</div>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: 240 }}>
+              The platform that helps modern teams ship faster and collaborate better.
+            </p>
+          </div>
+          {Object.entries(LINKS).map(([group, items]) => (
+            <div key={group}>
+              <p style={{
+                fontSize: 12, fontWeight: 700, letterSpacing: '0.1em',
+                textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 16,
+              }}>
+                {group}
+              </p>
+              <ul style={{ listStyle: 'none' }}>
+                {items.map((item) => (
+                  <li key={item} style={{ marginBottom: 10 }}>
+                    <a href="#" style={{
+                      fontSize: 14, color: 'rgba(255,255,255,0.55)',
+                      textDecoration: 'none',
+                    }}>
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          paddingTop: 24,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: 'wrap', gap: 12,
+        }}>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>
+            © {new Date().getFullYear()} Brand. All rights reserved.
+          </p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>
+            Built with DesignAI ✦
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}` },
 ];
 
-function safeJsonParse<T>(value: string | null): T | null {
-  if (!value) return null;
+function LiveCodeWriter({ activeTasks }: { activeTasks: Array<{ status: string; label: string }> }) {
+  const [frameIndex, setFrameIndex] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+
+  const activeTaskCount = activeTasks.filter(t => t.status === "completed").length;
+
+  // Advance frame as tasks complete; also auto-cycle frames when typing finishes
+  useEffect(() => {
+    const targetFrame = Math.min(
+      Math.floor((activeTaskCount / Math.max(1, activeTasks.length)) * LIVE_CODE_FRAMES.length),
+      LIVE_CODE_FRAMES.length - 1
+    );
+    if (targetFrame !== frameIndex) {
+      setFrameIndex(targetFrame);
+      setCharCount(0);
+    }
+  }, [activeTaskCount, activeTasks.length, frameIndex]);
+
+  const currentFrame = LIVE_CODE_FRAMES[frameIndex];
+
+  useEffect(() => {
+    setCharCount(0);
+    // Speed: faster at start, slows when nearing end for dramatic effect
+    const interval = window.setInterval(() => {
+      setCharCount((c) => {
+        const remaining = currentFrame.code.length - c;
+        const speed = remaining > 200 ? 12 : remaining > 50 ? 6 : 3;
+        const next = c + speed;
+        if (next >= currentFrame.code.length) {
+          window.clearInterval(interval);
+          // Auto-advance to next frame after a pause
+          window.setTimeout(() => {
+            setFrameIndex((fi) => (fi + 1) % LIVE_CODE_FRAMES.length);
+          }, 800);
+          return currentFrame.code.length;
+        }
+        return next;
+      });
+    }, 16);
+    return () => window.clearInterval(interval);
+  }, [frameIndex, currentFrame.code.length]);
+
+  const displayed = currentFrame.code.slice(0, charCount);
+
+  return (
+    <div style={{ height: "100%", background: "#1e1e1e", display: "flex", flexDirection: "column", fontFamily: '"Geist Mono","Fira Code",Consolas,monospace' }}>
+      {/* File tab */}
+      <div style={{ padding: "8px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(99,102,241,0.6)" }} />
+        <span style={{ fontSize: 12, color: "#a5b4fc", fontWeight: 600 }}>{currentFrame.file}</span>
+        <span style={{ marginLeft: "auto", fontSize: 11, color: "#475569" }}>Generating…</span>
+      </div>
+      {/* Code output */}
+      <div style={{ flex: 1, overflow: "auto", padding: "16px 20px", fontSize: 13, lineHeight: 1.6, color: "#d4d4d4", whiteSpace: "pre", userSelect: "none" }}>
+        <span style={{ color: "#9cdcfe" }}>{/* color syntax for imports */}</span>
+        {displayed.split("\n").map((line, i) => (
+          <div key={i} style={{ display: "flex", gap: 16 }}>
+            <span style={{ color: "#4a5568", minWidth: 28, textAlign: "right", userSelect: "none" }}>{i + 1}</span>
+            <span style={{ color: line.startsWith("import") ? "#c586c0" : line.includes("export") ? "#569cd6" : line.includes("//") ? "#6a9955" : line.includes("style") ? "#9cdcfe" : "#d4d4d4" }}>{line}</span>
+          </div>
+        ))}
+        <div style={{ display: "flex", gap: 16 }}>
+          <span style={{ color: "#4a5568", minWidth: 28, textAlign: "right" }}>{displayed.split("\n").length}</span>
+          <span style={{ display: "inline-block", width: 2, height: 16, background: "#6366f1", animation: "blink 1s step-end infinite", verticalAlign: "text-bottom" }} />
+        </div>
+      </div>
+      <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
+    </div>
+  );
+}
+
+function getChatKey(projectId?: string): string {
+  if (!projectId) return `lokoai.chat.orphan`;
+  return `lokoai.chat.${projectId}`;
+}
+
+function parseMessages(raw: string | null): ChatMessage[] {
+  if (!raw) return EMPTY_MESSAGES;
   try {
-    return JSON.parse(value) as T;
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? (parsed as ChatMessage[]) : EMPTY_MESSAGES;
   } catch {
-    return null;
+    return EMPTY_MESSAGES;
   }
 }
 
-function readStoredChatMessages(): ChatMessage[] {
-  if (typeof window === "undefined") {
-    return EMPTY_CHAT_MESSAGES;
-  }
-
-  const storedValue = window.localStorage.getItem(CHAT_STORAGE_KEY);
-  if (storedValue === cachedChatStorageValue) {
-    return cachedChatMessages;
-  }
-
-  cachedChatStorageValue = storedValue;
-  const parsed = safeJsonParse<ChatMessage[]>(storedValue);
-  cachedChatMessages = Array.isArray(parsed) ? parsed : EMPTY_CHAT_MESSAGES;
-  return cachedChatMessages;
+function readMessages(key: string): ChatMessage[] {
+  if (typeof window === "undefined") return EMPTY_MESSAGES;
+  return parseMessages(localStorage.getItem(key));
 }
 
-function getServerStoredChatMessages(): ChatMessage[] {
-  return EMPTY_CHAT_MESSAGES;
-}
-
-function writeStoredChatMessages(messages: ChatMessage[]) {
-  cachedChatMessages = messages;
-  cachedChatStorageValue = JSON.stringify(messages);
-
+function writeMessages(key: string, messages: ChatMessage[]) {
   try {
-    window.localStorage.setItem(CHAT_STORAGE_KEY, cachedChatStorageValue);
+    localStorage.setItem(key, JSON.stringify(messages));
   } catch {
     // ignore quota errors
   }
-
-  window.dispatchEvent(new Event(CHAT_STORAGE_EVENT));
+  window.dispatchEvent(new CustomEvent(`lokoai.chat.sync.${key}`));
 }
 
-function subscribeToStoredChatMessages(onStoreChange: () => void) {
-  if (typeof window === "undefined") {
-    return () => undefined;
-  }
+// Cache shape stored in a module-level Map so it survives component re-renders
+// but is keyed per chatKey, solving the useSyncExternalStore "getSnapshot must
+// return a stable reference" requirement.
+type SnapshotCache = { raw: string | null; messages: ChatMessage[] };
+const snapshotCache = new Map<string, SnapshotCache>();
 
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key === CHAT_STORAGE_KEY) {
-      cachedChatStorageValue = undefined;
-      onStoreChange();
-    }
-  };
-
-  const handleCustomEvent = () => {
-    cachedChatStorageValue = undefined;
-    onStoreChange();
-  };
-
-  window.addEventListener("storage", handleStorage);
-  window.addEventListener(CHAT_STORAGE_EVENT, handleCustomEvent);
-
+function makeCachedSnapshot(chatKey: string): () => ChatMessage[] {
   return () => {
-    window.removeEventListener("storage", handleStorage);
-    window.removeEventListener(CHAT_STORAGE_EVENT, handleCustomEvent);
+    if (typeof window === "undefined") return EMPTY_MESSAGES;
+    const raw = localStorage.getItem(chatKey);
+    const cached = snapshotCache.get(chatKey);
+    if (cached && cached.raw === raw) return cached.messages; // same ref
+    const messages = parseMessages(raw);
+    snapshotCache.set(chatKey, { raw, messages });
+    return messages;
   };
+}
+
+function useProjectChat(
+  projectId?: string
+): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
+  const chatKey = useMemo(() => getChatKey(projectId), [projectId]);
+
+  // Stable subscribe — recreated only when chatKey changes
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (typeof window === "undefined") return () => {};
+
+      const handleStorage = (e: StorageEvent) => {
+        if (e.key === chatKey) {
+          // Invalidate cache so next getSnapshot sees the new data
+          snapshotCache.delete(chatKey);
+          onStoreChange();
+        }
+      };
+      const handleCustom = () => {
+        snapshotCache.delete(chatKey);
+        onStoreChange();
+      };
+
+      window.addEventListener("storage", handleStorage);
+      window.addEventListener(`lokoai.chat.sync.${chatKey}`, handleCustom);
+
+      return () => {
+        window.removeEventListener("storage", handleStorage);
+        window.removeEventListener(`lokoai.chat.sync.${chatKey}`, handleCustom);
+      };
+    },
+    [chatKey]
+  );
+
+  // getSnapshot is stable for a given chatKey; returns cached ref when data unchanged
+  const getSnapshot = useMemo(() => makeCachedSnapshot(chatKey), [chatKey]);
+  const getServerSnapshot = useCallback(() => EMPTY_MESSAGES, []);
+
+  const messages = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  const setMessages: Dispatch<SetStateAction<ChatMessage[]>> = useCallback(
+    (value) => {
+      const current = readMessages(chatKey);
+      const next =
+        typeof value === "function"
+          ? (value as (c: ChatMessage[]) => ChatMessage[])(current)
+          : value;
+      writeMessages(chatKey, next);
+    },
+    [chatKey]
+  );
+
+  return [messages, setMessages];
 }
 
 function TaskStatusIcon({ status }: { status: TaskStatus }) {
   if (status === "completed") {
     return (
-      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-400/25">
-        <Check className="h-3.5 w-3.5" />
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30">
+        <Check className="h-3 w-3" />
       </span>
     );
   }
-
   if (status === "active") {
     return (
-      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/30">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/30">
+        <Loader2 className="h-3 w-3 animate-spin" />
       </span>
     );
   }
-
   return (
-    <span className="flex h-5 w-5 items-center justify-center rounded-full text-zinc-500 ring-1 ring-zinc-700/80">
+    <span className="flex h-5 w-5 items-center justify-center rounded-full text-slate-600 ring-1 ring-slate-600/50">
       <Circle className="h-2.5 w-2.5 fill-current" />
     </span>
   );
 }
 
-function useLocalStorageChat(): [ChatMessage[], Dispatch<SetStateAction<ChatMessage[]>>] {
-  const messages = useSyncExternalStore(
-    subscribeToStoredChatMessages,
-    readStoredChatMessages,
-    getServerStoredChatMessages
+function SandboxLoadingState({ isEdit }: { isEdit: boolean }) {
+  const [step, setStep] = useState(0);
+  const steps = isEdit
+    ? ["Applying your changes...", "Updating components...", "Refreshing preview..."]
+    : ["Installing packages...", "Starting Vite dev server...", "Connecting preview..."];
+
+  useEffect(() => {
+    const timer = setInterval(() => setStep((s) => (s + 1) % steps.length), isEdit ? 1000 : 4000);
+    return () => clearInterval(timer);
+  }, [steps.length, isEdit]);
+
+  return (
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#020617",
+        gap: 24,
+        userSelect: "none",
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 20,
+          background:
+            "linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2))",
+          border: "1px solid rgba(99,102,241,0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Loader2
+          style={{
+            width: 28,
+            height: 28,
+            color: "#6366f1",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <p style={{ color: "#fff", fontWeight: 700, fontSize: 16, margin: "0 0 8px" }}>
+          {isEdit ? "Applying changes" : "Building live environment"}
+        </p>
+        <p style={{ color: "#6366f1", fontSize: 13, margin: "0 0 4px" }}>{steps[step]}</p>
+        {!isEdit && (
+          <p style={{ color: "#475569", fontSize: 12, margin: 0 }}>
+            This takes ~60s for first load
+          </p>
+        )}
+      </div>
+      {!isEdit && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, width: 240 }}>
+          {steps.map((s, i) => (
+            <div
+              key={s}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                opacity: i <= step ? 1 : 0.3,
+                transition: "opacity 0.3s",
+              }}
+            >
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background:
+                    i < step ? "#10b981" : i === step ? "#6366f1" : "#334155",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 12,
+                  color:
+                    i < step ? "#10b981" : i === step ? "#a5b4fc" : "#475569",
+                }}
+              >
+                {s}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
-
-  const setMessages: Dispatch<SetStateAction<ChatMessage[]>> = (value) => {
-    const currentMessages = readStoredChatMessages();
-    const nextMessages =
-      typeof value === "function"
-        ? (value as (current: ChatMessage[]) => ChatMessage[])(currentMessages)
-        : value;
-
-    writeStoredChatMessages(nextMessages);
-  };
-
-  return [messages, setMessages];
 }
 
-export default function BuilderWorkspace() {
+interface BuilderWorkspaceProps {
+  projectId?: string;
+}
+
+export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = {}) {
+  const router = useRouter();
   const {
     generateProject,
+    editProject,
     isGenerating,
     view,
     setView,
@@ -307,32 +988,42 @@ export default function BuilderWorkspace() {
     updateFileContent,
     getFileContent,
     projectTitle,
+    reset,
   } = useGeneratorStore();
 
-  const [messages, setMessages] = useLocalStorageChat();
+  const [messages, setMessages] = useProjectChat(projectId);
   const [draft, setDraft] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
-  const [previewStyle, setPreviewStyle] = useState<"default" | "soft" | "contrast">("default");
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [buildMode, setBuildMode] = useState<BuildMode>("App");
+  const [buildMode, setBuildMode] = useState<BuildMode>("Landing");
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<MemberRole>("Can edit");
-  const [isInvitePublic, setIsInvitePublic] = useState(false);
-  const [inviteLink, setInviteLink] = useState<string | null>(null);
-  const [isCreatingInviteLink, setIsCreatingInviteLink] = useState(false);
-  const promptHints = ["App", "Website", "Dashboard", "Landing page", "Mobile app"];
-  const [hintIndex, setHintIndex] = useState(0);
-  const [typewriterIndex, setTypewriterIndex] = useState(0);
-  const [typewriterText, setTypewriterText] = useState("");
-  const [isTypewriterDeleting, setIsTypewriterDeleting] = useState(false);
   const [generationTasks, setGenerationTasks] = useState<GenerationTask[]>([]);
   const [isTaskPanelLive, setIsTaskPanelLive] = useState(false);
-  const pathname = usePathname();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDark, setIsDark] = useState(true);
+
+  // Sync theme with localStorage — builder has its own independent key, defaults dark
+  useEffect(() => {
+    const stored = localStorage.getItem("lokoai.theme.builder");
+    if (stored === "light") setIsDark(false);
+    // If no stored preference, always default to dark
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDark((prev) => {
+      const next = !prev;
+      localStorage.setItem("lokoai.theme.builder", next ? "dark" : "light");
+      return next;
+    });
+  };
+
+  // ── E2B sandbox state ───────────────────────────────────────────────────────
+  const [sandboxUrl, setSandboxUrl] = useState<string | null>(null);
+  const [isSandboxLoading, setIsSandboxLoading] = useState(false);
+  const sandboxIdRef = useRef<string | null>(null);
+  const isEditModeRef = useRef(false);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -341,413 +1032,392 @@ export default function BuilderWorkspace() {
   const streamTimerRef = useRef<number | null>(null);
   const pendingPromptRef = useRef(false);
   const shareTimerRef = useRef<number | null>(null);
+  // Use a ref for project-loaded state to avoid setState-in-effect lint errors
+  const projectLoadedRef = useRef(false);
 
+  // Exclude the virtual "preview.html" blob — that's only for the iframe, not for editing
   const filesForEditor = useMemo(() => {
     if (!generatedFiles?.length) return [] as { path: string; title: string }[];
-    return generatedFiles.map((file) => ({
-      path: file.path,
-      title: file.path.split("/").pop() || file.path,
-    }));
+    return generatedFiles
+      .filter((f) => f.path !== "preview.html")
+      .map((f) => ({
+        path: f.path,
+        title: f.path.split("/").pop() ?? f.path,
+      }));
   }, [generatedFiles]);
 
   const activePath = activeFilePath ?? filesForEditor[0]?.path ?? null;
   const activeLanguage = useMemo(() => {
-    if (!activePath) return "plaintext";
+    if (!activePath) return "html";
     if (activePath.endsWith(".tsx") || activePath.endsWith(".ts")) return "typescript";
     if (activePath.endsWith(".js")) return "javascript";
     if (activePath.endsWith(".css")) return "css";
     if (activePath.endsWith(".json")) return "json";
     if (activePath.endsWith(".html")) return "html";
-    if (activePath.endsWith(".md")) return "markdown";
-    return "plaintext";
+    return "html";
   }, [activePath]);
 
-  const previewWidthClass = useMemo(() => {
-    if (deviceMode === "mobile") return "w-[390px] max-w-[92vw]";
-    return "w-full max-w-[1040px]";
-  }, [deviceMode]);
+  const previewWidthClass = deviceMode === "mobile" ? "w-[390px] max-w-[92vw]" : "w-full";
+  const projectLabel = projectTitle || "Untitled Design";
 
-  const projectLabel = projectTitle || "Untitled Website";
-
-  const syncComposerHeight = useEffectEvent(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    textarea.style.height = "0px";
-    const nextHeight = Math.min(Math.max(textarea.scrollHeight, 80), 180);
-    textarea.style.height = `${nextHeight}px`;
-  });
-
+  // Reset store when projectId changes
   useEffect(() => {
-    syncComposerHeight();
-  }, [draft, syncComposerHeight]);
+    reset();
+    pendingPromptRef.current = false;
+    projectLoadedRef.current = false;
+    // Clear sandbox state for new project
+    setSandboxUrl(null);
+    setIsSandboxLoading(false);
+    sandboxIdRef.current = null;
+  }, [projectId, reset]);
 
+  // Load project from Supabase
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setHintIndex((current) => (current + 1) % promptHints.length);
-    }, 2400);
+    if (!projectId || projectLoadedRef.current) return;
+    projectLoadedRef.current = true;
 
-    return () => window.clearInterval(timer);
-  }, [promptHints.length]);
-
-  useEffect(() => {
-    const currentPrompt = TYPEWRITER_PROMPTS[typewriterIndex];
-    const isComplete = typewriterText === currentPrompt;
-    const isEmpty = typewriterText.length === 0;
-
-    const delay = isComplete && !isTypewriterDeleting
-      ? 1500
-      : isTypewriterDeleting
-        ? 28
-        : 54 + (typewriterText.length % 4) * 12;
-
-    const timer = window.setTimeout(() => {
-      if (!isTypewriterDeleting && isComplete) {
-        setIsTypewriterDeleting(true);
-        return;
+    async function loadProject() {
+      try {
+        const res = await fetch(`/api/projects/${projectId}`);
+        if (res.ok) {
+          const data = await res.json() as {
+            project?: {
+              preview_html?: string | null;
+              title?: string;
+              generated_code?: Array<{ path: string; content: string }>;
+              sandbox_id?: string | null;
+            };
+          };
+          const project = data.project;
+          if (project?.preview_html) {
+            const files = Array.isArray(project.generated_code)
+              ? project.generated_code
+              : [];
+            useGeneratorStore.setState({
+              previewHtml: project.preview_html,
+              projectTitle: project.title ?? "Untitled Design",
+              generatedFiles: files,
+              view: "preview",
+              isGenerating: false,
+            });
+            sandboxIdRef.current = project.sandbox_id ?? null;
+            if (files.some((f) => f.path === "src/App.tsx")) {
+              void spinUpSandbox(files, projectId);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to load project:", e);
       }
+    }
 
-      if (isTypewriterDeleting && isEmpty) {
-        setIsTypewriterDeleting(false);
-        setTypewriterIndex((current) => (current + 1) % TYPEWRITER_PROMPTS.length);
-        return;
-      }
+    void loadProject();
+  }, [projectId]);
 
-      setTypewriterText((current) =>
-        isTypewriterDeleting
-          ? current.slice(0, -1)
-          : currentPrompt.slice(0, current.length + 1)
-      );
-    }, delay);
-
-    return () => window.clearTimeout(timer);
-  }, [isTypewriterDeleting, typewriterIndex, typewriterText]);
-
+  // Auto-resize textarea (plain ref — textareaRef never goes stale)
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (isFullscreen) setIsFullscreen(false);
-        if (isSidebarOpen) setIsSidebarOpen(false);
-        if (isShareModalOpen) setIsShareModalOpen(false);
-      }
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "0px";
+    el.style.height = `${Math.min(Math.max(el.scrollHeight, 80), 200)}px`;
+  }, [draft]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) setIsFullscreen(false);
     };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isFullscreen]);
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isFullscreen, isSidebarOpen, isShareModalOpen]);
-
+  // Cleanup timers
   useEffect(() => {
     return () => {
-      if (streamTimerRef.current) {
-        window.clearInterval(streamTimerRef.current);
-      }
-      taskTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
-      taskTimersRef.current = [];
-      if (shareTimerRef.current) {
-        window.clearTimeout(shareTimerRef.current);
-      }
+      if (streamTimerRef.current) window.clearInterval(streamTimerRef.current);
+      taskTimersRef.current.forEach((t) => window.clearTimeout(t));
+      if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
     };
   }, []);
 
+  // Scroll task panel
   useEffect(() => {
-    const panel = taskPanelRef.current;
-    if (!panel) return;
-
-    panel.scrollTo({
-      top: panel.scrollHeight,
-      behavior: "smooth",
-    });
+    taskPanelRef.current?.scrollTo({ top: taskPanelRef.current.scrollHeight, behavior: "smooth" });
   }, [generationTasks]);
 
   const startGenerationTimeline = () => {
-    taskTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    taskTimersRef.current.forEach((t) => window.clearTimeout(t));
     taskTimersRef.current = [];
     setIsTaskPanelLive(true);
     setGenerationTasks([]);
 
     GENERATION_TASK_BLUEPRINT.forEach((task, index) => {
-      const timerId = window.setTimeout(() => {
+      const tid = window.setTimeout(() => {
         setGenerationTasks(
           GENERATION_TASK_BLUEPRINT.slice(0, Math.min(GENERATION_TASK_BLUEPRINT.length, index + 3)).map(
-            (item, itemIndex) => ({
+            (item, i) => ({
               ...item,
-              status:
-                itemIndex < index
-                  ? "completed"
-                  : itemIndex === index
-                    ? "active"
-                    : "pending",
+              status: (i < index ? "completed" : i === index ? "active" : "pending") as TaskStatus,
             })
           )
         );
-      }, 420 + index * 720);
-
-      taskTimersRef.current.push(timerId);
+      }, 400 + index * 680);
+      taskTimersRef.current.push(tid);
     });
 
-    const finishTimerId = window.setTimeout(() => {
-      setGenerationTasks((current) => current.map((item) => ({ ...item, status: "completed" })));
+    const finishTid = window.setTimeout(() => {
+      setGenerationTasks((c) => c.map((t) => ({ ...t, status: "completed" as TaskStatus })));
       setIsTaskPanelLive(false);
-    }, 420 + GENERATION_TASK_BLUEPRINT.length * 720 + 900);
-
-    taskTimersRef.current.push(finishTimerId);
+    }, 400 + GENERATION_TASK_BLUEPRINT.length * 680 + 800);
+    taskTimersRef.current.push(finishTid);
   };
 
   const startVoiceInput = () => {
-    const speechWindow = window as SpeechRecognitionWindow;
-    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
-
+    const Recognition =
+      (window as SpeechRecognitionWindow).SpeechRecognition ??
+      (window as SpeechRecognitionWindow).webkitSpeechRecognition;
     if (!Recognition) {
-      alert("Speech recognition is not supported in your browser.");
+      alert("Speech recognition not supported.");
       return;
     }
-
-    const recognition = new Recognition();
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setDraft((prev) => `${prev}${prev ? " " : ""}${transcript}`);
+    const rec = new Recognition();
+    rec.onstart = () => setIsListening(true);
+    rec.onend = () => setIsListening(false);
+    rec.onresult = (e) => {
+      const t = e.results[0][0].transcript;
+      setDraft((prev) => `${prev}${prev ? " " : ""}${t}`);
     };
-
-    recognition.start();
+    rec.start();
   };
 
-  const pushMessage = (msg: Omit<ChatMessage, "id" | "createdAt"> & { id?: string; createdAt?: number }) => {
-    const id = msg.id ?? `${msg.role}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const createdAt = msg.createdAt ?? Date.now();
-    setMessages((current) => [...current, { id, role: msg.role, content: msg.content, createdAt }]);
-    return id;
-  };
+  // Keep latest setMessages in a ref so event-handler callbacks don't become stale
+  const setMessagesRef = useRef(setMessages);
+  useLayoutEffect(() => {
+    setMessagesRef.current = setMessages;
+  });
 
-  const updateMessage = (id: string, content: string) => {
-    setMessages((current) => current.map((message) => (message.id === id ? { ...message, content } : message)));
-  };
+  const pushMessage = useCallback(
+    (msg: Omit<ChatMessage, "id" | "createdAt"> & { id?: string; createdAt?: number }) => {
+      const now = Date.now();
+      const rand = Math.random().toString(16).slice(2);
+      const id = msg.id ?? `${msg.role}-${now}-${rand}`;
+      const createdAt = msg.createdAt ?? now;
+      const full: ChatMessage = { id, role: msg.role, content: msg.content, createdAt };
+      setMessagesRef.current((c) => [...c, full]);
+      return id;
+    },
+    []
+  );
 
-  const handleFileAttach = (files: FileList | null) => {
-    if (!files?.length) return;
+  const updateMessage = useCallback((id: string, content: string) => {
+    setMessagesRef.current((c) => c.map((m) => (m.id === id ? { ...m, content } : m)));
+  }, []);
 
-    const fileNames = Array.from(files)
-      .map((file) => file.name)
-      .slice(0, 4);
-
-    pushMessage({
-      role: "assistant",
-      content: `Attached ${fileNames.length} file${fileNames.length === 1 ? "" : "s"}: ${fileNames.join(", ")}`,
-    });
-  };
-
-  const handleSelectDraft = () => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    textarea.focus();
-
-    if (draft.trim()) {
-      textarea.select();
-      return;
-    }
-
-    setDraft("Create a premium AI product landing page with pricing, testimonials, and dashboard preview.");
-  };
-
-  const handlePlanDraft = () => {
-    const planPrompt =
-      draft.trim() || "Create a premium AI builder website with a modern SaaS layout and dashboard.";
-
-    pushMessage({ role: "user", content: planPrompt });
-    startGenerationTimeline();
-  };
-
-  const streamMessage = (id: string, fullText: string) => {
-    if (streamTimerRef.current) {
-      window.clearInterval(streamTimerRef.current);
-      streamTimerRef.current = null;
-    }
-
-    let i = 0;
-    streamTimerRef.current = window.setInterval(() => {
-      i += Math.max(1, Math.floor(fullText.length / 120));
-      updateMessage(id, fullText.slice(0, i));
-      if (i >= fullText.length) {
-        if (streamTimerRef.current) window.clearInterval(streamTimerRef.current);
+  const streamMessage = useCallback(
+    (id: string, fullText: string) => {
+      if (streamTimerRef.current) {
+        window.clearInterval(streamTimerRef.current);
         streamTimerRef.current = null;
       }
-    }, 18);
+      let i = 0;
+      streamTimerRef.current = window.setInterval(() => {
+        i += Math.max(1, Math.floor(fullText.length / 100));
+        updateMessage(id, fullText.slice(0, i));
+        if (i >= fullText.length) {
+          window.clearInterval(streamTimerRef.current!);
+          streamTimerRef.current = null;
+        }
+      }, 16);
+    },
+    [updateMessage]
+  );
+
+  const saveToProject = async (
+    title: string,
+    html: string,
+    files: Array<{ path: string; content: string }>
+  ) => {
+    if (!projectId) return;
+    try {
+      await fetch(`/api/projects/${projectId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, preview_html: html, generated_code: files }),
+      });
+    } catch (e) {
+      console.warn("Failed to save project:", e);
+    }
   };
 
-  const sendPrompt = async (promptText: string, nextBuildMode: BuildMode = buildMode) => {
-    const trimmedPrompt = promptText.trim();
-    if (!trimmedPrompt || isGenerating) {
-      return;
-    }
+  /**
+   * Spin up (or reconnect to) an E2B sandbox with the generated files.
+   * Runs in the background — never awaited in sendPrompt.
+   */
+  const spinUpSandbox = useCallback(
+    async (
+      files: Array<{ path: string; content: string }>,
+      currentProjectId?: string,
+      mode: "create" | "update" = "create"
+    ) => {
+      // Only run if E2B is configured (API key present) and files include React project
+      const hasAppTsx = files.some((f) => f.path === "src/App.tsx");
+      if (!hasAppTsx) return;
+
+      setIsSandboxLoading(true);
+      if (mode === "create") setSandboxUrl(null); // Only clear URL for new sandboxes
+
+      try {
+        const res = await fetch("/api/sandbox", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            files,
+            sandboxId: sandboxIdRef.current ?? undefined,
+            projectId: currentProjectId,
+            mode,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({})) as { error?: string };
+          console.warn("Sandbox error:", err.error ?? res.status);
+          return;
+        }
+
+        const data = await res.json() as {
+          sandboxId?: string;
+          previewUrl?: string;
+          isNew?: boolean;
+        };
+
+        if (data.sandboxId) sandboxIdRef.current = data.sandboxId;
+        if (data.previewUrl) setSandboxUrl(data.previewUrl);
+      } catch (e) {
+        console.warn("Sandbox unavailable:", e);
+      } finally {
+        setIsSandboxLoading(false);
+      }
+    },
+    []
+  );
+
+  const sendPrompt = async (promptText: string) => {
+    const trimmed = promptText.trim();
+    if (!trimmed || isGenerating) return;
 
     setDraft("");
     setView("preview");
 
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
-      setIsSidebarOpen(false);
-    }
-
-    pushMessage({ role: "user", content: trimmedPrompt });
+    pushMessage({ role: "user", content: trimmed });
     startGenerationTimeline();
+
+    // Determine mode: if we already have generated files, this is an edit
+    const currentState = useGeneratorStore.getState();
+    const existingFiles = (currentState.generatedFiles ?? []).filter(
+      (f) => f.path !== "preview.html"
+    );
+    // Treat as edit when we have real React files (sandbox-first; previewHtml is secondary)
+    const hasExistingDesign = existingFiles.some((f) => f.path === "src/App.tsx") || !!(currentState.previewHtml);
+    // Capture the original title so we can preserve it during edits
+    // (the AI must not rename an existing project when it only edits the design)
+    const originalTitle = currentState.projectTitle || "";
 
     const assistantId = pushMessage({
       role: "assistant",
-      content: "Thinking...",
+      content: hasExistingDesign ? "Applying your changes..." : "Generating your design...",
     });
 
-    await generateProject(`${trimmedPrompt}\n\nBuild mode: ${nextBuildMode}.`);
+    if (hasExistingDesign) {
+      // EDIT MODE — keep sandbox visible so user sees their design while AI processes
+      // (HMR will update the preview when files are written to the sandbox)
+      await editProject(trimmed, existingFiles, currentState.previewHtml ?? "", projectId);
+      // Restore the original title — the AI should never rename an existing project
+      if (originalTitle) {
+        useGeneratorStore.setState({ projectTitle: originalTitle });
+      }
+    } else {
+      // GENERATE MODE — switch to code view to show live code writing
+      setView("code");
+      await generateProject(
+        `${trimmed}\n\nBuild mode: ${buildMode} page. Make it absolutely stunning.`,
+        projectId
+      );
+    }
 
-    const nextError = useGeneratorStore.getState().error;
-    if (nextError) {
-      updateMessage(assistantId, `I hit an error while generating:\n\n${nextError}`);
+    const state = useGeneratorStore.getState();
+    if (state.error) {
+      updateMessage(
+        assistantId,
+        `Sorry, something went wrong: ${state.error}\n\nPlease try rephrasing your request.`
+      );
+      setView("preview");
       return;
     }
 
-    const title = useGeneratorStore.getState().projectTitle || "your project";
-    const fileCount = useGeneratorStore.getState().generatedFiles?.length ?? 0;
+    // For edits: always keep the original project title
+    const title = hasExistingDesign
+      ? (originalTitle || state.projectTitle || "Your Design")
+      : (state.projectTitle || "Your Design");
+    const html = state.previewHtml ?? "";
+    const files = (state.generatedFiles ?? []).filter((f) => f.path !== "preview.html");
 
-    const responseText =
-      `Done. I generated ${fileCount} file${fileCount === 1 ? "" : "s"} for ${title}.\n` +
-      `The live preview is updated on the right. Switch Preview/Code, edit files, or refresh the iframe if needed.`;
+    // Switch to preview after generation/edit completes
+    setView("preview");
 
+    await saveToProject(title, html, files);
+
+    let responseText: string;
+    if (hasExistingDesign) {
+      const short = trimmed.length > 60 ? `${trimmed.slice(0, 57)}…` : trimmed;
+      responseText = `Done! I've applied "${short}" to your design.\n\nThe live preview updates automatically. Want to tweak anything else?`;
+    } else {
+      const codeFileCount = files.length;
+      responseText = `${title} is ready! 🎉\n\nI've generated ${codeFileCount} React file${codeFileCount === 1 ? "" : "s"} with a matching live preview.\n\nI'm also spinning up a live Vite environment — you'll see the sandbox preview appear shortly.\n\nTry asking me to change colors, add sections, or refine any part!`;
+    }
     streamMessage(assistantId, responseText);
+
+    // ── Spin up E2B sandbox in the background (non-blocking) ─────────────────
+    isEditModeRef.current = hasExistingDesign;
+    if (hasExistingDesign) {
+      // Edit: update files in existing sandbox via HMR (fast, no npm reinstall)
+      void spinUpSandbox(files, projectId, "update");
+    } else {
+      // New design: create fresh sandbox with npm install + vite start
+      void spinUpSandbox(files, projectId, "create");
+    }
   };
 
   const handleSend = async (nextPrompt = draft) => {
-    await sendPrompt(nextPrompt, buildMode);
+    await sendPrompt(nextPrompt);
   };
 
-  const sendPendingPrompt = useEffectEvent((pendingPrompt: string, nextBuildMode: BuildMode) => {
-    void sendPrompt(pendingPrompt, nextBuildMode);
+  // Stable ref so the timer callback always calls the latest sendPrompt
+  // (avoids stale closure and replaces useEffectEvent for broader compatibility)
+  const sendPromptStableRef = useRef(sendPrompt);
+  useLayoutEffect(() => {
+    sendPromptStableRef.current = sendPrompt;
   });
 
+  // Handle pending prompt from session storage (fires once per projectId after load)
   useEffect(() => {
-    if (pendingPromptRef.current || isGenerating) {
-      return;
-    }
+    if (pendingPromptRef.current || isGenerating || !projectId) return;
 
-    const pendingPrompt = readPendingBuilderPrompt();
-    if (!pendingPrompt) {
-      return;
-    }
+    const pending = readProjectPendingPrompt(projectId);
+    if (!pending) return;
 
     pendingPromptRef.current = true;
-    clearPendingBuilderPrompt();
+    // NOTE: Do NOT clear sessionStorage here.
+    // React StrictMode runs effects twice in dev: the first timer gets cancelled
+    // by the cleanup, and pendingPromptRef is reset by Effect 1 on the second mount.
+    // If we cleared sessionStorage in the first run the second run would find nothing.
+    // Instead, clear inside the timer so it only happens when we actually fire.
 
-    const timeoutId = window.setTimeout(() => {
-      sendPendingPrompt(pendingPrompt, buildMode);
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [buildMode, isGenerating, sendPendingPrompt]);
-
-  const handleShare = async () => {
-    const url = window.location.href;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: projectLabel,
-          url,
-        });
-        setShareFeedback("Share sheet opened");
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        setShareFeedback("Link copied");
-      } else {
-        window.prompt("Copy this link", url);
-        setShareFeedback("Link ready to copy");
-      }
-    } catch {
-      window.prompt("Copy this link", url);
-      setShareFeedback("Link ready to copy");
-    }
-
-    if (shareTimerRef.current) {
-      window.clearTimeout(shareTimerRef.current);
-    }
-
-    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
-  };
-
-  const handleOpenExternalPreview = () => {
-    if (previewHtml) {
-      const blob = new Blob([previewHtml], { type: "text/html" });
-      const blobUrl = URL.createObjectURL(blob);
-      window.open(blobUrl, "_blank", "noopener,noreferrer");
-      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
-      return;
-    }
-
-    window.open(window.location.href, "_blank", "noopener,noreferrer");
-  };
-
-  const handleAiAction = () => {
-    const nextPrompt = `Create a premium ${promptHints[hintIndex].toLowerCase()} with modern SaaS layout and animations.`;
-    setDraft(nextPrompt);
-    textareaRef.current?.focus();
-  };
-
-  const handleGithubOpen = () => {
-    window.open("https://github.com", "_blank", "noopener,noreferrer");
-  };
-
-  const cyclePreviewStyle = () => {
-    setPreviewStyle((current) =>
-      current === "default" ? "soft" : current === "soft" ? "contrast" : "default"
-    );
-  };
-
-  const handleCreateInviteLink = async () => {
-    if (isCreatingInviteLink) return;
-
-    setIsCreatingInviteLink(true);
-    await new Promise((resolve) => window.setTimeout(resolve, 450));
-
-    const slug = projectLabel
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-    const nextLink = `${window.location.origin}/share/${slug || "workspace"}`;
-
-    setInviteLink(nextLink);
-    setIsCreatingInviteLink(false);
-    setShareFeedback("Invite link created");
-
-    if (shareTimerRef.current) {
-      window.clearTimeout(shareTimerRef.current);
-    }
-
-    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
-  };
-
-  const handleCopyInviteLink = async () => {
-    if (!inviteLink) return;
-
-    try {
-      await navigator.clipboard.writeText(inviteLink);
-      setShareFeedback("Invite link copied");
-    } catch {
-      window.prompt("Copy invite link", inviteLink);
-      setShareFeedback("Invite link ready to copy");
-    }
-
-    if (shareTimerRef.current) {
-      window.clearTimeout(shareTimerRef.current);
-    }
-
-    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2200);
-  };
-
-  const handleInviteByEmail = () => {
-    if (!inviteEmail.trim()) return;
-
-    const inviteMessage = `Invite sent to ${inviteEmail.trim()} with ${inviteRole.toLowerCase()} access.`;
-    pushMessage({ role: "assistant", content: inviteMessage });
-    setInviteEmail("");
-  };
+    const tid = window.setTimeout(() => {
+      clearProjectPendingPrompt(projectId);
+      void sendPromptStableRef.current(pending);
+    }, 200);
+    return () => window.clearTimeout(tid);
+  }, [projectId, isGenerating]);
 
   const handleKeyDown = (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -756,783 +1426,628 @@ export default function BuilderWorkspace() {
     }
   };
 
-  const activeEditorValue = activePath ? getFileContent(activePath) : "";
-  const showPreviewSkeleton = isGenerating && !previewHtml;
-
-  const shellStyle = {
-    fontFamily: '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif',
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setShareFeedback("Link copied!");
+      } else {
+        window.prompt("Copy link:", url);
+        setShareFeedback("Ready to copy");
+      }
+    } catch {
+      window.prompt("Copy link:", url);
+      setShareFeedback("Ready to copy");
+    }
+    if (shareTimerRef.current) window.clearTimeout(shareTimerRef.current);
+    shareTimerRef.current = window.setTimeout(() => setShareFeedback(null), 2500);
   };
 
+  const handleOpenExternal = () => {
+    if (sandboxUrl) {
+      window.open(sandboxUrl, "_blank");
+    } else if (previewHtml) {
+      const blob = new Blob([previewHtml], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      window.setTimeout(() => URL.revokeObjectURL(url), 30000);
+    } else {
+      window.open(window.location.href, "_blank");
+    }
+  };
+
+  /**
+   * Download all generated Vite+React files as a ZIP with the exact folder structure.
+   * Excludes the virtual "preview.html" blob — users only need the real source.
+   */
+  const handleDownload = async () => {
+    const downloadFiles = (generatedFiles ?? []).filter((f) => f.path !== "preview.html");
+    if (!downloadFiles.length) return;
+
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (const file of downloadFiles) {
+        zip.file(file.path, file.content);
+      }
+
+      // Add a README.md so the user knows how to run the project
+      zip.file(
+        "README.md",
+        `# ${projectLabel}\n\nGenerated with DesignAI.\n\n## Getting Started\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\nOpen http://localhost:5173 in your browser.\n`
+      );
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${projectLabel.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || "design"}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Download failed:", e);
+    }
+  };
+
+  const activeEditorValue = activePath ? getFileContent(activePath) : "";
+
   return (
-    <div
-      className="relative h-[100dvh] w-screen overflow-hidden bg-[#f4fbfb] text-slate-900"
-      style={shellStyle}
-    >
-      <div className="absolute inset-0 bg-[#f6fbf9]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_0%,rgba(125,211,252,0.36),transparent_32%),radial-gradient(circle_at_34%_16%,rgba(187,247,208,0.42),transparent_36%),radial-gradient(circle_at_86%_10%,rgba(240,253,250,0.82),transparent_34%),radial-gradient(circle_at_54%_100%,rgba(186,230,253,0.28),transparent_44%),linear-gradient(135deg,#ffffff_0%,#f0fdf4_42%,#ecfeff_100%)]" />
-      <div className="absolute inset-0 opacity-[0.20] [background-image:radial-gradient(circle_at_1px_1px,rgba(14,116,144,0.22)_1px,transparent_0)] [background-size:22px_22px]" />
-      <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-white/80 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-emerald-50/80 to-transparent" />
-
-      {isSidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[2px] lg:hidden" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar overlay" />}
-
-      <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">
-        <header className="relative z-30 grid h-11 shrink-0 grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-cyan-900/10 bg-white/72 px-2 text-slate-700 shadow-[0_16px_40px_rgba(14,116,144,0.10)] backdrop-blur-2xl">
-  <div className="flex min-w-0 items-center">
-    <button
-      onClick={() => setIsSidebarOpen((value) => !value)}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-cyan-900/10 bg-white/70 text-slate-500 transition hover:bg-white hover:text-slate-900"
-      aria-label="Toggle chat panel"
-    >
-      <ArrowLeft className="h-4 w-4" />
-    </button>
-    <div className="ml-2 hidden items-center gap-1 rounded-lg border border-cyan-900/10 bg-white/90 p-1 shadow-[0_10px_28px_rgba(14,116,144,0.12)] backdrop-blur-xl sm:flex">
-      <button
-        onClick={() => setView("preview")}
-        className={cn(
-          "min-w-[74px] rounded-md px-3.5 py-1.5 text-xs font-semibold transition",
-          view === "preview"
-            ? "bg-slate-900 text-white shadow-sm shadow-cyan-900/15"
-            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
-        )}
-      >
-        Preview
-      </button>
-      <button
-        onClick={() => setView("code")}
-        className={cn(
-          "min-w-[64px] rounded-md px-3.5 py-1.5 text-xs font-semibold transition",
-          view === "code"
-            ? "bg-slate-900 text-white shadow-sm shadow-cyan-900/15"
-            : "text-slate-500 hover:bg-cyan-50 hover:text-slate-900"
-        )}
-      >
-        Code
-      </button>
-      <span className="mx-0.5 h-6 w-px bg-cyan-900/10" />
-      <button
-        onClick={() => setView("code")}
-        className="inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Edit generated code"
-      >
-        <Code2 className="h-3.5 w-3.5" />
-        Edit
-      </button>
-      <button
-        onClick={cyclePreviewStyle}
-        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Change preview style"
-        title={`Style: ${previewStyle}`}
-      >
-        <Palette className="h-3.5 w-3.5" />
-      </button>
-      <button
-        onClick={() => setDeviceMode((mode) => (mode === "desktop" ? "mobile" : "desktop"))}
-        className="inline-flex h-8 items-center justify-center rounded-md px-2 text-slate-500 transition hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Toggle preview size"
-      >
-        <Grid2X2 className="h-3.5 w-3.5" />
-      </button>
-    </div>
-  </div>
-
-  <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
-    <div className="inline-flex h-7 w-full max-w-[310px] items-center rounded-full border border-cyan-900/10 bg-white/[0.82] text-xs font-semibold text-slate-600 shadow-[0_10px_26px_rgba(14,116,144,0.10)] backdrop-blur-xl">
-      <button
-        onClick={() => setRefreshKey((key) => key + 1)}
-        className="inline-flex h-full w-9 items-center justify-center rounded-l-full text-slate-400 transition hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Refresh preview"
-        title="Refresh preview"
-      >
-        <RefreshCcw className="h-3.5 w-3.5" />
-      </button>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="inline-flex min-w-0 flex-1 select-none items-center justify-center gap-2 border-x border-cyan-900/10 px-3 text-slate-600 transition hover:bg-cyan-50 hover:text-slate-900">
-            <span className="truncate">{pathname || "/create"}</span>
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-56">
-          <DropdownMenuItem onSelect={() => setView("preview")}>Show preview</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setView("code")}>Edit code</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setRefreshKey((key) => key + 1)}>Refresh preview</DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleOpenExternalPreview}>Open in new tab</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <button
-        onClick={handleOpenExternalPreview}
-        className="inline-flex h-full w-9 items-center justify-center rounded-r-full text-slate-400 transition hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Open preview in new tab"
-        title="Open preview in new tab"
-      >
-        <ExternalLink className="h-3.5 w-3.5" />
-      </button>
-    </div>
-  </div>
-
-  <div className="flex shrink-0 items-center gap-1.5">
-    <div className="hidden items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 p-0.5 text-slate-500 shadow-sm md:inline-flex">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            className="inline-flex items-center gap-1 rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
-            aria-label="Preview device options"
-            title={`${deviceMode === "desktop" ? "Desktop" : "Mobile"} preview`}
-          >
-            {deviceMode === "desktop" ? <Monitor className="h-3.5 w-3.5" /> : <Smartphone className="h-3.5 w-3.5" />}
-            <ChevronDown className="h-3 w-3" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuItem onSelect={() => setDeviceMode("desktop")}>Desktop preview</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setDeviceMode("mobile")}>Mobile preview</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <button
-        onClick={() => setIsFullscreen(true)}
-        className="rounded p-1.5 text-slate-500 transition-all hover:bg-cyan-50 hover:text-slate-900"
-        aria-label="Fullscreen preview"
-      >
-        <Expand className="h-3.5 w-3.5" />
-      </button>
-    </div>
-
-    <button
-      onClick={() => setIsShareModalOpen(true)}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-cyan-900/10 bg-white/80 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-slate-900"
-      aria-label="Share project"
-    >
-      <Plus className="h-4 w-4" />
-    </button>
-
-    <button
-      onClick={handleGithubOpen}
-      className="inline-flex h-7 items-center gap-1 rounded-md border border-cyan-900/10 bg-white/80 px-2 text-[11px] font-semibold text-slate-600 shadow-sm transition-all hover:bg-white hover:text-slate-900"
-      aria-label="Open GitHub"
-    >
-      <Code2 className="h-3.5 w-3.5" />
-      <span className="hidden md:inline">GitHub</span>
-    </button>
-
-    <button
-      onClick={handleShare}
-      className="inline-flex h-7 items-center gap-1 rounded-md bg-slate-900 px-3 text-[11px] font-bold text-white shadow-lg shadow-cyan-900/15 transition-all hover:bg-slate-800"
-      aria-label="Upload and share"
-    >
-      <Upload className="h-3.5 w-3.5" />
-      <span className="hidden md:inline">Publish</span>
-    </button>
-
-    {shareFeedback ? (
-      <div className="hidden rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold text-sky-700 dark:border-sky-500/25 dark:bg-sky-500/10 dark:text-sky-200 xl:block">
-        {shareFeedback}
+    <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#020617] text-white" data-theme={isDark ? "dark" : "light"}>
+      {/* Light mode overrides — only apply when isDark is explicitly false */}
+      {!isDark && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          [data-theme="light"].relative { background: #f8fafc !important; }
+          /* Header */
+          [data-theme="light"] header.flex { background: rgba(255,255,255,0.97) !important; border-color: rgba(0,0,0,0.1) !important; }
+          [data-theme="light"] header .text-slate-400 { color: #475569 !important; }
+          [data-theme="light"] header span { color: #1e293b !important; }
+          /* Sidebar */
+          [data-theme="light"] aside.flex { background: rgba(255,255,255,0.97) !important; border-color: rgba(0,0,0,0.08) !important; }
+          [data-theme="light"] aside p.text-xs.font-bold { color: #1e293b !important; }
+          [data-theme="light"] aside p.text-\\[10px\\] { color: #64748b !important; }
+          [data-theme="light"] aside .text-slate-500 { color: #64748b !important; }
+          [data-theme="light"] aside .border-white\\/5 { border-color: rgba(0,0,0,0.07) !important; }
+          [data-theme="light"] aside .bg-white\\/\\[0\\.04\\] { background: rgba(0,0,0,0.03) !important; border-color: rgba(0,0,0,0.1) !important; }
+          [data-theme="light"] aside .bg-white\\/\\[0\\.05\\] { background: rgba(0,0,0,0.04) !important; }
+          [data-theme="light"] aside .bg-white\\/\\[0\\.03\\] { background: rgba(0,0,0,0.02) !important; }
+          [data-theme="light"] aside textarea { color: #1e293b !important; background: transparent !important; }
+          [data-theme="light"] aside textarea::placeholder { color: #9ca3af !important; }
+          [data-theme="light"] aside .text-slate-300 { color: #334155 !important; }
+          [data-theme="light"] aside .text-slate-600 { color: #475569 !important; }
+          [data-theme="light"] aside .text-indigo-200 { color: #4f46e5 !important; }
+          [data-theme="light"] aside .border-white\\/10 { border-color: rgba(0,0,0,0.08) !important; }
+          /* Preview area */
+          [data-theme="light"] section.flex.min-w-0 { background: #e2e8f0 !important; }
+          [data-theme="light"] .bg-slate-950 { background: #f1f5f9 !important; }
+          /* Code panel toolbar */
+          [data-theme="light"] .bg-slate-950\\/60 { background: rgba(255,255,255,0.9) !important; }
+          [data-theme="light"] .text-white { color: #1e293b !important; }
+        `}} />
+      )}
+      {/* Background blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-40 top-0 h-[400px] w-[400px] rounded-full bg-indigo-600/6 blur-[100px]" />
+        <div className="absolute right-0 top-1/3 h-[300px] w-[300px] rounded-full bg-purple-600/6 blur-[80px]" />
       </div>
-    ) : null}
-  </div>
-</header>
 
-        <main className="relative flex min-h-0 flex-1 overflow-hidden bg-transparent p-3 lg:flex-row">
-          <aside className={cn(
-            "fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-screen flex-col overflow-hidden bg-white/42 pt-0 shadow-[0_30px_90px_rgba(14,116,144,0.16)] backdrop-blur-2xl transition-transform duration-300 md:w-[360px] lg:static lg:z-auto lg:h-full lg:w-[420px] lg:shrink-0 lg:basis-[420px] lg:translate-x-0 lg:shadow-none xl:w-[432px] xl:basis-[432px]",
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          )}>
-            <div className="hidden shrink-0 items-center justify-between border-b border-zinc-800 px-4 py-4">
-              <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Chat panel</p>
-                <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Prompt, debug, and track generation</p>
+      <div className="relative z-10 flex h-full flex-col">
+        {/* Header */}
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-white/5 bg-slate-950/80 px-3 backdrop-blur-xl">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold text-slate-400 transition hover:bg-white/5 hover:text-white"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+
+          <div className="h-4 w-px bg-white/10" />
+
+          {/* View toggle */}
+          <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 rounded-lg border border-white/5 bg-white/[0.03] p-0.5 sm:flex" style={{ maxWidth: 200 }}>
+            <button
+              onClick={() => setView("preview")}
+              className={cn(
+                "min-w-[70px] rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                view === "preview"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              )}
+            >
+              Preview
+            </button>
+            <button
+              onClick={() => setView("code")}
+              className={cn(
+                "min-w-[60px] rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                view === "code"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              )}
+            >
+              Code
+            </button>
+          </div>
+
+          <div className="flex-1 sm:hidden" />
+
+          <div className="hidden items-center gap-2 text-xs font-medium text-slate-400 lg:flex">
+            <span className="max-w-[200px] truncate">{projectLabel}</span>
+          </div>
+
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+            </button>
+            {/* E2B Sandbox status indicator */}
+            {isSandboxLoading && (
+              <div className="hidden items-center gap-1.5 rounded-full border border-indigo-400/20 bg-indigo-500/10 px-2.5 py-1 text-[10px] font-bold text-indigo-300 sm:flex">
+                <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                Starting sandbox…
               </div>
+            )}
+            {sandboxUrl && !isSandboxLoading && (
+              <div className="hidden items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300 sm:flex">
+                <Globe className="h-2.5 w-2.5" />
+                Live
+              </div>
+            )}
+            <button
+              onClick={() => setRefreshKey((k) => k + 1)}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+              title="Refresh preview"
+            >
+              <RefreshCcw className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleOpenExternal}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+              title={sandboxUrl ? "Open live sandbox" : "Open in new tab"}
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+                  title="Device mode"
+                >
+                  {deviceMode === "desktop" ? (
+                    <Monitor className="h-3.5 w-3.5" />
+                  ) : (
+                    <Smartphone className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-36 border-white/10 bg-slate-900">
+                <DropdownMenuItem
+                  onSelect={() => setDeviceMode("desktop")}
+                  className="text-slate-300 focus:bg-white/10 focus:text-white"
+                >
+                  Desktop
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => setDeviceMode("mobile")}
+                  className="text-slate-300 focus:bg-white/10 focus:text-white"
+                >
+                  Mobile
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <button
+              onClick={() => setIsFullscreen(true)}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
+              title="Fullscreen"
+            >
+              <Expand className="h-3.5 w-3.5" />
+            </button>
+            {/* Download ZIP — only when code files are available */}
+            {filesForEditor.length > 0 && (
               <button
-                onClick={() => setMessages([])}
-                className="rounded-full px-3 py-1.5 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/5 dark:hover:text-white"
+                onClick={() => void handleDownload()}
+                className="inline-flex h-7 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                title="Download source code as ZIP"
               >
-                Clear
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Download</span>
               </button>
+            )}
+            <button
+              onClick={() => void handleShare()}
+              className="inline-flex h-7 items-center gap-1.5 rounded-lg bg-indigo-600 px-3 text-xs font-bold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              {shareFeedback ?? "Share"}
+            </button>
+          </div>
+        </header>
+
+        {/* Main layout */}
+        <div className="flex min-h-0 flex-1 overflow-hidden">
+          {/* Mobile sidebar toggle */}
+          <button
+            onClick={() => setIsSidebarOpen((v) => !v)}
+            className={cn(
+              "fixed bottom-20 left-4 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-slate-900 shadow-xl transition lg:hidden",
+              isSidebarOpen ? "text-indigo-400" : "text-slate-400"
+            )}
+          >
+            <MessageSquare className="h-4 w-4" />
+          </button>
+
+          {/* Chat Sidebar */}
+          <aside
+            className={cn(
+              "flex w-[340px] shrink-0 flex-col border-r border-white/5 bg-slate-950/60 backdrop-blur-xl transition-all duration-300",
+              "lg:flex",
+              isSidebarOpen
+                ? "fixed inset-y-12 left-0 z-30 flex shadow-2xl lg:relative lg:inset-auto lg:shadow-none"
+                : "hidden lg:flex"
+            )}
+          >
+            {/* Sidebar header */}
+            <div className="flex shrink-0 items-center justify-between border-b border-white/5 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600/20 text-indigo-400">
+                  <Sparkles className="h-3.5 w-3.5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white">AI Chat</p>
+                  <p className="text-[10px] text-slate-500">Edit &amp; refine your design</p>
+                </div>
+              </div>
+              {messages.length > 0 && (
+                <button
+                  onClick={() => setMessages([])}
+                  className="rounded-md px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:bg-white/5 hover:text-slate-300"
+                >
+                  Clear
+                </button>
+              )}
             </div>
 
+            {/* Messages */}
             <div
               ref={taskPanelRef}
-              className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex-1 overflow-y-auto px-4 py-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.1)_transparent]"
             >
-              <div className="space-y-4">
-                {messages
-                  .filter((message) => message.role === "user")
-                  .map((message) => (
+              {messages.length === 0 && !isTaskPanelLive && !isGenerating ? (
+                <div className="flex h-full flex-col items-center justify-center gap-3 py-8 text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 ring-1 ring-white/5">
+                    <Wand2 className="h-7 w-7 text-indigo-400" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-white">Start designing</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Describe your perfect landing page below
+                    </p>
+                  </div>
+                  <div className="mt-2 flex w-full flex-col gap-1.5">
+                    {[
+                      "Make the hero bolder with a gradient",
+                      "Add a dark glassmorphism theme",
+                      "Change colors to purple/violet",
+                    ].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        onClick={() => void handleSend(suggestion)}
+                        className="rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2 text-left text-xs text-slate-400 transition hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:text-slate-200"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {messages.map((msg) => (
                     <motion.div
-                      key={message.id}
-                      initial={{ opacity: 0, y: 10 }}
+                      key={msg.id}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex justify-end"
+                      className={cn(
+                        "flex",
+                        msg.role === "user" ? "justify-end" : "justify-start"
+                      )}
                     >
-                      <div className="max-w-[82%] rounded-lg bg-[#303033]/95 px-4 py-3 text-sm font-semibold leading-relaxed text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] whitespace-pre-wrap ring-1 ring-white/5">
-                        {message.content}
-                      </div>
+                      {msg.role === "user" ? (
+                        <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/20">
+                          {msg.content}
+                        </div>
+                      ) : (
+                        <div className="max-w-[90%] whitespace-pre-wrap rounded-2xl rounded-bl-md border border-white/5 bg-white/[0.05] px-4 py-2.5 text-sm text-slate-300">
+                          {msg.content}
+                        </div>
+                      )}
                     </motion.div>
                   ))}
 
-                <AnimatePresence>
-                  {(generationTasks.length > 0 || isTaskPanelLive || isGenerating) && (
-                    <motion.div
-                      key="task-panel"
-                      initial={{ opacity: 0, y: 18, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                      transition={{ duration: 0.24, ease: "easeOut" }}
-                      className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.055] shadow-[0_20px_55px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
-                    >
-                      <div className="border-b border-white/10 bg-white/[0.035] px-4 py-3">
-                        <div className="flex items-center justify-between">
+                  <AnimatePresence>
+                    {(generationTasks.length > 0 || isTaskPanelLive || isGenerating) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]"
+                      >
+                        <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
                           <div>
-                            <p className="text-sm font-black tracking-tight text-zinc-100">Plan</p>
-                            <p className="mt-0.5 text-[11px] font-medium text-zinc-500">
-                              Multi-agent generation timeline
-                            </p>
+                            <p className="text-xs font-bold text-white">Generation Pipeline</p>
+                            <p className="text-[10px] text-slate-500">AI design agents at work</p>
                           </div>
                           <span
                             className={cn(
-                              "rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em]",
+                              "rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest",
                               isTaskPanelLive || isGenerating
-                                ? "border-sky-400/25 bg-sky-500/10 text-sky-300"
+                                ? "border-indigo-400/25 bg-indigo-500/10 text-indigo-300"
                                 : "border-emerald-400/25 bg-emerald-500/10 text-emerald-300"
                             )}
                           >
                             {isTaskPanelLive || isGenerating ? "Live" : "Done"}
                           </span>
                         </div>
-                      </div>
-
-                      <div className="space-y-1 px-3 py-3">
-                        <AnimatePresence initial={false}>
-                          {generationTasks.map((task, index) => (
-                            <motion.div
-                              key={task.id}
-                              initial={{ opacity: 0, x: -10, height: 0 }}
-                              animate={{ opacity: 1, x: 0, height: "auto" }}
-                              exit={{ opacity: 0, x: -8, height: 0 }}
-                              transition={{ duration: 0.2, delay: Math.min(index * 0.02, 0.12) }}
-                              className={cn(
-                                "group relative flex gap-3 rounded-xl px-2.5 py-2.5 transition-colors",
-                                task.status === "active" ? "bg-sky-500/[0.075]" : "hover:bg-white/[0.035]"
-                              )}
-                            >
-                              <div className="relative mt-0.5 shrink-0">
-                                <TaskStatusIcon status={task.status} />
-                                {index < generationTasks.length - 1 ? (
-                                  <span className="absolute left-1/2 top-6 h-6 w-px -translate-x-1/2 bg-white/10" />
-                                ) : null}
-                              </div>
-
-                              <div className="min-w-0 flex-1">
-                                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <div className="space-y-1 px-3 py-3">
+                          <AnimatePresence initial={false}>
+                            {generationTasks.map((task) => (
+                              <motion.div
+                                key={task.id}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className={cn(
+                                  "flex gap-3 rounded-xl px-2.5 py-2",
+                                  task.status === "active" && "bg-indigo-500/10"
+                                )}
+                              >
+                                <div className="mt-0.5 shrink-0">
+                                  <TaskStatusIcon status={task.status} />
+                                </div>
+                                <div className="min-w-0 flex-1">
                                   <p
                                     className={cn(
-                                      "min-w-0 flex-1 truncate text-sm font-semibold",
+                                      "truncate text-xs font-semibold",
                                       task.status === "completed"
-                                        ? "text-zinc-300"
+                                        ? "text-slate-400"
                                         : task.status === "active"
-                                          ? "text-sky-100"
-                                          : "text-zinc-500"
+                                          ? "text-indigo-200"
+                                          : "text-slate-600"
                                     )}
                                   >
                                     {task.label}
                                   </p>
-                                  {task.filePath ? (
-                                    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-white/10 bg-black/20 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                                      <FileText className="h-3 w-3" />
-                                      <span className="max-w-[140px] truncate">{task.filePath}</span>
-                                    </span>
-                                  ) : null}
+                                  <p className="mt-0.5 text-[10px] text-slate-600">{task.agent}</p>
                                 </div>
-                                <p className="mt-1 text-[11px] font-medium text-zinc-500">{task.agent}</p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </AnimatePresence>
-
-                        {generationTasks.length === 0 ? (
-                          <div className="flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-semibold text-zinc-400">
-                            <TaskStatusIcon status="active" />
-                            Preparing AI agents...
-                          </div>
-                        ) : null}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {!messages.length && !generationTasks.length && !isGenerating ? (
-                  <div className="h-[260px]" />
-                ) : null}
-              </div>
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                          {generationTasks.length === 0 && (
+                            <div className="flex items-center gap-3 px-2.5 py-2 text-xs text-slate-500">
+                              <TaskStatusIcon status="active" />
+                              Initializing AI agents...
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
 
-            <div className="sticky bottom-0 z-10 shrink-0 bg-transparent p-4">
-              <div className="rounded-lg border border-cyan-900/10 bg-white/72 p-3 shadow-[0_18px_45px_rgba(14,116,144,0.14)] backdrop-blur-2xl focus-within:border-sky-300/80">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={(event) => handleFileAttach(event.target.files)}
+            {/* Input composer */}
+            <div className="shrink-0 border-t border-white/5 p-3">
+              <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-3 focus-within:border-indigo-500/40">
+                <input ref={fileInputRef} type="file" multiple className="hidden" />
+                <textarea
+                  ref={textareaRef}
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={isGenerating ? "Generating..." : "Describe changes or a new design..."}
+                  disabled={isGenerating}
+                  className="w-full resize-none bg-transparent py-1 text-sm text-white outline-none placeholder:text-slate-600 disabled:opacity-50"
+                  style={{ minHeight: 60, maxHeight: 160 }}
                 />
-                <div className="relative overflow-hidden rounded-md bg-transparent">
-                  {!draft ? (
-                    <div className="pointer-events-none absolute left-0 right-0 top-1 z-0">
-                      <div className="flex min-w-0 items-center text-sm font-medium leading-6 tracking-normal text-slate-500">
-                        <span className="truncate text-slate-500">
-                          {typewriterText}
-                        </span>
-                        <span className="typewriter-cursor ml-1 h-4 w-[2px] shrink-0 rounded-full bg-slate-500/80" />
-                      </div>
-                    </div>
-                  ) : null}
-                  <textarea
-                    ref={textareaRef}
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder=""
-                    className="relative z-10 w-full resize-none border-none bg-transparent px-0 py-1 text-sm font-semibold leading-6 text-slate-900 caret-sky-500 outline-none placeholder:text-transparent selection:bg-sky-200/70 selection:text-slate-950"
-                    style={{ minHeight: 70 }}
-                    aria-label="Describe what you want to build"
-                  />
-                </div>
-
-                <div className="mt-6 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3b3b40] text-zinc-300 transition-all hover:bg-[#46464c] hover:text-white"
-                      aria-label="Attach files"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/5 hover:text-slate-300"
+                      title="Attach file"
                     >
-                      <Plus className="h-5 w-5" />
+                      <Plus className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={startVoiceInput}
+                      className={cn(
+                        "flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 transition",
+                        isListening ? "animate-pulse text-red-400" : "hover:bg-white/5 hover:text-slate-300"
+                      )}
+                      title="Voice input"
+                    >
+                      <Mic className="h-4 w-4" />
                     </button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 sm:inline-flex">
-                          {buildMode === "App" ? "Standard" : buildMode}
+                        <button className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 transition hover:bg-white/5 hover:text-slate-300">
+                          {buildMode}
                           <ChevronDown className="h-3 w-3" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-40">
-                        {(["App", "Landing", "Dashboard"] as BuildMode[]).map((mode) => (
-                          <DropdownMenuItem key={mode} onSelect={() => setBuildMode(mode)}>
-                            {mode === "App" ? "Standard" : mode}
+                      <DropdownMenuContent align="start" className="w-32 border-white/10 bg-slate-900">
+                        {(["Landing", "App", "Dashboard"] as BuildMode[]).map((m) => (
+                          <DropdownMenuItem
+                            key={m}
+                            onSelect={() => setBuildMode(m)}
+                            className="text-slate-300 focus:bg-white/10 focus:text-white"
+                          >
+                            {m}
                           </DropdownMenuItem>
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
-
-                    <button
-                      onClick={startVoiceInput}
-                      className={cn(
-                        "flex h-8 w-8 items-center justify-center rounded-full transition-all",
-                        isListening
-                          ? "animate-pulse bg-red-500 text-white"
-                          : "text-zinc-400 hover:bg-white/5 hover:text-white"
-                      )}
-                      aria-label="Voice input"
-                    >
-                      <Mic className="h-4 w-4" />
-                    </button>
                   </div>
-
-                  <div className="hidden items-center gap-5 text-xs font-semibold text-zinc-400 sm:flex">
-                    <button
-                      onClick={handleSelectDraft}
-                      className="inline-flex items-center gap-1.5 transition hover:text-zinc-100"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      Select
-                    </button>
-                    <button
-                      onClick={handlePlanDraft}
-                      className="inline-flex items-center gap-1.5 transition hover:text-zinc-100"
-                    >
-                      <HelpCircle className="h-3.5 w-3.5" />
-                      Plan
-                    </button>
-                  </div>
-
                   <button
                     onClick={() => void handleSend()}
                     disabled={isGenerating || !draft.trim()}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-600 text-white shadow-lg shadow-sky-950/30 transition-all hover:bg-sky-500 active:scale-95 disabled:opacity-50"
-                    aria-label="Send prompt"
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 active:scale-95 disabled:opacity-40"
                   >
-                    {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowUp className="h-5 w-5" />}
+                    {isGenerating ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <ArrowUp className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
             </div>
           </aside>
 
-          <section className="ml-0 flex min-w-0 flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-cyan-900/10 bg-white/62 shadow-[0_26px_80px_rgba(14,116,144,0.14)] backdrop-blur-2xl lg:ml-1">
-            <div className="hidden shrink-0 items-center justify-between gap-2 border-b border-zinc-800 bg-[#1f1f22] px-3 py-2 sm:px-4">
-              <div className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                <Globe className="h-3.5 w-3.5" />
-                <span className="truncate">Live route: {pathname || "/workspace"}</span>
+          {/* Preview / Code Panel */}
+          <section className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            {/* Code toolbar */}
+            {view === "code" && (
+              <div className="flex shrink-0 items-center justify-between border-b border-white/5 bg-slate-950/60 px-4 py-2">
+                <p className="text-sm font-bold text-white">{projectLabel}</p>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:bg-white/10">
+                      <FileText className="h-3.5 w-3.5" />
+                      {activePath?.split("/").pop() ?? "Select file"}
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64 border-white/10 bg-slate-900">
+                    {filesForEditor.map((f) => (
+                      <DropdownMenuItem
+                        key={f.path}
+                        onSelect={() => openFile(f.path)}
+                        className="text-slate-300 focus:bg-white/10 focus:text-white"
+                      >
+                        {f.path}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
+            )}
 
-              <div className="flex items-center gap-1">
-                <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 p-1 shadow-sm dark:border-white/10 dark:bg-white/5 lg:hidden">
-                  <button
-                    onClick={() => setView("preview")}
-                    className={cn(
-                      "rounded-full px-2 py-1 text-[11px] font-semibold transition-all",
-                      view === "preview"
-                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-                        : "text-slate-500 dark:text-slate-300"
-                    )}
-                  >
-                    Preview
-                  </button>
-                  <button
-                    onClick={() => setView("code")}
-                    className={cn(
-                      "rounded-full px-2 py-1 text-[11px] font-semibold transition-all",
-                      view === "code"
-                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-                        : "text-slate-500 dark:text-slate-300"
-                    )}
-                  >
-                    Code
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => setIsFullscreen(true)}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
-                >
-                  <Expand className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Fullscreen</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-hidden p-0"> 
+            {/* Content area */}
+            <div className="min-h-0 flex-1 overflow-hidden">
               <AnimatePresence mode="wait">
                 {view === "preview" ? (
                   <motion.div
                     key="preview"
-                    initial={{ opacity: 0, scale: 0.99 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.99 }}
-                    className="flex h-full w-full justify-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex h-full w-full justify-center bg-slate-950"
                   >
-                    <div
-                      className={cn(
-                        "relative h-full w-full overflow-hidden rounded-lg transition-all duration-300",
-                        previewStyle === "soft" && "ring-1 ring-sky-300/20 shadow-[inset_0_0_90px_rgba(14,165,233,0.08)]",
-                        previewStyle === "contrast" && "ring-1 ring-white/20 shadow-[inset_0_0_100px_rgba(255,255,255,0.05)]",
-                        previewStyle === "default" && "bg-transparent"
+                    <div className={cn("relative h-full overflow-hidden transition-all", previewWidthClass)}>
+                      {sandboxUrl && !isSandboxLoading ? (
+                        /* E2B live sandbox — primary preview */
+                        <iframe
+                          key={`sandbox-${sandboxUrl}-${refreshKey}`}
+                          src={sandboxUrl}
+                          className="h-full w-full border-0"
+                          title="Live Vite preview"
+                          allow="cross-origin-isolated"
+                          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                        />
+                      ) : (
+                        /* Loading state while sandbox is being set up */
+                        <SandboxLoadingState
+                          isEdit={isSandboxLoading && isEditModeRef.current}
+                        />
                       )}
-                    >
-                      {showPreviewSkeleton ? (
-                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-sky-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-                          <div className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-                            <div className="h-3 w-32 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
-                            <div className="mt-4 space-y-3">
-                              <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
-                              <div className="h-5 w-5/6 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
-                              <div className="h-24 rounded-[22px] border border-dashed border-slate-200 bg-slate-50/80 dark:border-white/10 dark:bg-white/5" />
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                      <div className={cn("mx-auto h-full transition-all duration-300 ease-out", previewWidthClass)}>
-                        <PreviewFrame iframeKey={refreshKey} className="h-full" />
-                      </div>
                     </div>
                   </motion.div>
                 ) : (
                   <motion.div
                     key="code"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    className="flex h-full flex-col gap-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="h-full overflow-hidden"
                   >
-                    <div className="flex shrink-0 items-center justify-between rounded-[26px] border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-white/10 dark:bg-slate-950">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white">{projectLabel}</p>
-                        </div>
-                      </div>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600 transition-all hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                            <span className="max-w-[140px] truncate">{activePath || "No files selected"}</span>
-                            <ChevronDown className="h-3.5 w-3.5" />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-64">
-                          {filesForEditor.map((file) => (
-                            <DropdownMenuItem key={file.path} onSelect={() => openFile(file.path)}>
-                              {file.path}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-
-                    <div className="min-h-0 flex-1 overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#0d1117]">
+                    {isGenerating ? (
+                      <LiveCodeWriter activeTasks={generationTasks} />
+                    ) : (
                       <Editor
-                        theme="vs-light"
+                        theme="vs-dark"
                         language={activeLanguage}
                         value={activeEditorValue}
-                        onChange={(value) => {
-                          if (!activePath) return;
-                          updateFileContent(activePath, value ?? "");
+                        onChange={(val) => {
+                          if (activePath) updateFileContent(activePath, val ?? "");
                         }}
                         options={{
                           minimap: { enabled: false },
                           fontSize: 13,
-                          fontFamily: '"Geist Mono", "Fira Code", monospace',
+                          fontFamily: '"Geist Mono", "Fira Code", Consolas, monospace',
                           wordWrap: "on",
                           scrollBeyondLastLine: false,
                           automaticLayout: true,
-                          padding: { top: 20, bottom: 20 },
+                          padding: { top: 16, bottom: 16 },
                           smoothScrolling: true,
+                          lineNumbers: "on",
+                          folding: true,
                         }}
                       />
-                    </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </section>
-        </main>
+        </div>
       </div>
-      <Dialog open={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
-        <DialogContent className="max-w-3xl p-0 sm:max-h-[88dvh]" showCloseButton={false}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: 6 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="overflow-hidden rounded-3xl"
-          >
-            <div className="border-b border-slate-200/70 bg-gradient-to-r from-white via-slate-50 to-sky-50 px-5 py-4 dark:border-white/10 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 sm:px-6">
-              <DialogHeader>
-                <DialogTitle>Share Project</DialogTitle>
-                <DialogDescription>
-                  Invite teammates, configure access, and share your live preview.
-                </DialogDescription>
-              </DialogHeader>
-            </div>
 
-            <div className="space-y-5 p-5 sm:p-6">
-              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                  Add People
-                </label>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Input
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="Invite by email"
-                    className="h-10 rounded-full"
-                  />
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="inline-flex h-10 items-center justify-center gap-1 rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                        {inviteRole}
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36">
-                      {(["Can edit", "Can comment", "Can view"] as MemberRole[]).map((role) => (
-                        <DropdownMenuItem key={role} onSelect={() => setInviteRole(role)}>
-                          {role}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <button
-                    onClick={handleInviteByEmail}
-                    disabled={!inviteEmail.trim()}
-                    className="inline-flex h-10 items-center justify-center gap-1 rounded-full bg-slate-900 px-4 text-xs font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900"
-                  >
-                    <UserPlus className="h-3.5 w-3.5" />
-                    Invite
-                  </button>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                <div className="mb-3 flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Project Access</h4>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{COLLABORATORS.length} members</span>
-                </div>
-                <div className="space-y-3">
-                  {COLLABORATORS.map((member) => (
-                    <div key={member.id} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200/70 bg-white/85 px-3 py-2 dark:border-white/10 dark:bg-slate-950/50">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <Avatar className="size-8">
-                          {member.avatar ? <AvatarImage src={member.avatar} alt={member.name} /> : null}
-                          <AvatarFallback>{member.initials}</AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-slate-900 dark:text-white">{member.name}</p>
-                          <p className="truncate text-xs text-slate-500 dark:text-slate-400">{member.email}</p>
-                        </div>
-                      </div>
-
-                      {member.role === "Owner" ? (
-                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-200">
-                          Owner
-                        </span>
-                      ) : (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                              {member.role}
-                              <ChevronDown className="h-3 w-3" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-36">
-                            {(["Can edit", "Can comment", "Can view"] as MemberRole[]).map((role) => (
-                              <DropdownMenuItem key={`${member.id}-${role}`}>
-                                {role}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Invite Link</h4>
-                  <button
-                    onClick={() => setIsInvitePublic((value) => !value)}
-                    className={cn(
-                      "inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all",
-                      isInvitePublic
-                        ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/25 dark:bg-sky-500/10 dark:text-sky-200"
-                        : "border-slate-200 bg-white text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-                    )}
-                  >
-                    {isInvitePublic ? "Public" : "Private"}
-                  </button>
-                </div>
-
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <button
-                    onClick={() => void handleCreateInviteLink()}
-                    disabled={isCreatingInviteLink}
-                    className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-slate-900 px-4 text-xs font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900"
-                  >
-                    {isCreatingInviteLink ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Link2 className="h-3.5 w-3.5" />}
-                    {inviteLink ? "Regenerate link" : "Create invite link"}
-                  </button>
-                  <button
-                    onClick={() => void handleCopyInviteLink()}
-                    disabled={!inviteLink}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
-                  >
-                    <Share2 className="h-3.5 w-3.5" />
-                    Copy invite link
-                  </button>
-                </div>
-
-                <p className="mt-2 truncate text-xs text-slate-500 dark:text-slate-400">{inviteLink || "No link created yet."}</p>
-              </div>
-            </div>
-
-            <DialogFooter className="border-t border-slate-200/70 bg-white/70 px-5 py-4 dark:border-white/10 dark:bg-slate-950/70 sm:px-6">
-              <button
-                onClick={() => setIsShareModalOpen(false)}
-                className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-              >
-                Close
-              </button>
-              <button
-                onClick={handleAiAction}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-              >
-                <Code2 className="h-3.5 w-3.5" />
-                Publish project
-              </button>
-              <button
-                onClick={handleShare}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-sky-500 px-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:bg-sky-600"
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                Share preview
-              </button>
-            </DialogFooter>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-
+      {/* Fullscreen overlay */}
       <AnimatePresence>
         {isFullscreen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-slate-950/35 backdrop-blur-3xl"
+            className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-xl"
           >
-            <motion.div
-              initial={{ scale: 0.96, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.96, opacity: 0 }}
-              className="flex h-full w-full flex-col p-4 md:p-8"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white">
-                    <Expand className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-lg font-bold tracking-tight text-white">Fullscreen Preview</h3>
-                </div>
+            <div className="flex h-full flex-col p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="font-bold text-white">{projectLabel}</p>
                 <button
                   onClick={() => setIsFullscreen(false)}
-                  className="rounded-full bg-white px-5 py-2 text-sm font-bold text-slate-900 shadow-xl transition-all active:scale-95"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/20"
                 >
-                  Close Preview
+                  <X className="h-4 w-4" />
+                  Exit
                 </button>
               </div>
-              <div className="flex-1 overflow-hidden rounded-[30px] bg-white shadow-2xl dark:bg-slate-950">
-                <PreviewFrame iframeKey={`${refreshKey}-fs`} className="h-full" />
+              <div className="flex-1 overflow-hidden rounded-2xl bg-slate-950 shadow-2xl">
+                {sandboxUrl && !isSandboxLoading ? (
+                  <iframe
+                    src={sandboxUrl}
+                    className="h-full w-full border-0"
+                    title="Live Vite preview (fullscreen)"
+                    allow="cross-origin-isolated"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                  />
+                ) : (
+                  <SandboxLoadingState
+                    isEdit={isSandboxLoading && isEditModeRef.current}
+                  />
+                )}
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

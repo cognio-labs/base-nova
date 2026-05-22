@@ -1,50 +1,81 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient, getCurrentUser } from "@/lib/supabase";
-import { getErrorMessage, unauthorizedResponse } from "@/lib/api";
+import { dbGetProject, dbUpdateProject, dbDeleteProject } from "@/lib/db";
 
-interface Params {
-  params: Promise<{ id: string }>;
-}
-
-export async function PATCH(req: Request, { params }: Params) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const user = await getCurrentUser();
-    if (!user) return unauthorizedResponse();
-
     const { id } = await params;
-    const { title, description, generated_code, preview_url } = await req.json();
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("projects")
-      .update({ title, description, generated_code, preview_url })
-      .eq("id", id)
-      .eq("user_id", user.id)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return NextResponse.json({ project: data });
-  } catch (error: unknown) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+    const project = dbGetProject(id);
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+    return NextResponse.json({ project });
+  } catch (err: unknown) {
+    console.error("Project GET error:", err);
+    return NextResponse.json({ error: "Failed to fetch project" }, { status: 500 });
   }
 }
 
-export async function DELETE(_req: Request, { params }: Params) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const user = await getCurrentUser();
-    if (!user) return unauthorizedResponse();
-
     const { id } = await params;
-    const supabase = await createSupabaseServerClient();
-    const { error } = await supabase
-      .from("projects")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", user.id);
+    const body = await req.json() as {
+      title?: string;
+      description?: string | null;
+      prompt?: string | null;
+      preview_html?: string | null;
+      generated_code?: unknown[];
+      chat_messages?: unknown[];
+      sandbox_id?: string | null;
+    };
 
-    if (error) throw error;
+    // Auto-create if it doesn't exist yet (PUT is idempotent)
+    const existing = dbGetProject(id);
+    if (!existing) {
+      const { dbCreateProject } = await import("@/lib/db");
+      dbCreateProject({
+        id,
+        title: body.title ?? "Untitled Design",
+        description: body.description ?? null,
+        prompt: body.prompt ?? null,
+        preview_html: body.preview_html ?? null,
+        generated_code: Array.isArray(body.generated_code) ? body.generated_code : [],
+        chat_messages: Array.isArray(body.chat_messages) ? body.chat_messages : [],
+      });
+    }
+
+    const project = dbUpdateProject(id, {
+      ...(body.title !== undefined && { title: body.title }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.prompt !== undefined && { prompt: body.prompt }),
+      ...(body.preview_html !== undefined && { preview_html: body.preview_html }),
+      ...(body.generated_code !== undefined && { generated_code: body.generated_code }),
+      ...(body.chat_messages !== undefined && { chat_messages: body.chat_messages }),
+      ...(body.sandbox_id !== undefined && { sandbox_id: body.sandbox_id }),
+    });
+
+    return NextResponse.json({ project });
+  } catch (err: unknown) {
+    console.error("Project PUT error:", err);
+    return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    dbDeleteProject(id);
     return NextResponse.json({ success: true });
-  } catch (error: unknown) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+  } catch (err: unknown) {
+    console.error("Project DELETE error:", err);
+    return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
   }
 }

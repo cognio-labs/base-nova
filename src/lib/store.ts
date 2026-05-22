@@ -38,7 +38,13 @@ interface GenerationState {
   openTabs: EditorTab[];
   activeFilePath: string | null;
 
-  generateProject: (prompt: string) => Promise<void>;
+  generateProject: (prompt: string, projectId?: string) => Promise<void>;
+  editProject: (
+    prompt: string,
+    existingFiles: GeneratedFile[],
+    existingHtml: string,
+    projectId?: string
+  ) => Promise<void>;
   saveToWorkspace: () => Promise<void>;
   debugProject: (errorMessage: string) => Promise<void>;
 
@@ -83,24 +89,35 @@ function buildGeneratedState(data: GeneratedProjectPayload): Partial<GenerationS
   const files = Array.isArray(data.files) ? data.files : [];
   const previewHtml = typeof data.previewHtml === "string" ? data.previewHtml : null;
   const normalized = normalizeFiles(files, previewHtml);
-  const initialTabs: EditorTab[] = [];
 
-  for (const candidate of [
-    VIRTUAL_PREVIEW_PATH,
+  // Visible files = exclude the virtual preview blob (it's only for the iframe)
+  const editorFiles = normalized.filter((f) => f.path !== VIRTUAL_PREVIEW_PATH);
+
+  // Pick the most interesting file to open by default (prefer App.tsx hierarchy)
+  const PREFERRED_OPEN = [
+    "src/App.tsx",
+    "src/app.tsx",
+    "src/components/Hero.tsx",
+    "src/components/Navbar.tsx",
+    "src/main.tsx",
+    "src/index.tsx",
+    "src/index.css",
     "app/page.tsx",
     "app/layout.tsx",
-    "app/globals.css",
-    "app/dashboard/page.tsx",
-    "components/navbar.tsx",
-    "components/sidebar.tsx",
-  ]) {
-    if (normalized.some((file) => file.path === candidate)) {
-      initialTabs.push({ path: candidate, title: tabTitle(candidate) });
+  ];
+
+  let activeFilePath: string | null = null;
+  for (const candidate of PREFERRED_OPEN) {
+    if (editorFiles.some((f) => f.path === candidate)) {
+      activeFilePath = candidate;
+      break;
     }
   }
+  if (!activeFilePath) activeFilePath = editorFiles[0]?.path ?? null;
 
-  const fallbackFirst = normalized[0]?.path ?? null;
-  const activeFilePath = initialTabs[0]?.path ?? fallbackFirst;
+  const initialTabs: EditorTab[] = activeFilePath
+    ? [{ path: activeFilePath, title: tabTitle(activeFilePath) }]
+    : [];
 
   return {
     generatedFiles: normalized,
@@ -109,7 +126,7 @@ function buildGeneratedState(data: GeneratedProjectPayload): Partial<GenerationS
     isGenerating: false,
     activeAgentIndex: -1,
     view: "preview",
-    openTabs: initialTabs.length ? initialTabs : activeFilePath ? [{ path: activeFilePath, title: tabTitle(activeFilePath) }] : [],
+    openTabs: initialTabs,
     activeFilePath,
     workflowLogs: Array.isArray(data.workflowLogs) ? data.workflowLogs : [],
   };
@@ -136,7 +153,7 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
   openTabs: [],
   activeFilePath: null,
 
-  generateProject: async (prompt: string) => {
+  generateProject: async (prompt: string, projectId?: string) => {
     set({
       isGenerating: true,
       error: null,
@@ -188,12 +205,13 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
 
     try {
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+      const timeoutId = window.setTimeout(() => controller.abort(), 90000);
 
       const response = await fetch("/api/superagents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        // Pass projectId so the server-side auto-save targets the right project row
+        body: JSON.stringify({ prompt, ...(projectId ? { projectId } : {}) }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
 
@@ -210,6 +228,92 @@ export const useGeneratorStore = create<GenerationState>((set, get) => ({
       set({
         ...buildGeneratedState(fallback),
         error: null,
+      });
+    }
+  },
+
+  editProject: async (
+    prompt: string,
+    existingFiles: GeneratedFile[],
+    existingHtml: string,
+    projectId?: string
+  ) => {
+    set({
+      isGenerating: true,
+      error: null,
+      saveMessage: null,
+      currentPrompt: prompt,
+    });
+
+    const cleanExisting = existingFiles.filter((f) => f.path !== "preview.html");
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 90000);
+
+      const response = await fetch("/api/superagents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          mode: "edit",
+          existingFiles: cleanExisting,
+          existingHtml,
+          projectId,
+        }),
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeoutId));
+
+      const data = await response.json() as {
+        error?: string;
+        files?: GeneratedFile[];
+        changedFiles?: GeneratedFile[]; // surgical edit returns only changed files
+        previewHtml?: string;
+        projectTitle?: string;
+        workflowLogs?: AgentLog[];
+      };
+      if (data.error) throw new Error(data.error);
+
+      // Support both full `files` array and surgical `changedFiles`
+      const returnedFiles = Array.isArray(data.changedFiles) && data.changedFiles.length > 0
+        ? data.changedFiles
+        : (Array.isArray(data.files) ? data.files : []);
+
+      // Merge changed files into existing (surgical update)
+      const mergedFiles: GeneratedFile[] = cleanExisting.map((existing) => {
+        const updated = returnedFiles.find((f) => f.path === existing.path);
+        return updated ?? existing;
+      });
+      // Append brand-new files the AI added (e.g. a new page component)
+      const brandNew = returnedFiles.filter(
+        (f) => !cleanExisting.some((e) => e.path === f.path)
+      );
+      const finalFiles = [...mergedFiles, ...brandNew];
+
+      // Validate previewHtml: must be the full landing page, not a sub-page only.
+      // If the AI ignored the instruction and returned just a login/signup/etc. page,
+      // fall back to existingHtml so the landing page stays visible.
+      function isSubPageOnly(html: string, original: string): boolean {
+        if (html.length < original.length * 0.3) return true; // too short
+        const lower = html.toLowerCase();
+        return !lower.includes("<nav") && !lower.includes("navbar") && !lower.includes("navigation");
+      }
+
+      let finalHtml: string;
+      if (typeof data.previewHtml === "string" && data.previewHtml.length > 100) {
+        finalHtml = isSubPageOnly(data.previewHtml, existingHtml) ? existingHtml : data.previewHtml;
+      } else {
+        finalHtml = existingHtml;
+      }
+
+      set(buildGeneratedState({ ...data, files: finalFiles, previewHtml: finalHtml }));
+    } catch (err: unknown) {
+      // On failure, restore existing content exactly — never blank the preview
+      set({
+        isGenerating: false,
+        error: err instanceof Error ? err.message : "Edit failed. Please try again.",
+        generatedFiles: normalizeFiles(cleanExisting, existingHtml),
+        previewHtml: existingHtml,
       });
     }
   },

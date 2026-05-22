@@ -3,7 +3,7 @@ import { getOpenRouterResponse } from "@/lib/openrouter";
 import { getOpenRouterAgentResponse } from "@/lib/openrouterAgent";
 
 type AIProvider = "gemini" | "openrouter" | "openrouter_agent";
-const AI_PROVIDER_TIMEOUT_MS = 30000;
+const AI_PROVIDER_TIMEOUT_MS = 90000;
 
 function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
   return new Promise((resolve, reject) => {

@@ -335,7 +335,7 @@ const pricingPlans = [
 export default function Home() {
   const [isYearly, setIsYearly] = useState(false);
   const router = useRouter();
-  const goToLogin = () => router.push("/login?next=/dashboard");
+  const goToLogin = () => router.push("/dashboard");
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-white">

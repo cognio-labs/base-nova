@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const appRoutePrefixes = [
   "/affiliate",
+  "/build",
   "/create",
   "/dashboard",
   "/generate",

@@ -1,48 +1,44 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient, getCurrentUser } from "@/lib/supabase";
-import { getErrorMessage, unauthorizedResponse } from "@/lib/api";
+import { dbGetAllProjects, dbCreateProject } from "@/lib/db";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user) return unauthorizedResponse();
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10), 200);
+    const offset = parseInt(searchParams.get("offset") ?? "0", 10);
 
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("projects")
-      .select("id,title,description,preview_url,created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    return NextResponse.json({ projects: data });
-  } catch (error: unknown) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+    const projects = dbGetAllProjects(limit, offset);
+    return NextResponse.json({ projects });
+  } catch (err: unknown) {
+    console.error("Projects GET error:", err);
+    return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user) return unauthorizedResponse();
+    const body = await req.json() as {
+      title?: string;
+      description?: string | null;
+      prompt?: string | null;
+      preview_html?: string | null;
+      generated_code?: unknown[];
+      chat_messages?: unknown[];
+    };
 
-    const { title, description, generated_code, preview_url } = await req.json();
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("projects")
-      .insert({
-        user_id: user.id,
-        title,
-        description,
-        generated_code: generated_code || [],
-        preview_url,
-      })
-      .select()
-      .single();
+    const project = dbCreateProject({
+      id: crypto.randomUUID(),
+      title: body.title || "Untitled Design",
+      description: body.description ?? null,
+      prompt: body.prompt ?? null,
+      preview_html: body.preview_html ?? null,
+      generated_code: Array.isArray(body.generated_code) ? body.generated_code : [],
+      chat_messages: Array.isArray(body.chat_messages) ? body.chat_messages : [],
+    });
 
-    if (error) throw error;
-    return NextResponse.json({ project: data }, { status: 201 });
-  } catch (error: unknown) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+    return NextResponse.json({ project }, { status: 201 });
+  } catch (err: unknown) {
+    console.error("Projects POST error:", err);
+    return NextResponse.json({ error: "Failed to create project" }, { status: 500 });
   }
 }

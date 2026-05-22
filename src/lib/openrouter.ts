@@ -3,7 +3,7 @@ import { getLocalGeneratedProject } from "@/lib/localGeneratedProject";
 
 const MAX_RETRIES = 0;
 const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
-const REQUEST_TIMEOUT_MS = 25000;
+const REQUEST_TIMEOUT_MS = 90000;
 
 type OpenRouterResponse = {
   choices?: Array<{
@@ -329,6 +329,7 @@ async function requestOpenRouter(
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
+        max_tokens: 32000,
       }),
       signal: controller.signal,
     }).finally(() => clearTimeout(timeoutId));
