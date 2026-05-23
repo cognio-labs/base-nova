@@ -324,6 +324,32 @@ body {
   animation: particle-float 7s ease-in-out infinite;
 }
 
+.builder-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.26) transparent;
+}
+
+.builder-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.builder-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.builder-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.34), rgba(139, 92, 246, 0.34));
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.builder-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.56), rgba(139, 92, 246, 0.56));
+  background-clip: padding-box;
+}
+
 @keyframes particle-float {
   0%,
   100% {

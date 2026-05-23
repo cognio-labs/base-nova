@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
   type Dispatch,
   type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
   type SetStateAction,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,20 +21,34 @@ import {
   Check,
   ChevronDown,
   Circle,
+  Code2,
+  Database,
   Download,
   Expand,
   ExternalLink,
+  File,
+  FileCode,
+  FileJson,
   FileText,
+  Folder,
+  FolderOpen,
+  GitBranch,
   Globe,
+  Image,
   Loader2,
   MessageSquare,
   Mic,
   Monitor,
+  PanelLeft,
+  Play,
   Plus,
   RefreshCcw,
+  Search,
   Share2,
   Smartphone,
   Sparkles,
+  Square,
+  Terminal,
   Wand2,
   X,
   Sun,
@@ -69,6 +84,23 @@ type GenerationTask = {
   kind: TaskKind;
   agent: string;
   filePath?: string;
+};
+
+type EditorFile = {
+  path: string;
+  title: string;
+};
+
+type EditorTab = {
+  path: string;
+  title: string;
+};
+
+type FileTreeNode = {
+  name: string;
+  path: string;
+  type: "file" | "folder";
+  children: FileTreeNode[];
 };
 
 type DeviceMode = "desktop" | "mobile";
@@ -969,6 +1001,139 @@ function SandboxLoadingState({ isEdit }: { isEdit: boolean }) {
   );
 }
 
+function buildFileTree(files: EditorFile[]): FileTreeNode[] {
+  const root: FileTreeNode[] = [];
+
+  for (const file of files) {
+    const parts = file.path.split("/").filter(Boolean);
+    let level = root;
+    let currentPath = "";
+
+    parts.forEach((part, index) => {
+      currentPath = currentPath ? `${currentPath}/${part}` : part;
+      const isFile = index === parts.length - 1;
+      let node = level.find((item) => item.name === part && item.type === (isFile ? "file" : "folder"));
+
+      if (!node) {
+        node = {
+          name: part,
+          path: isFile ? file.path : currentPath,
+          type: isFile ? "file" : "folder",
+          children: [],
+        };
+        level.push(node);
+      }
+
+      level = node.children;
+    });
+  }
+
+  const sortTree = (nodes: FileTreeNode[]) => {
+    nodes.sort((a, b) => {
+      if (a.type !== b.type) return a.type === "folder" ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+    nodes.forEach((node) => sortTree(node.children));
+  };
+
+  sortTree(root);
+  return root;
+}
+
+function getFileIcon(path: string) {
+  const lower = path.toLowerCase();
+  if (lower.endsWith(".tsx") || lower.endsWith(".jsx")) return { Icon: FileCode, className: "text-sky-300" };
+  if (lower.endsWith(".ts") || lower.endsWith(".js")) return { Icon: Code2, className: "text-yellow-300" };
+  if (lower.endsWith(".json")) return { Icon: FileJson, className: "text-amber-300" };
+  if (lower.endsWith(".css")) return { Icon: FileText, className: "text-fuchsia-300" };
+  if (lower.endsWith(".md")) return { Icon: FileText, className: "text-slate-300" };
+  if (/\.(png|jpg|jpeg|webp|svg|gif)$/i.test(lower)) return { Icon: Image, className: "text-emerald-300" };
+  return { Icon: File, className: "text-slate-400" };
+}
+
+function getFolderIcon(name: string, isOpen: boolean) {
+  const folderName = name.toLowerCase();
+  if (["api", "lib", "services"].includes(folderName)) return { Icon: Database, className: "text-emerald-300" };
+  if (["components", "pages", "app"].includes(folderName)) return { Icon: isOpen ? FolderOpen : Folder, className: "text-cyan-300" };
+  return { Icon: isOpen ? FolderOpen : Folder, className: "text-violet-300" };
+}
+
+function FileTreeItem({
+  node,
+  depth,
+  activePath,
+  expandedFolders,
+  onToggleFolder,
+  onOpenFile,
+}: {
+  node: FileTreeNode;
+  depth: number;
+  activePath: string | null;
+  expandedFolders: Set<string>;
+  onToggleFolder: (path: string) => void;
+  onOpenFile: (path: string) => void;
+}) {
+  const isFolder = node.type === "folder";
+  const isOpen = expandedFolders.has(node.path);
+  const isActive = activePath === node.path;
+  const folderIcon = getFolderIcon(node.name, isOpen);
+  const fileIcon = getFileIcon(node.path);
+  const Icon = isFolder ? folderIcon.Icon : fileIcon.Icon;
+  const iconClassName = isFolder ? folderIcon.className : fileIcon.className;
+
+  return (
+    <div>
+      <button
+        onClick={() => (isFolder ? onToggleFolder(node.path) : onOpenFile(node.path))}
+        className={cn(
+          "group flex h-8 w-full items-center gap-2 rounded-xl pr-2 text-left text-[13px] font-semibold transition",
+          isActive
+            ? "bg-cyan-400/12 text-white shadow-[0_0_28px_rgba(34,211,238,0.08)] ring-1 ring-cyan-300/20"
+            : "text-slate-400 hover:bg-white/[0.055] hover:text-slate-100"
+        )}
+        style={{ paddingLeft: 8 + depth * 14 }}
+      >
+        {isFolder ? (
+          <ChevronDown
+            className={cn("h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform", !isOpen && "-rotate-90")}
+          />
+        ) : (
+          <span className="h-3.5 w-3.5 shrink-0" />
+        )}
+        <Icon className={cn("h-4 w-4 shrink-0", iconClassName)} />
+        <span className="min-w-0 flex-1 truncate">{node.name}</span>
+        {!isFolder && (
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-300/70 opacity-0 shadow-[0_0_10px_rgba(110,231,183,0.7)] transition group-hover:opacity-100" />
+        )}
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isFolder && isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            {node.children.map((child) => (
+              <FileTreeItem
+                key={`${child.type}-${child.path}`}
+                node={child}
+                depth={depth + 1}
+                activePath={activePath}
+                expandedFolders={expandedFolders}
+                onToggleFolder={onToggleFolder}
+                onOpenFile={onOpenFile}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 interface BuilderWorkspaceProps {
   projectId?: string;
 }
@@ -983,7 +1148,9 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
     setView,
     generatedFiles,
     activeFilePath,
+    openTabs,
     openFile,
+    closeTab,
     previewHtml,
     updateFileContent,
     getFileContent,
@@ -1003,6 +1170,10 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
   const [isTaskPanelLive, setIsTaskPanelLive] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDark, setIsDark] = useState(true);
+  const [ideSidebarWidth, setIdeSidebarWidth] = useState(300);
+  const [fileSearch, setFileSearch] = useState("");
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(() => new Set());
+  const isResizingIdeSidebarRef = useRef(false);
 
   // Sync theme with localStorage — builder has its own independent key, defaults dark
   useEffect(() => {
@@ -1037,7 +1208,7 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
 
   // Exclude the virtual "preview.html" blob — that's only for the iframe, not for editing
   const filesForEditor = useMemo(() => {
-    if (!generatedFiles?.length) return [] as { path: string; title: string }[];
+    if (!generatedFiles?.length) return [] as EditorFile[];
     return generatedFiles
       .filter((f) => f.path !== "preview.html")
       .map((f) => ({
@@ -1045,6 +1216,54 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
         title: f.path.split("/").pop() ?? f.path,
       }));
   }, [generatedFiles]);
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!isResizingIdeSidebarRef.current) return;
+      const nextWidth = Math.min(460, Math.max(240, event.clientX - (isSidebarOpen ? 340 : 0)));
+      setIdeSidebarWidth(nextWidth);
+    };
+    const handlePointerUp = () => {
+      isResizingIdeSidebarRef.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [isSidebarOpen]);
+
+  const filteredFilesForEditor = useMemo(() => {
+    const query = fileSearch.trim().toLowerCase();
+    if (!query) return filesForEditor;
+    return filesForEditor.filter((file) => file.path.toLowerCase().includes(query));
+  }, [fileSearch, filesForEditor]);
+
+  const fileTree = useMemo(() => buildFileTree(filteredFilesForEditor), [filteredFilesForEditor]);
+  const displayedTabs = useMemo<EditorTab[]>(() => {
+    if (openTabs.length) return openTabs;
+    return activeFilePath ? [{ path: activeFilePath, title: activeFilePath.split("/").pop() ?? activeFilePath }] : [];
+  }, [activeFilePath, openTabs]);
+
+  const toggleFolder = useCallback((path: string) => {
+    setExpandedFolders((current) => {
+      const next = new Set(current);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
+      return next;
+    });
+  }, []);
+
+  const startIdeResize = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    isResizingIdeSidebarRef.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }, []);
 
   const activePath = activeFilePath ?? filesForEditor[0]?.path ?? null;
   const activeLanguage = useMemo(() => {
@@ -1914,28 +2133,37 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
           <section className="flex min-w-0 flex-1 flex-col overflow-hidden">
             {/* Code toolbar */}
             {view === "code" && (
-              <div className="flex shrink-0 items-center justify-between border-b border-white/5 bg-slate-950/60 px-4 py-2">
-                <p className="text-sm font-bold text-white">{projectLabel}</p>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:bg-white/10">
-                      <FileText className="h-3.5 w-3.5" />
-                      {activePath?.split("/").pop() ?? "Select file"}
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64 border-white/10 bg-slate-900">
-                    {filesForEditor.map((f) => (
-                      <DropdownMenuItem
-                        key={f.path}
-                        onSelect={() => openFile(f.path)}
-                        className="text-slate-300 focus:bg-white/10 focus:text-white"
-                      >
-                        {f.path}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#050817]/90 px-4 py-2 backdrop-blur-xl">
+                <div className="flex min-w-0 items-center gap-3">
+                  <button
+                    onClick={() => setIsSidebarOpen((value) => !value)}
+                    className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 transition hover:border-cyan-300/30 hover:bg-cyan-300/10 hover:text-cyan-200"
+                    title="Toggle AI chat"
+                  >
+                    <PanelLeft className="h-4 w-4" />
+                  </button>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400/20 to-violet-500/20 text-cyan-200 ring-1 ring-cyan-300/20">
+                    <Code2 className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-black text-white">{projectLabel}</p>
+                    <p className="text-[11px] font-semibold text-slate-500">AI IDE Workspace</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="hidden items-center gap-1.5 rounded-xl border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs font-black text-emerald-200 transition hover:bg-emerald-300/15 sm:inline-flex">
+                    <Play className="h-3.5 w-3.5" />
+                    Run
+                  </button>
+                  <button className="hidden items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-slate-300 transition hover:bg-white/10 sm:inline-flex">
+                    <GitBranch className="h-3.5 w-3.5" />
+                    main
+                  </button>
+                  <div className="flex items-center gap-1.5 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-[11px] font-black text-cyan-200">
+                    <span className={cn("h-1.5 w-1.5 rounded-full", isGenerating ? "animate-pulse bg-amber-300" : "bg-emerald-300")} />
+                    {isGenerating ? "Generating files" : "Synced"}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1983,32 +2211,197 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="h-full overflow-hidden"
+                    className="flex h-full overflow-hidden bg-[#050817]"
                   >
-                    {isGenerating ? (
-                      <LiveCodeWriter activeTasks={generationTasks} />
-                    ) : (
-                      <Editor
-                        theme="vs-dark"
-                        language={activeLanguage}
-                        value={activeEditorValue}
-                        onChange={(val) => {
-                          if (activePath) updateFileContent(activePath, val ?? "");
-                        }}
-                        options={{
-                          minimap: { enabled: false },
-                          fontSize: 13,
-                          fontFamily: '"Geist Mono", "Fira Code", Consolas, monospace',
-                          wordWrap: "on",
-                          scrollBeyondLastLine: false,
-                          automaticLayout: true,
-                          padding: { top: 16, bottom: 16 },
-                          smoothScrolling: true,
-                          lineNumbers: "on",
-                          folding: true,
-                        }}
+                    <aside
+                      className="relative hidden shrink-0 border-r border-white/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.08),transparent_34%),rgba(2,6,23,0.78)] backdrop-blur-2xl md:flex md:flex-col"
+                      style={{ width: ideSidebarWidth }}
+                    >
+                      <div className="border-b border-white/10 p-3">
+                        <div className="mb-3 flex items-center justify-between">
+                          <div>
+                            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Explorer</p>
+                            <p className="text-sm font-black text-white">Generated files</p>
+                          </div>
+                          <div className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-black text-slate-400">
+                            {filesForEditor.length} files
+                          </div>
+                        </div>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-600" />
+                          <input
+                            value={fileSearch}
+                            onChange={(event) => setFileSearch(event.target.value)}
+                            placeholder="Search files..."
+                            className="h-9 w-full rounded-2xl border border-white/10 bg-slate-950/70 pl-9 pr-3 text-xs font-semibold text-slate-200 outline-none placeholder:text-slate-600 focus:border-cyan-300/30 focus:ring-2 focus:ring-cyan-300/10"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="builder-scrollbar min-h-0 flex-1 overflow-auto p-2">
+                        {isGenerating && (
+                          <div className="mb-3 space-y-2 rounded-2xl border border-cyan-300/10 bg-cyan-300/[0.04] p-3">
+                            <div className="flex items-center gap-2 text-xs font-black text-cyan-200">
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              Creating file structure
+                            </div>
+                            {[0, 1, 2].map((item) => (
+                              <div key={item} className="h-2 rounded-full bg-white/[0.06]">
+                                <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-cyan-300/20 to-violet-400/30" />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {fileTree.length > 0 ? (
+                          <div className="space-y-0.5">
+                            {fileTree.map((node) => (
+                              <FileTreeItem
+                                key={`${node.type}-${node.path}`}
+                                node={node}
+                                depth={0}
+                                activePath={activePath}
+                                expandedFolders={expandedFolders}
+                                onToggleFolder={toggleFolder}
+                                onOpenFile={openFile}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex h-full min-h-72 flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-white/[0.025] p-6 text-center">
+                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-400/10 text-violet-200 ring-1 ring-violet-300/20">
+                              <Sparkles className="h-5 w-5" />
+                            </div>
+                            <p className="text-sm font-black text-white">No files yet</p>
+                            <p className="mt-2 text-xs leading-6 text-slate-500">
+                              Ask AI to generate a landing page, dashboard, or app. New files will appear here instantly.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="border-t border-white/10 p-3">
+                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                          <span className="flex items-center gap-1.5">
+                            <Terminal className="h-3.5 w-3.5" />
+                            AI terminal
+                          </span>
+                          <span className="text-emerald-300">ready</span>
+                        </div>
+                      </div>
+
+                      <div
+                        onPointerDown={startIdeResize}
+                        className="absolute -right-1 top-0 h-full w-2 cursor-col-resize transition hover:bg-cyan-300/20"
                       />
-                    )}
+                    </aside>
+
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <div className="builder-scrollbar flex h-11 shrink-0 items-end overflow-x-auto border-b border-white/10 bg-[#070a16] px-2">
+                        {displayedTabs.length > 0 ? (
+                          displayedTabs.map((tab) => {
+                            const isActive = tab.path === activePath;
+                            const icon = getFileIcon(tab.path);
+                            const Icon = icon.Icon;
+                            return (
+                              <button
+                                key={tab.path}
+                                onClick={() => openFile(tab.path)}
+                                className={cn(
+                                  "group relative flex h-9 max-w-56 items-center gap-2 rounded-t-2xl border border-b-0 px-3 text-xs font-bold transition",
+                                  isActive
+                                    ? "border-cyan-300/20 bg-[#101626] text-white shadow-[0_-8px_24px_rgba(34,211,238,0.06)]"
+                                    : "border-transparent bg-white/[0.025] text-slate-500 hover:bg-white/[0.05] hover:text-slate-200"
+                                )}
+                              >
+                                <Icon className={cn("h-3.5 w-3.5 shrink-0", icon.className)} />
+                                <span className="truncate">{tab.title}</span>
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-300/70" />
+                                <span
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    closeTab(tab.path);
+                                  }}
+                                  onKeyDown={(event) => {
+                                    if (event.key === "Enter" || event.key === " ") {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                      closeTab(tab.path);
+                                    }
+                                  }}
+                                  className="ml-1 flex h-5 w-5 items-center justify-center rounded-md text-slate-500 opacity-0 transition hover:bg-white/10 hover:text-white group-hover:opacity-100"
+                                >
+                                  <X className="h-3 w-3" />
+                                </span>
+                              </button>
+                            );
+                          })
+                        ) : (
+                          <div className="flex h-9 items-center px-3 text-xs font-semibold text-slate-600">
+                            No open tabs
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-h-0 flex-1 overflow-hidden bg-[#1e1e1e]">
+                        {isGenerating ? (
+                          <LiveCodeWriter activeTasks={generationTasks} />
+                        ) : activePath ? (
+                          <Editor
+                            theme="vs-dark"
+                            language={activeLanguage}
+                            value={activeEditorValue}
+                            onChange={(val) => {
+                              if (activePath) updateFileContent(activePath, val ?? "");
+                            }}
+                            options={{
+                              minimap: { enabled: false },
+                              fontSize: 13,
+                              fontFamily: '"Geist Mono", "Fira Code", Consolas, monospace',
+                              wordWrap: "on",
+                              scrollBeyondLastLine: false,
+                              automaticLayout: true,
+                              padding: { top: 18, bottom: 18 },
+                              smoothScrolling: true,
+                              lineNumbers: "on",
+                              folding: true,
+                            }}
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center bg-[#0b1020]">
+                            <div className="max-w-sm text-center">
+                              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-300/10 text-cyan-200 ring-1 ring-cyan-300/20">
+                                <FileCode className="h-6 w-6" />
+                              </div>
+                              <p className="text-lg font-black text-white">Open a file to start editing</p>
+                              <p className="mt-2 text-sm leading-6 text-slate-500">
+                                Generated files, new components, pages, hooks, and API routes will appear in the explorer.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="hidden h-28 shrink-0 border-t border-white/10 bg-[#060913] p-3 text-xs sm:block">
+                        <div className="mb-2 flex items-center justify-between text-slate-500">
+                          <span className="flex items-center gap-2 font-black uppercase tracking-[0.18em]">
+                            <Terminal className="h-3.5 w-3.5" />
+                            Terminal
+                          </span>
+                          <span className="flex items-center gap-2 text-emerald-300">
+                            <Square className="h-3 w-3 fill-current" />
+                            vite preview
+                          </span>
+                        </div>
+                        <div className="builder-scrollbar h-16 overflow-auto rounded-2xl border border-white/10 bg-black/30 px-3 py-2 font-mono text-[11px] leading-5 text-slate-400">
+                          <p><span className="text-cyan-300">$</span> lokoai generate --watch</p>
+                          <p className="text-emerald-300">Files synced. Live preview ready.</p>
+                          {activePath && <p>Active file: <span className="text-slate-200">{activePath}</span></p>}
+                        </div>
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
