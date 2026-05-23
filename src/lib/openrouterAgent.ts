@@ -35,7 +35,7 @@ export async function getOpenRouterAgentResponse(
   isJson: boolean = false
 ) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const { apiBaseUrl, model } = getOpenRouterConfig();
+  const { apiBaseUrl, model } = getOpenRouterConfig(userPrompt, systemPrompt);
 
   if (!apiKey) {
     throw new Error("Missing OPENROUTER_API_KEY in environment variables.");

@@ -57,7 +57,10 @@ export async function POST(req: Request) {
       - Use TypeScript in all files
       - Use Tailwind CSS only for styling
       - Create responsive layouts
-      - Use modern SaaS UI design (glassmorphism, gradients, premium effects)
+      - Use modern premium SaaS UI design inspired by Lovable, Vercel, Linear, OpenAI, Stripe, Framer, and Apple
+      - Use futuristic dashboard patterns, glassmorphism, dark/slate themes, neon glow, smooth gradients, and cinematic polish
+      - Always make layouts responsive, accessible, scalable, and cleanly componentized
+      - Add smooth Framer Motion animations where useful without hurting performance
       - Use Lucide React for icons
       - Maintain clean folder structure
 

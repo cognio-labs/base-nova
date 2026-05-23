@@ -1951,7 +1951,15 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
                     className="flex h-full w-full justify-center bg-slate-950"
                   >
                     <div className={cn("relative h-full overflow-hidden transition-all", previewWidthClass)}>
-                      {sandboxUrl && !isSandboxLoading ? (
+                      {previewHtml ? (
+                        <iframe
+                          key={`html-preview-${refreshKey}`}
+                          srcDoc={previewHtml}
+                          className="h-full w-full border-0"
+                          title="Generated landing page preview"
+                          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                        />
+                      ) : sandboxUrl && !isSandboxLoading ? (
                         /* E2B live sandbox — primary preview */
                         <iframe
                           key={`sandbox-${sandboxUrl}-${refreshKey}`}
@@ -2030,7 +2038,14 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
                 </button>
               </div>
               <div className="flex-1 overflow-hidden rounded-2xl bg-slate-950 shadow-2xl">
-                {sandboxUrl && !isSandboxLoading ? (
+                {previewHtml ? (
+                  <iframe
+                    srcDoc={previewHtml}
+                    className="h-full w-full border-0"
+                    title="Generated landing page preview (fullscreen)"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                  />
+                ) : sandboxUrl && !isSandboxLoading ? (
                   <iframe
                     src={sandboxUrl}
                     className="h-full w-full border-0"

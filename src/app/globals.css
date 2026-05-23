@@ -138,6 +138,83 @@ body {
     linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
 }
 
+.prompt-console {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), transparent 28%),
+    radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.12), transparent 34%),
+    radial-gradient(circle at 88% 100%, rgba(217, 70, 239, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.96), rgba(3, 7, 18, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -18px 60px rgba(15, 23, 42, 0.38),
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 44px rgba(34, 211, 238, 0.12);
+}
+
+.prompt-console::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.08) 16%, transparent 32%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 38px;
+  opacity: 0.72;
+}
+
+.category-pill {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--accent) 34%, rgba(255, 255, 255, 0.12));
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.025)),
+    radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 44%),
+    rgba(15, 23, 42, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -10px 22px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(255, 255, 255, 0.025),
+    0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+.category-pill::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(110deg, transparent 12%, rgba(255, 255, 255, 0.14) 45%, transparent 58%);
+  opacity: 0;
+  transform: translateX(-60%);
+  transition: opacity 220ms ease, transform 420ms ease;
+}
+
+.category-pill:hover {
+  border-color: color-mix(in srgb, var(--accent) 72%, white 8%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -10px 24px rgba(0, 0, 0, 0.28),
+    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 14px 36px var(--glow),
+    0 0 26px color-mix(in srgb, var(--accent) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.category-pill:hover::after {
+  opacity: 1;
+  transform: translateX(68%);
+}
+
+.category-icon {
+  color: var(--accent);
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.32), transparent 36%),
+    color-mix(in srgb, var(--accent) 16%, rgba(2, 6, 23, 0.88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 0 18px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
 
 @theme inline {
   --font-heading: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
@@ -237,6 +314,26 @@ body {
 
 .typewriter-cursor {
   animation: typewriter-cursor-blink 1s steps(2, start) infinite;
+}
+
+.ai-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+}
+
+.particle-dot {
+  animation: particle-float 7s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate3d(18px, -24px, 0) scale(1.45);
+  }
 }
 
 @keyframes typewriter-cursor-blink {

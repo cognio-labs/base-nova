@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,7 +21,15 @@ import {
   Trash2,
   Sun,
   Moon,
+  Rocket,
+  ShoppingBag,
+  Bot,
+  Briefcase,
+  BarChart3,
+  Dumbbell,
+  BookOpen,
 } from "lucide-react";
+import CommandCenterPanel from "@/components/dashboard/CommandCenterPanel";
 import { writePendingBuilderPrompt } from "@/lib/builder-session";
 
 type Project = {
@@ -38,32 +46,50 @@ const QUICK_PROMPTS = [
   {
     icon: "🚀",
     label: "SaaS Landing",
+    Icon: Rocket,
     prompt: "Create a modern SaaS product landing page with hero, features, pricing, and testimonials. Dark theme with purple/indigo accents.",
+    accent: "#8b5cf6",
+    glow: "rgba(139, 92, 246, 0.45)",
   },
   {
     icon: "🛍️",
     label: "E-commerce",
+    Icon: ShoppingBag,
     prompt: "Build a premium e-commerce landing page for a luxury fashion brand. Clean white design with bold typography and product showcase.",
+    accent: "#06b6d4",
+    glow: "rgba(6, 182, 212, 0.42)",
   },
   {
     icon: "🤖",
     label: "AI Product",
+    Icon: Bot,
     prompt: "Design a cutting-edge AI startup landing page with animated visuals, feature highlights, and a waitlist signup. Dark futuristic theme.",
+    accent: "#ec4899",
+    glow: "rgba(236, 72, 153, 0.42)",
   },
   {
     icon: "💼",
     label: "Agency",
+    Icon: Briefcase,
     prompt: "Create a creative digital agency website with portfolio showcase, services, team section, and contact form. Bold modern design.",
+    accent: "#f97316",
+    glow: "rgba(249, 115, 22, 0.42)",
   },
   {
     icon: "💰",
     label: "Fintech",
+    Icon: BarChart3,
     prompt: "Build a fintech/crypto platform landing page with trust signals, features, security highlights, and app download CTA.",
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.42)",
   },
   {
     icon: "🏋️",
     label: "Fitness App",
+    Icon: Dumbbell,
     prompt: "Design a fitness and wellness app landing page with before/after showcase, features, pricing, and testimonials. Energetic green theme.",
+    accent: "#38bdf8",
+    glow: "rgba(56, 189, 248, 0.42)",
   },
 ];
 
@@ -223,9 +249,17 @@ function getTimeAgo(dateString: string): string {
   return "just now";
 }
 
+function getDashboardInitialTheme() {
+  if (typeof window === "undefined") return true;
+  return localStorage.getItem("lokoai.theme.dashboard") !== "light";
+}
+
 export default function DashboardWorkspace() {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const templatesRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLElement>(null);
+  const docsRef = useRef<HTMLElement>(null);
   const [prompt, setPrompt] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -234,14 +268,9 @@ export default function DashboardWorkspace() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [placeholderText, setPlaceholderText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(getDashboardInitialTheme);
 
   // Sync theme with localStorage — dashboard has its own independent key
-  useEffect(() => {
-    const stored = localStorage.getItem("lokoai.theme.dashboard");
-    if (stored === "light") setIsDark(false);
-  }, []);
-
   const toggleTheme = () => {
     setIsDark((prev) => {
       const next = !prev;
@@ -349,6 +378,10 @@ export default function DashboardWorkspace() {
     }
   }
 
+  function scrollToSection(ref: React.RefObject<HTMLElement | HTMLDivElement | null>) {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const filteredProjects = searchQuery
     ? projects.filter(
         (p) =>
@@ -405,10 +438,25 @@ export default function DashboardWorkspace() {
               <span className="text-lg font-black tracking-tight">LokoAI</span>
             </div>
 
-            <nav className="hidden items-center gap-6 text-sm font-medium text-slate-400 sm:flex">
-              <button className="transition hover:text-white">Gallery</button>
-              <button className="transition hover:text-white">Templates</button>
-              <button className="transition hover:text-white">Docs</button>
+            <nav className="hidden items-center gap-2 text-sm font-medium text-slate-400 sm:flex">
+              <button
+                onClick={() => scrollToSection(galleryRef)}
+                className="rounded-full px-4 py-2 transition hover:bg-white/5 hover:text-white"
+              >
+                Gallery
+              </button>
+              <button
+                onClick={() => scrollToSection(templatesRef)}
+                className="rounded-full px-4 py-2 transition hover:bg-white/5 hover:text-white"
+              >
+                Templates
+              </button>
+              <button
+                onClick={() => scrollToSection(docsRef)}
+                className="rounded-full px-4 py-2 transition hover:bg-white/5 hover:text-white"
+              >
+                Docs
+              </button>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -455,14 +503,15 @@ export default function DashboardWorkspace() {
             </p>
 
             {/* Prompt input */}
-            <div className="relative mx-auto max-w-3xl">
-              <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-50 blur-sm" />
-              <div className="relative rounded-3xl border border-white/10 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
+            <div ref={templatesRef} className="relative mx-auto max-w-4xl scroll-mt-24">
+              <div className="absolute -inset-6 rounded-[2rem] bg-[radial-gradient(circle_at_18%_18%,rgba(34,211,238,0.22),transparent_32%),radial-gradient(circle_at_82%_0%,rgba(236,72,153,0.18),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(139,92,246,0.2),transparent_34%)] blur-2xl" />
+              <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-cyan-400/70 via-fuchsia-500/70 to-orange-400/70 opacity-60 blur-sm" />
+              <div className="prompt-console relative overflow-hidden rounded-3xl border border-white/12 bg-[#050712]/92 p-4 shadow-2xl backdrop-blur-2xl">
                 <div className="relative">
                   {!prompt && (
                     <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1 text-sm text-slate-500">
                       <span className="truncate">{placeholderText}</span>
-                      <span className="h-4 w-[2px] animate-pulse bg-indigo-400/70" />
+                      <span className="h-4 w-[2px] animate-pulse bg-cyan-300/80" />
                     </div>
                   )}
                   <textarea
@@ -470,29 +519,35 @@ export default function DashboardWorkspace() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="min-h-[80px] w-full resize-none bg-transparent px-3 py-3 text-sm font-medium text-white outline-none placeholder:text-transparent selection:bg-indigo-500/30"
+                    className="min-h-[96px] w-full resize-none bg-transparent px-3 py-3 text-sm font-medium text-white outline-none placeholder:text-transparent selection:bg-cyan-400/30"
                     style={{ maxHeight: 240 }}
                   />
                 </div>
 
-                <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/5 pt-3">
-                  <div className="flex flex-wrap gap-2">
-                    {QUICK_PROMPTS.slice(0, 3).map((q) => (
+                <div className="mt-2 flex flex-col gap-3 border-t border-white/8 pt-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-3">
+                    {QUICK_PROMPTS.map((q) => {
+                      const Icon = q.Icon;
+                      return (
                       <button
                         key={q.label}
                         onClick={() => void handleCreate(q.prompt)}
                         disabled={isCreating}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-300 transition hover:border-indigo-500/40 hover:bg-indigo-500/10 hover:text-white disabled:opacity-50"
+                        className="category-pill inline-flex min-h-11 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold text-slate-100 transition disabled:opacity-50"
+                        style={{ "--accent": q.accent, "--glow": q.glow } as CSSProperties}
                       >
-                        <span>{q.icon}</span>
+                        <span className="category-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
+                          <Icon className="h-3.5 w-3.5" />
+                        </span>
                         {q.label}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                   <button
                     onClick={() => void handleCreate()}
                     disabled={!prompt.trim() || isCreating}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 px-6 py-2.5 text-sm font-black text-white shadow-[0_0_28px_rgba(139,92,246,0.38)] transition hover:shadow-[0_0_40px_rgba(34,211,238,0.42)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isCreating ? (
                       <>
@@ -508,21 +563,6 @@ export default function DashboardWorkspace() {
                   </button>
                 </div>
               </div>
-            </div>
-
-            {/* Quick prompts row 2 */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {QUICK_PROMPTS.slice(3).map((q) => (
-                <button
-                  key={q.label}
-                  onClick={() => void handleCreate(q.prompt)}
-                  disabled={isCreating}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-400 backdrop-blur transition hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:text-slate-200 disabled:opacity-50"
-                >
-                  <span>{q.icon}</span>
-                  {q.label}
-                </button>
-              ))}
             </div>
           </motion.div>
         </section>
@@ -544,8 +584,10 @@ export default function DashboardWorkspace() {
           ))}
         </div>
 
+        <CommandCenterPanel />
+
         {/* Projects Gallery */}
-        <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
+        <section ref={galleryRef} className="mx-auto max-w-7xl scroll-mt-24 px-4 pb-20 sm:px-6">
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-bold text-white">
@@ -624,6 +666,40 @@ export default function DashboardWorkspace() {
               No designs match &ldquo;{searchQuery}&rdquo;
             </div>
           )}
+        </section>
+
+        <section ref={docsRef} className="mx-auto max-w-5xl scroll-mt-24 px-4 pb-20 sm:px-6">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-cyan-500/5 backdrop-blur-xl">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-300/20">
+                <BookOpen className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Docs</h2>
+                <p className="text-sm text-slate-500">Quick actions for the main workspace areas.</p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <button
+                onClick={() => scrollToSection(galleryRef)}
+                className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-4 text-left text-sm font-bold text-slate-200 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
+              >
+                Open Gallery
+              </button>
+              <button
+                onClick={() => scrollToSection(templatesRef)}
+                className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-4 text-left text-sm font-bold text-slate-200 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
+              >
+                Pick Template
+              </button>
+              <button
+                onClick={() => void handleCreate(QUICK_PROMPTS[0].prompt)}
+                className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-4 text-left text-sm font-bold text-slate-200 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
+              >
+                New Design
+              </button>
+            </div>
+          </div>
         </section>
       </div>
 
