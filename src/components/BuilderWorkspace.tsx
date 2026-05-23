@@ -47,8 +47,6 @@ import {
   Share2,
   Smartphone,
   Sparkles,
-  Square,
-  Terminal,
   Wand2,
   X,
   Sun,
@@ -1082,29 +1080,35 @@ function FileTreeItem({
   const iconClassName = isFolder ? folderIcon.className : fileIcon.className;
 
   return (
-    <div>
+    <div className="select-none">
       <button
         onClick={() => (isFolder ? onToggleFolder(node.path) : onOpenFile(node.path))}
         className={cn(
-          "group flex h-8 w-full items-center gap-2 rounded-xl pr-2 text-left text-[13px] font-semibold transition",
+          "group relative flex h-[28px] w-full items-center gap-1.5 rounded-md pr-2 text-left text-[12px] font-medium transition-all duration-150",
           isActive
-            ? "bg-cyan-400/12 text-white shadow-[0_0_28px_rgba(34,211,238,0.08)] ring-1 ring-cyan-300/20"
-            : "text-slate-400 hover:bg-white/[0.055] hover:text-slate-100"
+            ? "file-item-active text-cyan-50 shadow-[0_0_20px_rgba(34,211,238,0.04)] ring-1 ring-cyan-400/10"
+            : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
         )}
-        style={{ paddingLeft: 8 + depth * 14 }}
+        style={{ paddingLeft: 6 + depth * 12 }}
       >
-        {isFolder ? (
-          <ChevronDown
-            className={cn("h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform", !isOpen && "-rotate-90")}
+        {isActive && (
+          <motion.div
+            layoutId="active-file-indicator"
+            className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-cyan-400"
+            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
           />
-        ) : (
-          <span className="h-3.5 w-3.5 shrink-0" />
         )}
-        <Icon className={cn("h-4 w-4 shrink-0", iconClassName)} />
+        <div className="flex h-4 w-4 shrink-0 items-center justify-center">
+          {isFolder ? (
+            <ChevronDown
+              className={cn("h-3 w-3 text-slate-500 transition-transform duration-200", !isOpen && "-rotate-90")}
+            />
+          ) : (
+            <Icon className={cn("h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110", iconClassName)} />
+          )}
+        </div>
+        {isFolder && <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110", iconClassName)} />}
         <span className="min-w-0 flex-1 truncate">{node.name}</span>
-        {!isFolder && (
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-300/70 opacity-0 shadow-[0_0_10px_rgba(110,231,183,0.7)] transition group-hover:opacity-100" />
-        )}
       </button>
 
       <AnimatePresence initial={false}>
@@ -1113,8 +1117,8 @@ function FileTreeItem({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="overflow-hidden"
+            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+            className="indent-guide overflow-hidden"
           >
             {node.children.map((child) => (
               <FileTreeItem
@@ -1170,7 +1174,7 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
   const [isTaskPanelLive, setIsTaskPanelLive] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDark, setIsDark] = useState(true);
-  const [ideSidebarWidth, setIdeSidebarWidth] = useState(300);
+  const [ideSidebarWidth, setIdeSidebarWidth] = useState(260);
   const [fileSearch, setFileSearch] = useState("");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(() => new Set());
   const isResizingIdeSidebarRef = useRef(false);
@@ -2133,35 +2137,37 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
           <section className="flex min-w-0 flex-1 flex-col overflow-hidden">
             {/* Code toolbar */}
             {view === "code" && (
-              <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#050817]/90 px-4 py-2 backdrop-blur-xl">
-                <div className="flex min-w-0 items-center gap-3">
+              <div className="flex shrink-0 items-center justify-between border-b border-white/[0.05] bg-[#050817]/80 px-4 py-2 backdrop-blur-2xl">
+                <div className="flex min-w-0 items-center gap-4">
                   <button
                     onClick={() => setIsSidebarOpen((value) => !value)}
-                    className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 transition hover:border-cyan-300/30 hover:bg-cyan-300/10 hover:text-cyan-200"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/5 bg-white/[0.02] text-slate-500 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/10 hover:text-cyan-300"
                     title="Toggle AI chat"
                   >
-                    <PanelLeft className="h-4 w-4" />
+                    <PanelLeft className="h-3.5 w-3.5" />
                   </button>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400/20 to-violet-500/20 text-cyan-200 ring-1 ring-cyan-300/20">
-                    <Code2 className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-black text-white">{projectLabel}</p>
-                    <p className="text-[11px] font-semibold text-slate-500">AI IDE Workspace</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400/20 to-violet-500/20 text-cyan-200 ring-1 ring-cyan-400/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+                      <Code2 className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-[13px] font-black tracking-tight text-white">{projectLabel}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">AI Neural IDE</p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="hidden items-center gap-1.5 rounded-xl border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs font-black text-emerald-200 transition hover:bg-emerald-300/15 sm:inline-flex">
-                    <Play className="h-3.5 w-3.5" />
-                    Run
+                <div className="flex items-center gap-3">
+                  <button className="hidden items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3.5 py-1.5 text-[11px] font-black text-emerald-300 transition-all hover:bg-emerald-400/20 sm:inline-flex">
+                    <Play className="h-3 w-3 fill-current" />
+                    RUN PROJECT
                   </button>
-                  <button className="hidden items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-slate-300 transition hover:bg-white/10 sm:inline-flex">
+                  <button className="hidden items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3.5 py-1.5 text-[11px] font-bold text-slate-400 transition-all hover:bg-white/10 hover:text-white sm:inline-flex">
                     <GitBranch className="h-3.5 w-3.5" />
                     main
                   </button>
-                  <div className="flex items-center gap-1.5 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-[11px] font-black text-cyan-200">
-                    <span className={cn("h-1.5 w-1.5 rounded-full", isGenerating ? "animate-pulse bg-amber-300" : "bg-emerald-300")} />
-                    {isGenerating ? "Generating files" : "Synced"}
+                  <div className="flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3.5 py-1.5 text-[10px] font-black text-cyan-300">
+                    <span className={cn("h-1.5 w-1.5 rounded-full", isGenerating ? "animate-pulse bg-amber-400" : "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]")} />
+                    {isGenerating ? "ARCHITECTING..." : "LIVE SYNCED"}
                   </div>
                 </div>
               </div>
@@ -2214,192 +2220,229 @@ export default function BuilderWorkspace({ projectId }: BuilderWorkspaceProps = 
                     className="flex h-full overflow-hidden bg-[#050817]"
                   >
                     <aside
-                      className="relative hidden shrink-0 border-r border-white/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.08),transparent_34%),rgba(2,6,23,0.78)] backdrop-blur-2xl md:flex md:flex-col"
+                      className="relative hidden shrink-0 flex-col border-r border-white/5 bg-[#050817] md:flex"
                       style={{ width: ideSidebarWidth }}
                     >
-                      <div className="border-b border-white/10 p-3">
-                        <div className="mb-3 flex items-center justify-between">
-                          <div>
-                            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Explorer</p>
-                            <p className="text-sm font-black text-white">Generated files</p>
-                          </div>
-                          <div className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-black text-slate-400">
-                            {filesForEditor.length} files
+                      <div className="flex flex-col gap-3 p-4 pb-2">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                            <Folder className="h-3 w-3" />
+                            Explorer
+                          </span>
+                          <div className="flex h-5 items-center rounded-md bg-white/[0.03] px-1.5 text-[10px] font-bold text-slate-500 ring-1 ring-white/5">
+                            {filesForEditor.length}
                           </div>
                         </div>
                         <div className="relative">
-                          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-600" />
+                          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-600" />
                           <input
                             value={fileSearch}
                             onChange={(event) => setFileSearch(event.target.value)}
-                            placeholder="Search files..."
-                            className="h-9 w-full rounded-2xl border border-white/10 bg-slate-950/70 pl-9 pr-3 text-xs font-semibold text-slate-200 outline-none placeholder:text-slate-600 focus:border-cyan-300/30 focus:ring-2 focus:ring-cyan-300/10"
+                            placeholder="Find in project..."
+                            className="h-8 w-full rounded-lg border border-white/5 bg-white/[0.02] pl-8 pr-3 text-[12px] font-medium text-slate-300 outline-none transition-all placeholder:text-slate-600 focus:border-cyan-500/30 focus:bg-white/[0.04] focus:ring-4 focus:ring-cyan-500/5"
                           />
                         </div>
                       </div>
 
-                      <div className="builder-scrollbar min-h-0 flex-1 overflow-auto p-2">
+                      <div className="builder-scrollbar min-h-0 flex-1 overflow-auto px-2 pb-6">
                         {isGenerating && (
-                          <div className="mb-3 space-y-2 rounded-2xl border border-cyan-300/10 bg-cyan-300/[0.04] p-3">
-                            <div className="flex items-center gap-2 text-xs font-black text-cyan-200">
-                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                              Creating file structure
+                          <div className="mb-4 space-y-2 rounded-xl border border-cyan-500/10 bg-cyan-500/[0.02] p-3 backdrop-blur-sm">
+                            <div className="flex items-center gap-2 text-[11px] font-bold text-cyan-300/80">
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              Generating Architecture...
                             </div>
-                            {[0, 1, 2].map((item) => (
-                              <div key={item} className="h-2 rounded-full bg-white/[0.06]">
-                                <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-cyan-300/20 to-violet-400/30" />
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {fileTree.length > 0 ? (
-                          <div className="space-y-0.5">
-                            {fileTree.map((node) => (
-                              <FileTreeItem
-                                key={`${node.type}-${node.path}`}
-                                node={node}
-                                depth={0}
-                                activePath={activePath}
-                                expandedFolders={expandedFolders}
-                                onToggleFolder={toggleFolder}
-                                onOpenFile={openFile}
+                            <div className="h-0.5 overflow-hidden rounded-full bg-white/5">
+                              <motion.div
+                                initial={{ x: "-100%" }}
+                                animate={{ x: "100%" }}
+                                transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                                className="h-full w-1/3 bg-cyan-500/50"
                               />
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="flex h-full min-h-72 flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-white/[0.025] p-6 text-center">
-                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-400/10 text-violet-200 ring-1 ring-violet-300/20">
-                              <Sparkles className="h-5 w-5" />
                             </div>
-                            <p className="text-sm font-black text-white">No files yet</p>
-                            <p className="mt-2 text-xs leading-6 text-slate-500">
-                              Ask AI to generate a landing page, dashboard, or app. New files will appear here instantly.
-                            </p>
                           </div>
                         )}
-                      </div>
 
-                      <div className="border-t border-white/10 p-3">
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                          <span className="flex items-center gap-1.5">
-                            <Terminal className="h-3.5 w-3.5" />
-                            AI terminal
-                          </span>
-                          <span className="text-emerald-300">ready</span>
-                        </div>
+                        <AnimatePresence mode="popLayout">
+                          {fileTree.length > 0 ? (
+                            <motion.div
+                              layout
+                              className="space-y-0.5"
+                            >
+                              {fileTree.map((node) => (
+                                <FileTreeItem
+                                  key={`${node.type}-${node.path}`}
+                                  node={node}
+                                  depth={0}
+                                  activePath={activePath}
+                                  expandedFolders={expandedFolders}
+                                  onToggleFolder={toggleFolder}
+                                  onOpenFile={openFile}
+                                />
+                              ))}
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="flex h-full min-h-[300px] flex-col items-center justify-center p-6 text-center"
+                            >
+                              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-white/[0.02] text-slate-700 ring-1 ring-white/5">
+                                <FileCode className="h-7 w-7 opacity-20" />
+                              </div>
+                              <p className="text-[12px] font-bold text-slate-500">Virtual Filesystem Ready</p>
+                              <p className="mt-2 text-[11px] leading-relaxed text-slate-600">
+                                AI is waiting for your first instruction to begin building.
+                              </p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
 
                       <div
                         onPointerDown={startIdeResize}
-                        className="absolute -right-1 top-0 h-full w-2 cursor-col-resize transition hover:bg-cyan-300/20"
+                        className="absolute -right-0.5 top-0 z-10 h-full w-1 cursor-col-resize transition-colors hover:bg-cyan-500/40"
                       />
                     </aside>
 
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <div className="builder-scrollbar flex h-11 shrink-0 items-end overflow-x-auto border-b border-white/10 bg-[#070a16] px-2">
-                        {displayedTabs.length > 0 ? (
-                          displayedTabs.map((tab) => {
-                            const isActive = tab.path === activePath;
-                            const icon = getFileIcon(tab.path);
-                            const Icon = icon.Icon;
-                            return (
-                              <button
-                                key={tab.path}
-                                onClick={() => openFile(tab.path)}
-                                className={cn(
-                                  "group relative flex h-9 max-w-56 items-center gap-2 rounded-t-2xl border border-b-0 px-3 text-xs font-bold transition",
-                                  isActive
-                                    ? "border-cyan-300/20 bg-[#101626] text-white shadow-[0_-8px_24px_rgba(34,211,238,0.06)]"
-                                    : "border-transparent bg-white/[0.025] text-slate-500 hover:bg-white/[0.05] hover:text-slate-200"
-                                )}
-                              >
-                                <Icon className={cn("h-3.5 w-3.5 shrink-0", icon.className)} />
-                                <span className="truncate">{tab.title}</span>
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-300/70" />
-                                <span
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    closeTab(tab.path);
-                                  }}
-                                  onKeyDown={(event) => {
-                                    if (event.key === "Enter" || event.key === " ") {
-                                      event.preventDefault();
-                                      event.stopPropagation();
-                                      closeTab(tab.path);
-                                    }
-                                  }}
-                                  className="ml-1 flex h-5 w-5 items-center justify-center rounded-md text-slate-500 opacity-0 transition hover:bg-white/10 hover:text-white group-hover:opacity-100"
+                    <div className="flex min-w-0 flex-1 flex-col bg-[#02040a]">
+                      <div className="builder-scrollbar flex h-9 shrink-0 items-end overflow-x-auto bg-[#050817] px-1 shadow-[inset_0_-1px_0_rgba(255,255,255,0.05)]">
+                        <AnimatePresence mode="popLayout">
+                          {displayedTabs.length > 0 ? (
+                            displayedTabs.map((tab) => {
+                              const isActive = tab.path === activePath;
+                              const icon = getFileIcon(tab.path);
+                              const Icon = icon.Icon;
+                              return (
+                                <motion.button
+                                  layout
+                                  key={tab.path}
+                                  onClick={() => openFile(tab.path)}
+                                  className={cn(
+                                    "group relative flex h-[35px] min-w-[140px] max-w-[220px] items-center gap-2 border-r border-white/[0.03] px-3.5 text-[12px] font-medium transition-all duration-200",
+                                    isActive
+                                      ? "bg-[#02040a] text-cyan-50 shadow-[0_-4px_12px_rgba(0,0,0,0.5)]"
+                                      : "bg-transparent text-slate-500 hover:bg-white/[0.02] hover:text-slate-300"
+                                  )}
                                 >
-                                  <X className="h-3 w-3" />
-                                </span>
-                              </button>
-                            );
-                          })
-                        ) : (
-                          <div className="flex h-9 items-center px-3 text-xs font-semibold text-slate-600">
-                            No open tabs
-                          </div>
-                        )}
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="active-tab-highlight"
+                                      className="absolute inset-x-0 top-0 h-[1.5px] bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.6)]"
+                                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
+                                  )}
+                                  <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-all duration-200 group-hover:scale-110", !isActive && "opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0", icon.className)} />
+                                  <span className="truncate">{tab.title}</span>
+                                  
+                                  <div className="ml-auto flex items-center gap-1.5">
+                                    {isActive ? (
+                                      <div className="h-1.5 w-1.5 rounded-full bg-cyan-400/80 shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
+                                    ) : (
+                                      <div className="h-1 w-1 rounded-full bg-slate-700 transition-colors group-hover:bg-slate-500" />
+                                    )}
+                                    <span
+                                      role="button"
+                                      tabIndex={0}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        closeTab(tab.path);
+                                      }}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Enter" || event.key === " ") {
+                                          event.preventDefault();
+                                          event.stopPropagation();
+                                          closeTab(tab.path);
+                                        }
+                                      }}
+                                      className="flex h-4 w-4 items-center justify-center rounded-md text-slate-600 opacity-0 transition-all hover:bg-white/10 hover:text-white group-hover:opacity-100"
+                                    >
+                                      <X className="h-2.5 w-2.5" />
+                                    </span>
+                                  </div>
+                                </motion.button>
+                              );
+                            })
+                          ) : (
+                            <div className="flex h-full items-center px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-700">
+                              System Idle
+                            </div>
+                          )}
+                        </AnimatePresence>
                       </div>
 
-                      <div className="min-h-0 flex-1 overflow-hidden bg-[#1e1e1e]">
+                      <div className="min-h-0 flex-1 overflow-hidden">
                         {isGenerating ? (
                           <LiveCodeWriter activeTasks={generationTasks} />
                         ) : activePath ? (
-                          <Editor
-                            theme="vs-dark"
-                            language={activeLanguage}
-                            value={activeEditorValue}
-                            onChange={(val) => {
-                              if (activePath) updateFileContent(activePath, val ?? "");
-                            }}
-                            options={{
-                              minimap: { enabled: false },
-                              fontSize: 13,
-                              fontFamily: '"Geist Mono", "Fira Code", Consolas, monospace',
-                              wordWrap: "on",
-                              scrollBeyondLastLine: false,
-                              automaticLayout: true,
-                              padding: { top: 18, bottom: 18 },
-                              smoothScrolling: true,
-                              lineNumbers: "on",
-                              folding: true,
-                            }}
-                          />
+                          <div className="relative h-full">
+                            <Editor
+                              theme="vs-dark"
+                              language={activeLanguage}
+                              value={activeEditorValue}
+                              onChange={(val) => {
+                                if (activePath) updateFileContent(activePath, val ?? "");
+                              }}
+                              options={{
+                                minimap: { enabled: false },
+                                fontSize: 13,
+                                fontFamily: '"Geist Mono", "Fira Code", Consolas, monospace',
+                                wordWrap: "on",
+                                scrollBeyondLastLine: false,
+                                automaticLayout: true,
+                                padding: { top: 24, bottom: 24 },
+                                smoothScrolling: true,
+                                lineNumbers: "on",
+                                folding: true,
+                                glyphMargin: false,
+                                lineDecorationsWidth: 12,
+                                lineNumbersMinChars: 3,
+                                renderLineHighlight: "all",
+                                cursorBlinking: "smooth",
+                                cursorSmoothCaretAnimation: "on",
+                                mouseWheelZoom: true,
+                                scrollbar: {
+                                  vertical: "visible",
+                                  horizontal: "visible",
+                                  useShadows: false,
+                                  verticalScrollbarSize: 8,
+                                  horizontalScrollbarSize: 8,
+                                  verticalHasArrows: false,
+                                  horizontalHasArrows: false,
+                                },
+                                overviewRulerBorder: false,
+                                hideCursorInOverviewRuler: true,
+                              }}
+                            />
+                            <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.2)]" />
+                          </div>
                         ) : (
-                          <div className="flex h-full items-center justify-center bg-[#0b1020]">
-                            <div className="max-w-sm text-center">
-                              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-300/10 text-cyan-200 ring-1 ring-cyan-300/20">
-                                <FileCode className="h-6 w-6" />
+                          <div className="flex h-full flex-col items-center justify-center bg-[#050817] p-12 text-center">
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="relative mb-8"
+                            >
+                              <div className="absolute inset-0 animate-pulse rounded-[3rem] bg-cyan-500/10 blur-2xl" />
+                              <div className="relative flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-gradient-to-br from-[#0a1024] to-[#050817] text-cyan-400 ring-1 ring-white/10">
+                                <Code2 className="h-10 w-10" />
                               </div>
-                              <p className="text-lg font-black text-white">Open a file to start editing</p>
-                              <p className="mt-2 text-sm leading-6 text-slate-500">
-                                Generated files, new components, pages, hooks, and API routes will appear in the explorer.
-                              </p>
+                            </motion.div>
+                            <h3 className="text-2xl font-black tracking-tight text-white">Quantum Editor</h3>
+                            <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-slate-500">
+                              Your AI-driven development environment is primed. Select any generated module from the explorer to commence engineering.
+                            </p>
+                            <div className="mt-10 flex gap-4">
+                              <div className="flex items-center gap-2 rounded-full bg-white/[0.03] px-4 py-2 text-[11px] font-bold text-slate-400 ring-1 ring-white/5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                AI Engine: Online
+                              </div>
+                              <div className="flex items-center gap-2 rounded-full bg-white/[0.03] px-4 py-2 text-[11px] font-bold text-slate-400 ring-1 ring-white/5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                                Environment: Production
+                              </div>
                             </div>
                           </div>
                         )}
-                      </div>
-
-                      <div className="hidden h-28 shrink-0 border-t border-white/10 bg-[#060913] p-3 text-xs sm:block">
-                        <div className="mb-2 flex items-center justify-between text-slate-500">
-                          <span className="flex items-center gap-2 font-black uppercase tracking-[0.18em]">
-                            <Terminal className="h-3.5 w-3.5" />
-                            Terminal
-                          </span>
-                          <span className="flex items-center gap-2 text-emerald-300">
-                            <Square className="h-3 w-3 fill-current" />
-                            vite preview
-                          </span>
-                        </div>
-                        <div className="builder-scrollbar h-16 overflow-auto rounded-2xl border border-white/10 bg-black/30 px-3 py-2 font-mono text-[11px] leading-5 text-slate-400">
-                          <p><span className="text-cyan-300">$</span> lokoai generate --watch</p>
-                          <p className="text-emerald-300">Files synced. Live preview ready.</p>
-                          {activePath && <p>Active file: <span className="text-slate-200">{activePath}</span></p>}
-                        </div>
                       </div>
                     </div>
                   </motion.div>

@@ -326,12 +326,12 @@ body {
 
 .builder-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.26) transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.08) transparent;
 }
 
 .builder-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  height: 4px;
 }
 
 .builder-scrollbar::-webkit-scrollbar-track {
@@ -339,15 +339,50 @@ body {
 }
 
 .builder-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.34), rgba(139, 92, 246, 0.34));
-  border: 2px solid transparent;
-  border-radius: 999px;
-  background-clip: padding-box;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 20px;
 }
 
 .builder-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.56), rgba(139, 92, 246, 0.56));
-  background-clip: padding-box;
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.glass-panel {
+  background: rgba(5, 8, 23, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ide-border {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.indent-guide {
+  position: relative;
+}
+
+.indent-guide::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.2s;
+}
+
+.indent-guide:hover::before {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-active-glow {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
+}
+
+.file-item-active {
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.08) 0%, transparent 100%);
 }
 
 @keyframes particle-float {
